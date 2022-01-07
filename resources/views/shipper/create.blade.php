@@ -23,8 +23,8 @@
     {!! Form::open(['route' => 'shipper.store']) !!}
         <div class="">
             <div class="form-group">
-                {!! Form::label('name', __('name') . ':') !!}
-                {!! Form::text('name', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                {!! Form::label('shipper_name', __('name') . ':') !!}
+                {!! Form::text('shipper_name', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
 

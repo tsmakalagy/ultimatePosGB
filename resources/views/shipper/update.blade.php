@@ -23,8 +23,8 @@
     {!! Form::open(['action' =>['ShipperController@update',$shipper->id]]) !!}
         <div class="col-md-3">
             <div class="form-group">
-                {!! Form::label('name', __('name') . ':') !!}
-                {!! Form::text('name', $shipper->name , ['class' => 'form-control', 'rows' => 3]); !!}
+                {!! Form::label('shipper_name', __('name') . ':') !!}
+                {!! Form::text('shipper_name', $shipper->shipper_name , ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
 

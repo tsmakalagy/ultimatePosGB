@@ -46,19 +46,19 @@ class ShipperController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->filled('name','type','tel','other_details')){
-            $name=$request->input('name');
+        if($request->filled('shipper_name','type','tel','other_details')){
+            $shipper_name=$request->input('shipper_name');
             $type=$request->input('type');
             $tel=$request->input('tel');
             $other_details=$request->input('other_details');
             
-            $shipper=Shipper::firstOrCreate(['name'=>$name,'type'=>$type,'tel'=>$tel,'other_details'=>$other_details]);
+            $shipper=Shipper::firstOrCreate(['shipper_name'=>$shipper_name,'type'=>$type,'tel'=>$tel,'other_details'=>$other_details]);
             return redirect()->route('shipper.index');
             
            
         }
         else{
-            return redirect()->route('store.address');
+            return redirect()->route('shipper.index');
         }
         
     }

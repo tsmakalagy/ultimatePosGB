@@ -108,7 +108,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/products/toggle-woocommerce-sync', 'ProductController@toggleWooCommerceSync');
     
     Route::resource('products', 'ProductController');
-    Route::get('product/productIndex/{id}','ProductController@productIndex');
+    Route::get('products/product_sell/{id}','ProductController@productSell');
+    Route::get('test/{id}','ProductSellController@test');
 
     Route::post('/purchases/update-status', 'PurchaseController@updateStatus');
     Route::get('/purchases/get_products', 'PurchaseController@getProducts');
@@ -419,3 +420,6 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/sells/invoice-url/{id}', 'SellPosController@showInvoiceUrl');
     Route::get('/show-notification/{id}', 'HomeController@showNotification');
 });
+
+Route::get('products/product_sell/{id}','ProductController@productSell');
+Route::get('test/{id}','ProductSellController@test');

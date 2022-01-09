@@ -107,6 +107,7 @@
 @section('javascript')
 <script type="text/javascript">
 $(document).ready( function(){
+    var product_id = {{$product_id}};
     //Date range as a button
     $('#sell_list_filter_date_range').daterangepicker(
         dateRangeSettings,
@@ -125,7 +126,7 @@ $(document).ready( function(){
         serverSide: true,
         aaSorting: [[1, 'desc']],
         "ajax": {
-            "url": "/sells",
+            "url": "/get-product-sales",
             "data": function ( d ) {
                 if($('#sell_list_filter_date_range').val()) {
                     var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -141,6 +142,9 @@ $(document).ready( function(){
                 d.created_by = $('#created_by').val();
                 d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
                 d.service_staffs = $('#service_staffs').val();
+                
+                // product_id from the view
+                d.product_id = product_id;
 
                 if($('#shipping_status').length) {
                     d.shipping_status = $('#shipping_status').val();

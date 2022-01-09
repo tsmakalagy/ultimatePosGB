@@ -108,7 +108,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('/products/toggle-woocommerce-sync', 'ProductController@toggleWooCommerceSync');
     
     Route::resource('products', 'ProductController');
-    Route::get('product/productIndex/{id}','ProductController@productIndex');
+    // Route::get('products/product_sell/{id}','ProductController@productSell');
+    // Route::get('test/{id}','ProductSellController@test');
 
     Route::post('/purchases/update-status', 'PurchaseController@updateStatus');
     Route::get('/purchases/get_products', 'PurchaseController@getProducts');
@@ -385,6 +386,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('shipper/edit/{id}', 'ShipperController@edit');
     Route::post('shipper/update/{id}', 'ShipperController@update')->name('shipper.update');
     Route::get('shipper/delete/{id}', 'ShipperController@delete');
+
+    //Route for the products sales
+    Route::get('get-product-sales','ProductController@productSell');
+    Route::get('test/{id}','ProductSellController@test');
 });
 
 
@@ -419,3 +424,4 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/sells/invoice-url/{id}', 'SellPosController@showInvoiceUrl');
     Route::get('/show-notification/{id}', 'HomeController@showNotification');
 });
+

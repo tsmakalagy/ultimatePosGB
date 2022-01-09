@@ -1368,4 +1368,5 @@ return [
     'invoice_payment' => 'Invoice Payment',
     'payment_for_invoice_no' => 'Payment for invoice number',
     'pending_shipments' => 'Pending Shipments',
+    'manage_shippers' => 'Manage shippers',
 ];

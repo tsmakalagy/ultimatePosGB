@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', __('sale.products'))
+@section('title', __('shipper.add'))
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
-    <h1>@lang('create shipper')
+    <h1>@lang('shipper.add')
     </h1>
     <!-- <ol class="breadcrumb">
         <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>

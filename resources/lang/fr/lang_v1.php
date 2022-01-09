@@ -1314,4 +1314,5 @@ return [
 "invoice_payment"=>"Paiement de facture",
 "payment_for_invoice_no"=>"Paiement pour numéro de facture",
 "pending_shipments"=>"Envois en attente",
+'manage_shippers' => 'Gérer les livreurs',
 ];

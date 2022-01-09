@@ -403,7 +403,7 @@ class AdminSidebarMenu
     //shipperdropdown
     if (in_array('purchases', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update'))) {
         $menu->dropdown(
-            __('shippers'),
+            __('shipper.shipper'),
             function ($sub) use ($common_settings) {
                 
                
@@ -411,15 +411,15 @@ class AdminSidebarMenu
                 if (auth()->user()->can('purchase.view') || auth()->user()->can('view_own_purchase')) {
                     $sub->url(
                         action('ShipperController@index'),
-                        __('list shippers'),
-                        ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'purchases' && request()->segment(2) == null]
+                        __('shipper.list'),
+                        ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == null]
                     );
                 }
                 if (auth()->user()->can('purchase.create')) {
                     $sub->url(
                         action('ShipperController@create'),
-                        __('create shipper'),
-                        ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'purchases' && request()->segment(2) == 'create']
+                        __('shipper.add'),
+                        ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == 'create']
                     );
                 }
 

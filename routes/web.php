@@ -376,6 +376,15 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('edit-sales-orders/{id}/status', 'SalesOrderController@getEditSalesOrderStatus');
     Route::put('update-sales-orders/{id}/status', 'SalesOrderController@postEditSalesOrderStatus');
     Route::get('reports/activity-log', 'ReportController@activityLog');
+
+        
+    //route pour shipper
+    Route::get('shipper', 'ShipperController@index')->name('shipper.index');;
+    Route::get('shipper/create', 'ShipperController@create')->name('shipper.create');
+    Route::post('shipper/store', 'ShipperController@store')->name('shipper.store');
+    Route::get('shipper/edit/{id}', 'ShipperController@edit');
+    Route::post('shipper/update/{id}', 'ShipperController@update')->name('shipper.update');
+    Route::get('shipper/delete/{id}', 'ShipperController@delete');
 });
 
 
@@ -410,11 +419,3 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone'])
     Route::get('/sells/invoice-url/{id}', 'SellPosController@showInvoiceUrl');
     Route::get('/show-notification/{id}', 'HomeController@showNotification');
 });
-
-//route pour shiipper
-Route::get('/shipper/index', 'ShipperController@index')->name('shipper.index');;
-Route::get('/shipper/create', 'ShipperController@create')->name('shipper.create');
-Route::post('/shipper/store', 'ShipperController@store')->name('shipper.store');
-Route::get('/shipper/edit/{id}', 'ShipperController@edit');
-Route::post('/shipper/update/{id}', 'ShipperController@update')->name('shipper.update');
-Route::get('/shipper/delete/{id}', 'ShipperController@delete');

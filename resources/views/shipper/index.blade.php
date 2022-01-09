@@ -24,8 +24,8 @@
     {!! Form::open(['route' => 'shipper.store', 'class' => 'form-horizontal']) !!}
         <div class="col-md-3">
             <div class="form-group">
-                {!! Form::label('name', __('name') . ':') !!}
-                {!! Form::text('name', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
+                {!! Form::label('shipper_name', __('name') . ':') !!}
+                {!! Form::text('shipper_name', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
 
@@ -80,8 +80,9 @@
     </thead>
     <tbody>
         @foreach($shipper as $shippers)
+        
         <tr>
-            <td>{{$shippers->name}}</td>
+            <td>{{$shippers->shipper_name}}</td>
             <td>{{$shippers->type}}</td>
             <td>{{$shippers->tel}}</td>
             <td>{{$shippers->other_details}}</td>

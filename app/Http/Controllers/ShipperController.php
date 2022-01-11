@@ -51,6 +51,7 @@ class ShipperController extends Controller
             $type=$request->input('type');
             $tel=$request->input('tel');
             $other_details=$request->input('other_details');
+            $o=0;
             
             $shipper=Shipper::firstOrCreate(['shipper_name'=>$shipper_name,'type'=>$type,'tel'=>$tel,'other_details'=>$other_details]);
             return redirect()->route('shipper.index');

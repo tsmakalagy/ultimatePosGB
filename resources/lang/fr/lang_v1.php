@@ -2,6 +2,8 @@
 return [
     "enable_editing_product_from_purchase" => "Activer l'édition du prix du produit à partir de l'écran d'achat",
     "sales_commission_agent" => "Agent de la Commission des ventes",
+    "shipping_date" => "date de livraison",
+    'shipper_name' => 'nom du livreur',
     "sales_commission_agents" => "Agents de la Commission",
     "disable" => "Désactiver",
     "logged_in_user" => "Utilisateur connecté",

@@ -25,6 +25,7 @@
 "pos_sale_added" => "Vente ajoutée avec succès",
 "price_inc_tax" => "Prix TTC",
 "tax" => "Impôt",
+"status_date_updating" => "mis a jour du status",
 "edit_discount" => "Modifier la remise",
 "edit_order_tax" => "Modifier la taxe de commande",
 "discount_type" => "Type de remise",

@@ -246,7 +246,7 @@ class ProductController extends Controller
                         // ADD LINK TO PRODUCT SALES
                         if (auth()->user()->can('product.view')) {                            
                             $html .=
-                            '<li><a href="' . action('ProductController@productSell') . '?product_id=' . $row->id . '"><i class="glyphicon glyphicon-edit"></i> ' . __("Sales") . '</a></li>';
+                            '<li><a href="' . action('ProductController@productSell') . '?product_id=' . $row->id . '"><i class="glyphicon glyphicon-edit"></i> ' . __("sale.sells") . '</a></li>';
                         }
 
                         if (auth()->user()->can('product.delete')) {
@@ -397,7 +397,7 @@ class ProductController extends Controller
         $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
 
         if (request()->ajax()) {
-            
+
             $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);
             $with = [];
             $shipping_statuses = $this->transactionUtil->shipping_statuses();

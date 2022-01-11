@@ -64,7 +64,7 @@
                         <th>@lang('sale.staff_note')</th>
                         <th>@lang('shipper_name')</th>
                         <th>@lang('sale.shipping_details')</th>
-                        
+                        <th>@lang('sale.status_date_updating')</th>
                         <th>@lang('restaurant.table')</th>
                         <th>@lang('restaurant.service_staff')</th>
                         
@@ -184,6 +184,7 @@ $(document).ready( function(){
             { data: 'staff_note', name: 'staff_note'},
             { data: 'shipper_name', name: 'shipper_name'},
             { data: 'shipping_details', name: 'shipping_details'},
+            { data: 'status_date_updating', name: 'status_date_updating'},
             { data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
             { data: 'waiter', name: 'ss.first_name', @if(empty($is_service_staff_enabled)) visible: false @endif },
         ],

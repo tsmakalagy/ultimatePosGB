@@ -78,6 +78,8 @@
                             <th>@lang('lang_v1.contact_no')</th>
                             <th>@lang('sale.location')</th>
                             <th>@lang('lang_v1.shipping_status')</th>
+                            <th>@lang('lang_v1.shipper_name')</th>
+                            <th>@lang('lang_v1.shipping_date')</th>
                             @if(!empty($custom_labels['shipping']['custom_field_1']))
                                 <th>
                                     {{$custom_labels['shipping']['custom_field_1']}}
@@ -104,6 +106,7 @@
                                 </th>
                             @endif
                             <th>@lang('sale.payment_status')</th>
+      
                             <th>@lang('restaurant.service_staff')</th>
                         </tr>
                     </thead>
@@ -185,6 +188,9 @@ $(document).ready( function(){
             { data: 'mobile', name: 'contacts.mobile'},
             { data: 'business_location', name: 'bl.name'},
             { data: 'shipping_status', name: 'shipping_status'},
+            { data: 'shipper_name', name: 'shipper_name'},
+            { data: 'shipping_date', name: 'shipping_date'},
+         
             @if(!empty($custom_labels['shipping']['custom_field_1']))
                 { data: 'shipping_custom_field_1', name: 'shipping_custom_field_1'},
             @endif

@@ -21,6 +21,7 @@ return [
     'item' => 'Items',
     'total' => 'Total',
     'order_tax' => 'Order Tax',
+    "status_date_updating" => "status_date_updating",
     'discount' => 'Discount',
     'total_payable' => 'Total Payable',
     'cancel' => 'Cancel',

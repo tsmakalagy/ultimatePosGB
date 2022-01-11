@@ -446,6 +446,12 @@ class SellController extends Controller
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('shipper_name', 
                 '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
+                ->editColumn('status_date_updating', 
+                '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
+                ->editColumn('shipping_date', 
+                '<span class="shipping_date"> {{($shipping_date)}} </span>')
+                
+
                 ->editColumn(
                     'payment_status',
                     function ($row) {
@@ -504,9 +510,13 @@ class SellController extends Controller
                 })
                 ->addColumn('shipper_name',  function ($row) {
                     $total_remaining = '';
-                
-                    
                     return $total_remaining;})
+                    ->addColumn('status_date_updating',  function ($row) {
+                        $total_remaining = '';
+                        return $total_remaining;})
+                ->addColumn('shipping_date',  function ($row) {
+                        $total_remaining = ''; 
+                        return $total_remaining;})
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
                 ->editColumn('total_items', '{{@format_quantity($total_items)}}')
                 ->filterColumn('conatct_name', function ($query, $keyword) {
@@ -552,7 +562,7 @@ class SellController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'action','shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total', 'action','shipping_date','shipper_name', 'status_date_updating','total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
                 
             return $datatable->rawColumns($rawColumns)
                       ->make(true);
@@ -825,7 +835,7 @@ class SellController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    {
+    { 
         if (!auth()->user()->can('direct_sell.update') && !auth()->user()->can('so.update')) {
             abort(403, 'Unauthorized action.');
         }
@@ -1030,6 +1040,7 @@ class SellController extends Controller
         $customer_groups = CustomerGroup::forDropdown($business_id);
 
         $transaction->transaction_date = $this->transactionUtil->format_date($transaction->transaction_date, true);
+
 
         $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
 
@@ -1467,9 +1478,9 @@ class SellController extends Controller
            ->where('activity_log.description', 'shipping_edited')
            ->latest()
            ->get();
-
+$carbon=  \Carbon::now();
         return view('sell.partials.edit_shipping')
-               ->with(compact('transaction', 'shipping_statuses', 'activities'));
+               ->with(compact('transaction', 'shipping_statuses', 'activities','carbon'));
     }
 
     /**
@@ -1488,9 +1499,10 @@ class SellController extends Controller
 
         try {
             $input = $request->only([
-                    'shipping_details', 'shipping_address',
+                    'shipping_details', 'shipping_address','status_date_updating',
                     'shipping_status', 'delivered_to', 'shipping_custom_field_1', 'shipping_custom_field_2', 'shipping_custom_field_3', 'shipping_custom_field_4', 'shipping_custom_field_5'
                 ]);
+                
             $business_id = $request->session()->get('user.business_id');
 
             

@@ -2,6 +2,8 @@
 return [
     "enable_editing_product_from_purchase" => 'Enable editing product price from purchase screen',
     'sales_commission_agent' => 'Sales Commission Agent',
+    'shipping_date' => 'Shipping_date',
+    'shipper_name' => 'Shipper_name',
     'sales_commission_agents' => 'Sales Commission Agents',
     "disable" => 'Disable',
     'logged_in_user' => 'Logged in user',

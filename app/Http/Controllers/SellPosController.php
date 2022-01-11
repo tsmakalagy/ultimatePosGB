@@ -362,6 +362,15 @@ class SellPosController extends Controller
                     $input['is_direct_sale'] = 1;
                 }
 
+                if (empty($request->input('shipping_date'))) {
+                    $input['shipping_date'] =  \Carbon::now();
+                } else {
+                    $input['shipping_date'] = $this->productUtil->uf_date($request->input('shipping_date'), true);
+                }
+                if ($is_direct_sale) {
+                    $input['is_direct_sale'] = 1;
+                }
+
                 //Set commission agent
                 $input['commission_agent'] = !empty($request->input('commission_agent')) ? $request->input('commission_agent') : null;
                 $commsn_agnt_setting = $request->session()->get('business.sales_cmsn_agnt');

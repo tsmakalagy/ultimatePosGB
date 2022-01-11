@@ -672,6 +672,17 @@
 				</div>
 				
 			</div>
+			<div class="@if(!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
+					<div class="form-group">
+						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fa fa-calendar"></i>
+							</span>
+							{!! Form::text('shipping_date', null, ['class' => 'form-control calendar', 'placeholder' => __('YYYY-MM-DD')]); !!}
+						</div>
+					</div>
+				</div>
 	        <div class="clearfix"></div>
 		    <div class="col-md-4 col-md-offset-8">
 		    	@if(!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
@@ -820,6 +831,10 @@
     			}
     		});
     		$('.paid_on').datetimepicker({
+                format: moment_date_format + ' ' + moment_time_format,
+                ignoreReadonly: true,
+            });
+			$('.calendar').datetimepicker({
                 format: moment_date_format + ' ' + moment_time_format,
                 ignoreReadonly: true,
             });

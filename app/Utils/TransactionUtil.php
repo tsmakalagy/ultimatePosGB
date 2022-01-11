@@ -59,6 +59,7 @@ class TransactionUtil extends Util
             'ref_no' => '',
             'total_before_tax' => $invoice_total['total_before_tax'],
             'transaction_date' => $input['transaction_date'],
+            'shipping_date' => $input['shipping_date'],
             'tax_id' => !empty($input['tax_rate_id']) ? $input['tax_rate_id'] : null,
             'discount_type' => !empty($input['discount_type']) ? $input['discount_type'] : null,
             'discount_amount' => $uf_data ? $this->num_uf($input['discount_amount']) : $input['discount_amount'],
@@ -77,6 +78,7 @@ class TransactionUtil extends Util
             'is_quotation' => isset($input['is_quotation']) ? $input['is_quotation'] : 0,
             'shipping_details' => isset($input['shipping_details']) ? $input['shipping_details'] : null,
             'shipper_id' => isset($input['shipper_id']) ? $input['shipper_id'] : null,
+            
             'shipping_address' => isset($input['shipping_address']) ? $input['shipping_address'] : null,
             'shipping_status' => isset($input['shipping_status']) ? $input['shipping_status'] : null,
             'delivered_to' => isset($input['delivered_to']) ? $input['delivered_to'] : null,
@@ -4667,8 +4669,10 @@ class TransactionUtil extends Util
             ->where('transactions.type', $sale_type)
             ->select(
                 'transactions.id',
+                'transactions.shipping_date',
                 'shippers.shipper_name',
                 'transactions.transaction_date',
+                'transactions.status_date_updating',
                 'transactions.type',
                 'transactions.is_direct_sale',
                 'transactions.invoice_no',

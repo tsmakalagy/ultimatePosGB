@@ -24,7 +24,7 @@
 			    <div class="col-md-6">
 			        <div class="form-group">
 			            {!! Form::label('shipping_status', __('lang_v1.shipping_status') . ':' ) !!}
-			            {!! Form::select('shipping_status',$shipping_statuses, !empty($transaction->shipping_status) ? $transaction->shipping_status : null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
+			            {!! Form::select('shipping_status',$shipping_statuses, !empty($transaction->shipping_status) ? $transaction->shipping_status : null, ['class' => 'form-control shipping_change','placeholder' => __('messages.please_select')]); !!}
 			        </div>
 			    </div>
 
@@ -173,6 +173,19 @@
 			<button type="submit" class="btn btn-primary">@lang('messages.update')</button>
 		    <button type="button" class="btn btn-default" data-dismiss="modal">@lang('messages.cancel')</button>
 		</div>
+	
+		{{ Form::hidden('status_date_updating', $transaction->status_date_updating,['class' => 'datetime']) }}
+			        
 		{!! Form::close() !!}
 	</div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+
+<script type="text/javascript">
+    	$(document).ready( function() {
+//			var d= new Date().toISOString().slice(0, 19).replace('T', ' ');
+var time = '<?php echo $carbon ?>';
+    		$('.shipping_change').change(function(){
+				$('.datetime').val(time);
+	        });
+  	});
+    </script>

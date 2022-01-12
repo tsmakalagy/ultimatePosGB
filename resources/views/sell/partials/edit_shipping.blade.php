@@ -34,6 +34,28 @@
 			            {!! Form::text('delivered_to', !empty($transaction->delivered_to) ? $transaction->delivered_to : null, ['class' => 'form-control','placeholder' => __('lang_v1.delivered_to')]); !!}
 			        </div>
 			    </div>
+				<div class="col-md-6">
+					<div class="form-group">
+						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fa fa-calendar"></i>
+							</span>
+
+							{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? @format_datetime($transaction->shipping_date) : null, ['class' => 'form-control paid_on', 'readonly', 'required']);!!}
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+				
+				<div class="form-group">
+		            {!! Form::label('shipper_id', __('shippers')) !!}
+					
+		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}
+		        
+				</div>
+				
+			</div>
 			    @php
 			        $custom_labels = json_decode(session('business.custom_labels'), true);
 
@@ -187,5 +209,17 @@ var time = '<?php echo $carbon ?>';
     		$('.shipping_change').change(function(){
 				$('.datetime').val(time);
 	        });
+		/*	$('.calendar').datepicker({
+				changeMonth: true,
+        changeYear: true,
+        yearRange: '1920:2010',
+        dateFormat : 'dd-mm-yy',
+        defaultDate: new Date(1985,01,01)
+            })*/
+			$('.paid_on').datetimepicker({
+                format: moment_date_format + ' ' + moment_time_format,
+                ignoreReadonly: true,
+            });
+
   	});
     </script>

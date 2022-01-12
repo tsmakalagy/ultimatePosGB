@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @php
@@ -12,6 +13,7 @@
 </section>
 <!-- Main content -->
 <section class="content">
+
 <input type="hidden" id="amount_rounding_method" value="{{$pos_settings['amount_rounding_method'] ?? ''}}">
 <input type="hidden" id="amount_rounding_method" value="{{$pos_settings['amount_rounding_method'] ?? 'none'}}">
 @if(!empty($pos_settings['allow_overselling']))
@@ -499,7 +501,7 @@
 			<div class="col-md-4">
 				<div class="form-group">
 		            {!! Form::label('shipping_status', __('lang_v1.shipping_status')) !!}
-		            {!! Form::select('shipping_status',$shipping_statuses, $transaction->shipping_status, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
+		            {!! Form::select('shipping_status',$shipping_statuses, $transaction->shipping_status, ['class' => 'form-control shipping_change','placeholder' => __('messages.please_select')]); !!}
 		        </div>
 			</div>
 			<div class="col-md-4">
@@ -605,6 +607,17 @@
 			        </div>
 			    </div>
 	        @endif
+			<div class="col-md-4">
+				
+				<div class="form-group">
+		            {!! Form::label('shipper_id', __('shippers')) !!}
+					
+		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
+		        
+				</div>
+				
+			</div>
+
 	        <div class="col-md-4">
                 <div class="form-group">
                     {!! Form::label('shipping_documents', __('lang_v1.shipping_documents') . ':') !!}
@@ -619,6 +632,18 @@
                     @include('sell.partials.media_table', ['medias' => $medias, 'delete' => true])
                 </div>
             </div>
+			<div class="col-md-6">
+					<div class="form-group">
+						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="fa fa-calendar"></i>
+							</span>
+							{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? @format_datetime($transaction->shipping_date) : null, ['class' => 'form-control paid_on', 'readonly', 'required']);!!}
+							
+						</div>
+					</div>
+				</div>
 	        <div class="clearfix"></div>
 		    <div class="col-md-4 col-md-offset-8">
 		    	@if(!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
@@ -740,6 +765,8 @@
 	@if(in_array('subscription', $enabled_modules))
 		@include('sale_pos.partials.recurring_invoice_modal')
 	@endif
+
+	{{ Form::hidden('status_date_updating', $transaction->status_date_updating,['class' => 'datetime']) }}
 	{!! Form::close() !!}
 </section>
 
@@ -770,6 +797,12 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function(){
+
+			var time = '<?php echo $carbon ?>';
+    		$('.shipping_change').change(function(){
+				$('.datetime').val(time);
+	        });
+			
     		$('#shipping_documents').fileinput({
 		        showUpload: false,
 		        showPreview: false,
@@ -796,6 +829,7 @@
                 format: moment_date_format + ' ' + moment_time_format,
                 ignoreReadonly: true,
             });
+			
     	});
     </script>
 @endsection

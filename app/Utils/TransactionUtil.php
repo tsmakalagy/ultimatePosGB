@@ -181,6 +181,8 @@ class TransactionUtil extends Util
             'is_quotation' => isset($input['is_quotation']) ? $input['is_quotation'] : 0,
             'sub_status' => !empty($input['sub_status']) ? $input['sub_status'] : null,
             'shipping_details' => isset($input['shipping_details']) ? $input['shipping_details'] : null,
+            'shipper_id' => isset($input['shipper_id']) ? $input['shipper_id'] : null,
+            'status_date_updating' => isset($input['status_date_updating']) ? $input['status_date_updating'] : null,
             'shipping_charges' => isset($input['shipping_charges']) ? $uf_data ? $this->num_uf($input['shipping_charges']) : $input['shipping_charges'] : 0,
             'shipping_address' => isset($input['shipping_address']) ? $input['shipping_address'] : null,
             'shipping_status' => isset($input['shipping_status']) ? $input['shipping_status'] : null,

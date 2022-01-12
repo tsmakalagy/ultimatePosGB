@@ -835,7 +835,8 @@ class SellController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
-    { 
+    {     
+
         if (!auth()->user()->can('direct_sell.update') && !auth()->user()->can('so.update')) {
             abort(403, 'Unauthorized action.');
         }
@@ -858,18 +859,31 @@ class SellController extends Controller
         
         $business_details = $this->businessUtil->getDetails($business_id);
         $taxes = TaxRate::forBusinessDropdown($business_id, true, true);
-
+        
         $transaction = Transaction::where('business_id', $business_id)
                             ->with(['price_group', 'types_of_service', 'media', 'media.uploaded_by_user'])
                             ->whereIn('type', ['sell', 'sales_order'])
                             ->findorfail($id);
 
+     
+                           
+        
         if ($transaction->type == 'sales_order' && !auth()->user()->can('so.update')) {
             abort(403, 'Unauthorized action.');
         }
 
         $location_id = $transaction->location_id;
         $location_printer_type = BusinessLocation::find($location_id)->receipt_printer_type;
+
+        $shipper= Shipper::join(
+            'transactions',
+            'shippers.id',
+                '=',
+            'transactions.shipper_id'
+    )->where('transactions.id', $id)->first();
+
+    $shippers= Shipper::pluck('shipper_name','id');
+   
 
         $sell_details = TransactionSellLine::
                         join(
@@ -1106,9 +1120,9 @@ class SellController extends Controller
         }
 
         $change_return = $this->dummyPaymentLine;
-
+        $carbon=  \Carbon::now();
         return view('sell.edit')
-            ->with(compact('business_details', 'taxes', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return'));
+            ->with(compact('business_details', 'taxes', 'shipper','shippers','carbon','sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return'));
     }
 
     /**
@@ -1225,7 +1239,6 @@ class SellController extends Controller
                 $sells->whereDate('transaction_date', '>=', $start)
                             ->whereDate('transaction_date', '<=', $end);
             }
-
             if (request()->has('location_id')) {
                 $location_id = request()->get('location_id');
                 if (!empty($location_id)) {
@@ -1473,6 +1486,17 @@ class SellController extends Controller
                                 ->findorfail($id);
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
+        $shipper= Shipper::join(
+            'transactions',
+            'shippers.id',
+                '=',
+            'transactions.shipper_id'
+    )->where('transactions.id', $id)->first();
+
+//dd($shipper->shipper_id);
+
+    $shippers= Shipper::pluck('shipper_name','id');
+
         $activities = Activity::forSubject($transaction)
            ->with(['causer', 'subject'])
            ->where('activity_log.description', 'shipping_edited')
@@ -1480,7 +1504,7 @@ class SellController extends Controller
            ->get();
 $carbon=  \Carbon::now();
         return view('sell.partials.edit_shipping')
-               ->with(compact('transaction', 'shipping_statuses', 'activities','carbon'));
+               ->with(compact('transaction','shippers','shipper', 'shipping_statuses', 'activities','carbon'));
     }
 
     /**
@@ -1499,7 +1523,7 @@ $carbon=  \Carbon::now();
 
         try {
             $input = $request->only([
-                    'shipping_details', 'shipping_address','status_date_updating',
+                    'shipping_details','shipping_date', 'shipping_address','status_date_updating','shipper_id',
                     'shipping_status', 'delivered_to', 'shipping_custom_field_1', 'shipping_custom_field_2', 'shipping_custom_field_3', 'shipping_custom_field_4', 'shipping_custom_field_5'
                 ]);
                 

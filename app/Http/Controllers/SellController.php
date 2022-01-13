@@ -768,6 +768,13 @@ class SellController extends Controller
 
         $sell = $query->firstOrFail();
 
+        $shipper= Shipper::join(
+            'transactions',
+            'shippers.id',
+                '=',
+            'transactions.shipper_id'
+    )->where('transactions.id', $id)->firstorFail();
+        
         $activities = Activity::forSubject($sell)
            ->with(['causer', 'subject'])
            ->latest()
@@ -819,6 +826,7 @@ class SellController extends Controller
             ->with(compact(
                 'taxes',
                 'sell',
+                'shipper',
                 'payment_types',
                 'order_taxes',
                 'pos_settings',

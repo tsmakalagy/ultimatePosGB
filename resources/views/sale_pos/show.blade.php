@@ -115,6 +115,15 @@
       @if(!empty($sell->delivered_to))
         <br><strong>@lang('lang_v1.delivered_to'): </strong> {{$sell->delivered_to}}
       @endif
+      @if(!empty($sell->shipping_date))
+      <br><strong>@lang('lang_v1.shipping_date'): </strong> {{$sell->shipping_date}}
+      @endif
+      @if(!empty($sell->delivery_fee))
+      <br><strong>@lang('lang_v1.delivery_fee'): </strong> <span class="display_currency" data-currency_symbol="true">{{$sell->delivery_fee}}</span>
+      @endif
+      @if(!empty($shipper->shipper_name))
+      <br><strong>@lang('lang_v1.shipper_name'): </strong> {{$shipper->shipper_name}}
+      @endif
       @if(!empty($sell->shipping_custom_field_1))
         <br><strong>{{$custom_labels['shipping']['custom_field_1'] ?? ''}}: </strong> {{$sell->shipping_custom_field_1}}
       @endif

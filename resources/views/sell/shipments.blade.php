@@ -79,6 +79,7 @@
                             <th>@lang('sale.location')</th>
                             <th>@lang('lang_v1.shipping_status')</th>
                             <th>@lang('lang_v1.shipper_name')</th>
+                            <th>@lang('lang_v1.delivery_fee')</th>
                             <th>@lang('lang_v1.shipping_date')</th>
                             <th>@lang('sale.status_date_updating')</th>
                             @if(!empty($custom_labels['shipping']['custom_field_1']))
@@ -190,6 +191,7 @@ $(document).ready( function(){
             { data: 'business_location', name: 'bl.name'},
             { data: 'shipping_status', name: 'shipping_status'},
             { data: 'shipper_name', name: 'shipper_name'},
+            { data: 'delivery_fee', name: 'delivery_fee'},
             { data: 'shipping_date', name: 'shipping_date'},
             { data: 'status_date_updating', name: 'status_date_updating'},
             @if(!empty($custom_labels['shipping']['custom_field_1']))

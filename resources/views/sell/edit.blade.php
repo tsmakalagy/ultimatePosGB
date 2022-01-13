@@ -607,17 +607,18 @@
 			        </div>
 			    </div>
 	        @endif
-			<div class="col-md-4">
-				
+			<div class="col-md-4">				
 				<div class="form-group">
-		            {!! Form::label('shipper_id', __('shippers')) !!}
-					
-		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
-		        
-				</div>
-				
+		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
+		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}		        
+				</div>				
 			</div>
-
+			<div class="col-md-4">				
+				<div class="form-group">
+		            {!! Form::label('delivery_fee', __('lang_v1.delivery_fee')) !!}
+					{!! Form::text('delivery_fee', !empty($transaction->delivery_fee) ? $transaction->delivery_fee : null, ['class' => 'form-control','placeholder' => __('lang_v1.delivery_fee')]); !!}
+				</div>
+			</div>
 	        <div class="col-md-4">
                 <div class="form-group">
                     {!! Form::label('shipping_documents', __('lang_v1.shipping_documents') . ':') !!}
@@ -632,14 +633,14 @@
                     @include('sell.partials.media_table', ['medias' => $medias, 'delete' => true])
                 </div>
             </div>
-			<div class="col-md-6">
+			<div class="col-md-4">
 					<div class="form-group">
 						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
 						<div class="input-group">
 							<span class="input-group-addon">
 								<i class="fa fa-calendar"></i>
 							</span>
-							{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? @format_datetime($transaction->shipping_date) : null, ['class' => 'form-control paid_on', 'readonly', 'required']);!!}
+							{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? $transaction->shipping_date : null, ['class' => 'form-control date_shipping', 'readonly', 'required']);!!}
 							
 						</div>
 					</div>
@@ -827,6 +828,10 @@
     		});
     		$('.paid_on').datetimepicker({
                 format: moment_date_format + ' ' + moment_time_format,
+                ignoreReadonly: true,
+            });
+			$('.date_shipping').datetimepicker({
+                format: 'YYYY-MM-DD HH:mm:ss',
                 ignoreReadonly: true,
             });
 			

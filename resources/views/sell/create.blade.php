@@ -683,7 +683,16 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="col-md-4">
+				<div class="form-group">
+		            {!! Form::label('delivery_fee', __('lang_v1.delivery_fee')) !!}
+					{!!Form::text('delivery_fee',@num_format(0.00),['class'=>'form-control input_number','placeholder'=> __('lang_v1.delivery_fee')]);!!}
+		           
+		        </div>
+			</div>
 	        <div class="clearfix"></div>
+
 		    <div class="col-md-4 col-md-offset-8">
 		    	@if(!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
 		    	<small id="round_off"><br>(@lang('lang_v1.round_off'): <span id="round_off_text">0</span>)</small>

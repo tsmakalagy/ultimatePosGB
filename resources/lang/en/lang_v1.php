@@ -4,6 +4,7 @@ return [
     'sales_commission_agent' => 'Sales Commission Agent',
     'shipping_date' => 'Shipping_date',
     'shipper_name' => 'Shipper_name',
+    "delivery_fee" => "delivery_fee",
     'sales_commission_agents' => 'Sales Commission Agents',
     "disable" => 'Disable',
     'logged_in_user' => 'Logged in user',

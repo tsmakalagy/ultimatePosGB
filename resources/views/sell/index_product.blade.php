@@ -62,7 +62,9 @@
                         <th>@lang('lang_v1.added_by')</th>
                         <th>@lang('sale.sell_note')</th>
                         <th>@lang('sale.staff_note')</th>
-                        <th>@lang('shipper_name')</th>
+                        <th>@lang('lang_v1.shipper_name')</th>
+                        <th>@lang('lang_v1.shipping_date')</th>
+                        <th>@lang('lang_v1.shipping_charges')</th>
                         <th>@lang('sale.shipping_details')</th>
                         
                         <th>@lang('restaurant.table')</th>
@@ -187,6 +189,8 @@ $(document).ready( function(){
             { data: 'additional_notes', name: 'additional_notes'},
             { data: 'staff_note', name: 'staff_note'},
             { data: 'shipper_name', name: 'shipper_name'},
+            { data: 'shipping_date', name: 'shipping_date'},
+            { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_details', name: 'shipping_details'},
             { data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
             { data: 'waiter', name: 'ss.first_name', @if(empty($is_service_staff_enabled)) visible: false @endif },

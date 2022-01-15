@@ -55,19 +55,18 @@
                         <th>@lang('sale.total_paid')</th>
                         <th>@lang('lang_v1.sell_due')</th>
                         <th>@lang('lang_v1.sell_return_due')</th>
-                        
+                        <th>@lang('lang_v1.shipping_status')</th>
                         <th>@lang('lang_v1.total_items')</th>
                         <th>@lang('lang_v1.types_of_service')</th>
                         <th>{{ $custom_labels['types_of_service']['custom_field_1'] ?? __('lang_v1.service_custom_field_1' )}}</th>
                         <th>@lang('lang_v1.added_by')</th>
                         <th>@lang('sale.sell_note')</th>
                         <th>@lang('sale.staff_note')</th>
-                        <th>@lang('lang_v1.shipping_status')</th>
-                        <th>@lang('shipper_name')</th>                       
+                        <th>@lang('lang_v1.shipper_name')</th>
+                        <th>@lang('lang_v1.shipping_date')</th>
                         <th>@lang('lang_v1.shipping_charges')</th>
                         <th>@lang('sale.shipping_details')</th>
-                        <th>@lang('lang_v1.shipping_date')</th>
-                        <th>@lang('sale.status_date_updating')</th>
+                        
                         <th>@lang('restaurant.table')</th>
                         <th>@lang('restaurant.service_staff')</th>
                         
@@ -110,6 +109,7 @@
 @section('javascript')
 <script type="text/javascript">
 $(document).ready( function(){
+    var shipper_id = {{$shipper_id}};
     //Date range as a button
     $('#sell_list_filter_date_range').daterangepicker(
         dateRangeSettings,
@@ -128,7 +128,7 @@ $(document).ready( function(){
         serverSide: true,
         aaSorting: [[1, 'desc']],
         "ajax": {
-            "url": "/sells",
+            "url": "/get-shipper-sales",
             "data": function ( d ) {
                 if($('#sell_list_filter_date_range').val()) {
                     var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -144,6 +144,9 @@ $(document).ready( function(){
                 d.created_by = $('#created_by').val();
                 d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
                 d.service_staffs = $('#service_staffs').val();
+                
+                // shipper_id from the view
+                d.shipper_id = shipper_id;
 
                 if($('#shipping_status').length) {
                     d.shipping_status = $('#shipping_status').val();
@@ -178,19 +181,17 @@ $(document).ready( function(){
             { data: 'total_paid', name: 'total_paid', "searchable": false},
             { data: 'total_remaining', name: 'total_remaining'},
             { data: 'return_due', orderable: false, "searchable": false},
-            
+            { data: 'shipping_status', name: 'shipping_status'},
             { data: 'total_items', name: 'total_items', "searchable": false},
             { data: 'types_of_service_name', name: 'tos.name', @if(empty($is_types_service_enabled)) visible: false @endif},
             { data: 'service_custom_field_1', name: 'service_custom_field_1', @if(empty($is_types_service_enabled)) visible: false @endif},
             { data: 'added_by', name: 'u.first_name'},
             { data: 'additional_notes', name: 'additional_notes'},
             { data: 'staff_note', name: 'staff_note'},
-            { data: 'shipping_status', name: 'shipping_status'},
             { data: 'shipper_name', name: 'shipper_name'},
+            { data: 'shipping_date', name: 'shipping_date'},
             { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_details', name: 'shipping_details'},
-            { data: 'shipping_date', name: 'shipping_date'},
-            { data: 'status_date_updating', name: 'status_date_updating'},
             { data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
             { data: 'waiter', name: 'ss.first_name', @if(empty($is_service_staff_enabled)) visible: false @endif },
         ],

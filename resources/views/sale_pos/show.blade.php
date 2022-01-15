@@ -119,7 +119,7 @@
       <br><strong>@lang('lang_v1.shipping_date'): </strong> {{$sell->shipping_date}}
       @endif
       @if(!empty($sell->delivery_fee))
-      <br><strong>@lang('lang_v1.delivery_fee'): </strong> <span class="display_currency" data-currency_symbol="true">{{$sell->delivery_fee}}</span>
+      <br><strong>@lang('lang_v1.shipping_charges'): </strong> <span class="display_currency" data-currency_symbol="true">{{$sell->shipping_charges}}</span>
       @endif
       @if(!empty($shipper->shipper_name))
       <br><strong>@lang('lang_v1.shipper_name'): </strong> {{$shipper->shipper_name}}

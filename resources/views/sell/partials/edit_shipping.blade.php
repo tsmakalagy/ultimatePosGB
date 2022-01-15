@@ -53,8 +53,8 @@
 			</div>
 			<div class="col-md-6">				
 				<div class="form-group">
-		            {!! Form::label('delivery_fee', __('lang_v1.delivery_fee')) !!}
-					{!! Form::text('delivery_fee', !empty($transaction->delivery_fee) ? $transaction->delivery_fee : null, ['class' => 'form-control','placeholder' => __('lang_v1.delivery_fee')]); !!}
+		            {!! Form::label('shipping_charges', __('lang_v1.shipping_charges')) !!}
+					{!! Form::text('shipping_charges', !empty($transaction->shipping_charges) ? $transaction->shipping_charges : null, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_charges')]); !!}
 				</div>
 			</div>
 			    @php

@@ -613,12 +613,7 @@
 		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}		        
 				</div>				
 			</div>
-			<div class="col-md-4">				
-				<div class="form-group">
-		            {!! Form::label('delivery_fee', __('lang_v1.delivery_fee')) !!}
-					{!! Form::text('delivery_fee', !empty($transaction->delivery_fee) ? $transaction->delivery_fee : null, ['class' => 'form-control','placeholder' => __('lang_v1.delivery_fee')]); !!}
-				</div>
-			</div>
+		
 	        <div class="col-md-4">
                 <div class="form-group">
                     {!! Form::label('shipping_documents', __('lang_v1.shipping_documents') . ':') !!}

@@ -450,8 +450,8 @@ class SellController extends Controller
                 '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
                 ->editColumn('shipping_date', 
                 '<span class="shipping_date"> {{($shipping_date)}} </span>')
-                ->editColumn('delivery_fee', 
-                '<span class="delivery_fee" data-orig-value="{{$total_paid}}"> @format_currency($delivery_fee)  </span>')
+                ->editColumn('shipping_charges', 
+                '<span class="shipping_charges" data-orig-value=""> @format_currency($shipping_charges)  </span>')
                 
 
                 ->editColumn(
@@ -519,7 +519,7 @@ class SellController extends Controller
                 ->addColumn('shipping_date',  function ($row) {
                         $total_remaining = ''; 
                         return $total_remaining;})
-                ->addColumn('delivery_fee',  function ($row) {
+                ->addColumn('shipping_charges',  function ($row) {
                  $total_remaining = ''; 
                 return $total_remaining;})
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
@@ -567,7 +567,7 @@ class SellController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'action','shipping_date','delivery_fee','shipper_name', 'status_date_updating','total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total', 'action','shipping_date','shipping_charges','shipper_name', 'status_date_updating','total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
                 
             return $datatable->rawColumns($rawColumns)
                       ->make(true);
@@ -1536,7 +1536,7 @@ $carbon=  \Carbon::now();
 
         try {
             $input = $request->only([
-                    'shipping_details','shipping_date','delivery_fee', 'shipping_address','status_date_updating','shipper_id',
+                    'shipping_details','shipping_date','shipping_charges', 'shipping_address','status_date_updating','shipper_id',
                     'shipping_status', 'delivered_to', 'shipping_custom_field_1', 'shipping_custom_field_2', 'shipping_custom_field_3', 'shipping_custom_field_4', 'shipping_custom_field_5'
                 ]);
                 

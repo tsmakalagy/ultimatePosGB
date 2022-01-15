@@ -3,6 +3,7 @@ return [
     "enable_editing_product_from_purchase" => 'Enable editing product price from purchase screen',
     'sales_commission_agent' => 'Sales Commission Agent',
     'shipping_date' => 'Shipping_date',
+    'shipping_charges' => 'Shipping_charges',
     'shipper_name' => 'Shipper_name',
     "delivery_fee" => "delivery_fee",
     'sales_commission_agents' => 'Sales Commission Agents',

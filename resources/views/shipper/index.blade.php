@@ -73,11 +73,11 @@
             </div>
         @endif
     @endcomponent
-    @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.all_sales')])
+    @component('components.widget', ['class' => 'box-primary', 'title' => __( 'shipper.shipper')])
         @can('direct_sell.access')
             @slot('tool')
                 <div class="box-tools">
-                    <a class="btn btn-block btn-primary" href="{{action('SellController@create')}}">
+                    <a class="btn btn-block btn-primary" href="{{action('ShipperController@create')}}">
                     <i class="fa fa-plus"></i> @lang('messages.add')</a>
                 </div>
             @endslot

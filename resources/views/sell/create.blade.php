@@ -684,13 +684,7 @@
 					</div>
 				</div>
 
-				<div class="col-md-4">
-				<div class="form-group">
-		            {!! Form::label('delivery_fee', __('lang_v1.delivery_fee')) !!}
-					{!!Form::text('delivery_fee',@num_format(0.00),['class'=>'form-control input_number','placeholder'=> __('lang_v1.delivery_fee')]);!!}
-		           
-		        </div>
-			</div>
+			
 	        <div class="clearfix"></div>
 
 		    <div class="col-md-4 col-md-offset-8">

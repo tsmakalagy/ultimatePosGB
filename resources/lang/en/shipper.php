@@ -12,7 +12,10 @@ return [
     */
 
     'shipper' => 'Shipper',
-    'shippers' => 'Shippers',
+    'name' => 'name',
+    'type' => 'type',
+    'tel' => 'tel',
+    'other_details' => 'other_details',
     'list' => 'List Shippers',
     'add' => 'Add Shipper',
     'all_shippers' => 'All shippers',

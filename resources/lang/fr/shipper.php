@@ -13,6 +13,10 @@ return [
 
     'shipper' => 'Livreur',
     'shippers' => 'Livreurs',
+    'name' => 'nom',
+    'type' => 'type',
+    'tel' => 'tel',
+    'other_details' => 'autre_detail',
     'list' => 'Liste des livreurs',
     'add' => 'Ajouter un livreur',
     'all_shippers' => 'Tous les livreurs',

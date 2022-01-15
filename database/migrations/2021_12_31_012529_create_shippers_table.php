@@ -18,7 +18,7 @@ class CreateShippersTable extends Migration
             $table->string('name');
             $table->text('type');
             $table->string('tel');
-            $table->text('other_details');
+            $table->text('other_details')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@ return [
     'type' => 'type',
     'tel' => 'tel',
     'other_details' => 'autre_detail',
+    'shipper_details' => 'datails du livreur',
     'list' => 'Liste des livreurs',
     'add' => 'Ajouter un livreur',
     'all_shippers' => 'Tous les livreurs',

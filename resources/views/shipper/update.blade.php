@@ -21,26 +21,26 @@
     @component('components.filters', ['title' => __('report.filters')])
  
     {!! Form::open(['action' =>['ShipperController@update',$shipper->id]]) !!}
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('shipper_name', __('name') . ':') !!}
                 {!! Form::text('shipper_name', $shipper->shipper_name , ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
 
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('type', __('type') . ':') !!}
                 {!! Form::text('type', $shipper->type, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('tel', __('tel') . ':') !!}
                 {!! Form::text('tel',$shipper->tel , ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-6">
             <div class="form-group">
                 {!! Form::label('other_details', __('other_details') . ':') !!}
                 {!! Form::text('other_details', $shipper->other_details, ['class' => 'form-control', 'rows' => 3]); !!}

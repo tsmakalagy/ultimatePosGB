@@ -18,6 +18,7 @@ use App\PurchaseLine;
 use App\Restaurant\ResTable;
 use App\TaxRate;
 use App\Transaction;
+use App\Shipper;
 use App\TransactionPayment;
 use App\TransactionSellLine;
 use App\TransactionSellLinesPurchaseLines;
@@ -4733,6 +4734,21 @@ class TransactionUtil extends Util
         }
 
         return $sells;
+    }
+
+    
+    /**
+     * common function to get
+     * list shipper
+     *
+     * @return object
+     */
+    public function getListShippers()
+    {   $shippers= Shipper::All();
+
+  
+
+        return $shippers;
     }
 
     /**

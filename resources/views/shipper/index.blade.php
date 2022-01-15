@@ -1,18 +1,78 @@
 @extends('layouts.app')
-@section('title', __( 'lang_v1.all_sales'))
+@section('title', __( 'shipper.shipper'))
 
 @section('content')
 
 <!-- Content Header (Page header) -->
 <section class="content-header no-print">
-    <h1>@lang( 'sale.sells')
+    <h1>@lang( 'shipper.shipper')
     </h1>
 </section>
 
 <!-- Main content -->
 <section class="content no-print">
     
- 
+    @component('components.filters', ['title' => __('report.filters')])
+
+  <div class="row">
+    <div class="col-md-12">
+    
+        
+    {!! Form::open(['route' => 'shipper.store', 'class' => 'form-horizontal']) !!}
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('shipper_name', __('name') . '*:') !!}
+                {!! Form::text('shipper_name', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('type', __('type') . '*:') !!}
+                {!! Form::text('type', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('tel', __('tel') . '*:') !!}
+                {!! Form::text('tel', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('other_details', __('other_details') . ':') !!}
+                {!! Form::text('other_details', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
+            </div>
+        </div>
+       
+<!-- Submit Button -->
+<div class="form-group">
+            <div class="col-lg-10 col-lg-offset-2">
+                {!! Form::submit('add', ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
+            </div>
+        </div>
+
+        {!! Form::close()  !!}
+
+        
+    
+    
+    </div>
+</div>
+
+        @if($is_woocommerce)
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                          {!! Form::checkbox('only_woocommerce_sells', 1, false, 
+                          [ 'class' => 'input-icheck', 'id' => 'synced_from_woocommerce']); !!} {{ __('lang_v1.synced_from_woocommerce') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endcomponent
     @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.all_sales')])
         @can('direct_sell.access')
             @slot('tool')
@@ -26,32 +86,18 @@
         @php
             $custom_labels = json_decode(session('business.custom_labels'), true);
          @endphp
-            <table class="table table-bordered table-striped ajax_view" id="shipper_table">
+            <table class="table table-bordered table-striped ajax_view" id="sell_table">
                 <thead>
                     <tr>
                         <th>@lang('messages.action')</th>
-                        <th>@lang('shipper.name')</th>
+                        <th>@lang('shipper_name')</th>                       
                         <th>@lang('shipper.type')</th>
                         <th>@lang('shipper.tel')</th>
-                        <th>@lang('shipper.other_details')</th>  
-                        
+                        <th>@lang('shipper.other_details')</th>
                     </tr>
                 </thead>
                 <tbody></tbody>
-                <tfoot>
-                    <tr class="bg-gray font-17 footer-total text-center">
-                        <td colspan="6"><strong>@lang('sale.total'):</strong></td>
-                        <td class="footer_payment_status_count"></td>
-                        <td class="payment_method_count"></td>
-                        <td class="footer_sale_total"></td>
-                        <td class="footer_total_paid"></td>
-                        <td class="footer_total_remaining"></td>
-                        <td class="footer_total_sell_return_due"></td>
-                        <td colspan="2"></td>
-                        <td class="service_type_count"></td>
-                        <td colspan="7"></td>
-                    </tr>
-                </tfoot>
+   
             </table>
         @endif
     @endcomponent
@@ -79,15 +125,15 @@ $(document).ready( function(){
         dateRangeSettings,
         function (start, end) {
             $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
-            shipper_table.ajax.reload();
+            sell_table.ajax.reload();
         }
     );
     $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
         $('#sell_list_filter_date_range').val('');
-        shipper_table.ajax.reload();
+        sell_table.ajax.reload();
     });
 
-    shipper_table = $('#shipper_table').DataTable({
+    sell_table = $('#sell_table').DataTable({
         processing: true,
         serverSide: true,
         aaSorting: [[1, 'desc']],
@@ -100,8 +146,29 @@ $(document).ready( function(){
                     d.start_date = start;
                     d.end_date = end;
                 }
-      
-   
+                d.is_direct_sale = 1;
+
+                d.location_id = $('#sell_list_filter_location_id').val();
+                d.customer_id = $('#sell_list_filter_customer_id').val();
+                d.payment_status = $('#sell_list_filter_payment_status').val();
+                d.created_by = $('#created_by').val();
+                d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
+                d.service_staffs = $('#service_staffs').val();
+
+                if($('#shipping_status').length) {
+                    d.shipping_status = $('#shipping_status').val();
+                }
+                
+                @if($is_woocommerce)
+                    if($('#synced_from_woocommerce').is(':checked')) {
+                        d.only_woocommerce_sells = 1;
+                    }
+                @endif
+
+                if($('#only_subscriptions').is(':checked')) {
+                    d.only_subscriptions = 1;
+                }
+
                 d = __datatable_ajax_callback(d);
             }
         },
@@ -110,28 +177,34 @@ $(document).ready( function(){
         scrollCollapse: true,
         columns: [
             { data: 'action', name: 'action', orderable: false, "searchable": false},
+   
+    
+            { data: 'name', name: 'name'},
+            { data: 'type', name: 'type'},
+            { data: 'tel', name: 'tel'},
+            { data: 'other_details', name: 'other_details'},
 
-            { data: 'name', name: 'name'  },
-            { data: 'type', name: 'type'  },
-            { data: 'tel', name: 'tel'  },
-            { data: 'other_details', name: 'other_details'  },
         ],
         "fnDrawCallback": function (oSettings) {
-            __currency_convert_recursively($('#shipper_table'));
+            __currency_convert_recursively($('#sell_table'));
         },
-
+ 
         createdRow: function( row, data, dataIndex ) {
             $( row ).find('td:eq(6)').attr('class', 'clickable_td');
         }
     });
 
     $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status',  function() {
-        shipper_table.ajax.reload();
+        sell_table.ajax.reload();
     });
-   
+    @if($is_woocommerce)
+        $('#synced_from_woocommerce').on('ifChanged', function(event){
+            sell_table.ajax.reload();
+        });
+    @endif
 
     $('#only_subscriptions').on('ifChanged', function(event){
-        shipper_table.ajax.reload();
+        sell_table.ajax.reload();
     });
 });
 </script>

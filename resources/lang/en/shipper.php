@@ -15,6 +15,7 @@ return [
     'name' => 'name',
     'type' => 'type',
     'tel' => 'tel',
+    'shipper_details' => 'shipper_details',
     'other_details' => 'other_details',
     'list' => 'List Shippers',
     'add' => 'Add Shipper',

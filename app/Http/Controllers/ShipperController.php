@@ -423,26 +423,15 @@ class ShipperController extends Controller
                     if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
                             $html .= '<li><a href="#" data-href="' . action("ShipperController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
                         }
-                        if (!$only_shipments) {
-                            if ($row->is_direct_sale == 0) {
-                                if (auth()->user()->can("sell.update")) {
-                                    $html .= '<li><a target="_blank" href="' . action('ShipperController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                }
-                            } elseif ($row->type == 'sales_order') {
-                                if (auth()->user()->can("so.update")) {
-                                    $html .= '<li><a target="_blank" href="' . action('ShipperController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                }
-                            } else {
-                                if (auth()->user()->can("direct_sell.update")) {
-                                    $html .= '<li><a target="_blank" href="' . action('ShipperController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                }
-                            }
-
-                            if (auth()->user()->can('sell.delete')) {
-                                $html .=
-                                '<li><a href="' . action('ShipperController@delete', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
-                            }
+                    if (auth()->user()->can('product.update')) {
+                            $html .=
+                            '<li><a href="' . action('ShipperController@edit', [$row->id]) . '"><i class="glyphicon glyphicon-edit"></i> ' . __("messages.edit") . '</a></li>';
                         }
+                        if (auth()->user()->can('sell.delete')) {
+                            $html .=
+                            '<li><a href="' . action('ShipperController@delete', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
+                        }
+                      
                              // ADD LINK TO PRODUCT SALES
                         if (auth()->user()->can('sell.view')) {                            
                             $html .=

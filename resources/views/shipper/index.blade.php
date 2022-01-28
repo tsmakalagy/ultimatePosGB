@@ -20,35 +20,43 @@
         
     {!! Form::open(['route' => 'shipper.store', 'class' => 'form-horizontal']) !!}
         <div class="col-md-3">
+            <div class="col-md-12">
             <div class="form-group">
-                {!! Form::label('shipper_name', __('name') . '*:') !!}
+                {!! Form::label('shipper_name', __('shipper.name') . '*:') !!}
                 {!! Form::text('shipper_name', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
+        </div>
 
         <div class="col-md-3">
+            <div class="col-md-12">
             <div class="form-group">
-                {!! Form::label('type', __('type') . '*:') !!}
+                {!! Form::label('type', __('shipper.type') . '*:') !!}
                 {!! Form::text('type', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
+        </div>
         <div class="col-md-3">
+            <div class="col-md-12">
             <div class="form-group">
-                {!! Form::label('tel', __('tel') . '*:') !!}
+                {!! Form::label('tel', __('shipper.tel') . '*:') !!}
                 {!! Form::text('tel', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
+        </div>
         <div class="col-md-3">
+            <div class="col-md-12">
             <div class="form-group">
-                {!! Form::label('other_details', __('other_details') . ':') !!}
+                {!! Form::label('other_details', __('shipper.other_details') . ':') !!}
                 {!! Form::text('other_details', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
+        </div>
         </div>
        
 <!-- Submit Button -->
 <div class="form-group">
             <div class="col-lg-10 col-lg-offset-2">
-                {!! Form::submit('add', ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
+                {!! Form::submit(__('messages.add') , ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
             </div>
         </div>
 
@@ -90,7 +98,7 @@
                 <thead>
                     <tr>
                         <th>@lang('messages.action')</th>
-                        <th>@lang('shipper_name')</th>                       
+                        <th>@lang('shipper.name')</th>                       
                         <th>@lang('shipper.type')</th>
                         <th>@lang('shipper.tel')</th>
                         <th>@lang('shipper.other_details')</th>

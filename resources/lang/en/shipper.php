@@ -12,11 +12,12 @@ return [
     */
 
     'shipper' => 'Shipper',
-    'name' => 'name',
-    'type' => 'type',
-    'tel' => 'tel',
-    'shipper_details' => 'shipper_details',
-    'other_details' => 'other_details',
+    'name' => 'Name',
+    'type' => 'Type',
+    'tel' => 'Tel',
+    'shipper_details' => 'Shipper_details',
+    'other_details' => 'Other_details',
+    'details' => 'Details shipper',
     'list' => 'List Shippers',
     'add' => 'Add Shipper',
     'all_shippers' => 'All shippers',

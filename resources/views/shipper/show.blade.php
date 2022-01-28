@@ -2,7 +2,7 @@
   <div class="modal-content">
     <div class="modal-header">
       <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-      <h2 class="modal-title" id="modalTitle"> @lang('shipper.shipper_details')
+      <h2 class="modal-title" id="modalTitle"> @lang('shipper.details')
       </h2>
    </div>
     <div class="modal-body">

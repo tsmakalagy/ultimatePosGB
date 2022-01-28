@@ -650,15 +650,15 @@ class ProductController extends Controller
                         if (!$only_shipments) {
                             if ($row->is_direct_sale == 0) {
                                 if (auth()->user()->can("sell.update")) {
-                                    $html .= '<li><a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edi") . '</a></li>';
+                                    $html .= '<li><a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             } elseif ($row->type == 'sales_order') {
                                 if (auth()->user()->can("so.update")) {
-                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.ed") . '</a></li>';
+                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             } else {
                                 if (auth()->user()->can("direct_sell.update")) {
-                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.e") . '</a></li>';
+                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             }
 

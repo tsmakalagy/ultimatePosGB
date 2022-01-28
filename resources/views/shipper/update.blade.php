@@ -19,30 +19,30 @@
 <div class="row">
     <div class="col-md-12">
     @component('components.filters', ['title' => __('report.filters')])
- 
+    <div class="container-fluid">
     {!! Form::open(['action' =>['ShipperController@update',$shipper->id]]) !!}
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('shipper_name', __('name') . ':') !!}
+                {!! Form::label('shipper_name', __('shipper.name') . ':') !!}
                 {!! Form::text('shipper_name', $shipper->shipper_name , ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
 
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('type', __('type') . ':') !!}
+                {!! Form::label('type', __('shipper.type') . ':') !!}
                 {!! Form::text('type', $shipper->type, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('tel', __('tel') . ':') !!}
+                {!! Form::label('tel', __('shipper.tel') . ':') !!}
                 {!! Form::text('tel',$shipper->tel , ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
         <div class="col-md-6">
             <div class="form-group">
-                {!! Form::label('other_details', __('other_details') . ':') !!}
+                {!! Form::label('other_details', __('shipper.other_details') . ':') !!}
                 {!! Form::text('other_details', $shipper->other_details, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
         </div>
@@ -50,13 +50,13 @@
 <!-- Submit Button -->
 <div class="form-group">
             <div class="col-lg-10 col-lg-offset-2">
-                {!! Form::submit('update', ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
+                {!! Form::submit(__('messages.update') , ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
             </div>
         </div>
 
         {!! Form::close()  !!}
 
-        
+        /<div> 
     
     @endcomponent
     </div>

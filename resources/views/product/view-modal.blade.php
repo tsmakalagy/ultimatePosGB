@@ -5,6 +5,7 @@
 		      <h4 class="modal-title" id="modalTitle">{{$product->name}}</h4>
 	    </div>
 	    <div class="modal-body">
+			
       		<div class="row">
       			<div class="col-sm-9">
 	      			<div class="col-sm-4 invoice-col">

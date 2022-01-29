@@ -13,11 +13,11 @@
 <section class="content no-print">
     
     @component('components.filters', ['title' => __('report.filters')])
-
+    
   <div class="row">
     <div class="col-md-12">
     
-        
+        <div class="container-fluid">
     {!! Form::open(['route' => 'shipper.store', 'class' => 'form-horizontal']) !!}
         <div class="col-md-3">
             <div class="col-md-12">
@@ -29,8 +29,8 @@
         </div>
 
         <div class="col-md-3">
-            <div class="col-md-12">
             <div class="form-group">
+                <div class="col-md-12">
                 {!! Form::label('type', __('shipper.type') . '*:') !!}
                 {!! Form::text('type', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
             </div>
@@ -56,14 +56,14 @@
 <!-- Submit Button -->
 <div class="form-group">
             <div class="col-lg-10 col-lg-offset-2">
-                {!! Form::submit(__('messages.add') , ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
+                {!! Form::submit(__('messages.add'), ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
             </div>
         </div>
 
         {!! Form::close()  !!}
 
         
-    
+        <div class="container-fluid">
     
     </div>
 </div>
@@ -98,7 +98,7 @@
                 <thead>
                     <tr>
                         <th>@lang('messages.action')</th>
-                        <th>@lang('shipper.name')</th>                       
+                        <th>@lang('shipper_name')</th>                       
                         <th>@lang('shipper.type')</th>
                         <th>@lang('shipper.tel')</th>
                         <th>@lang('shipper.other_details')</th>

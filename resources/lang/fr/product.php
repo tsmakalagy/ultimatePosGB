@@ -1,6 +1,7 @@
 <?php
  return [
 "exc_of_tax" => "Exc. de taxe",
+'image' => 'image',
 "inc_of_tax" => "Inc. de l'impôt",
 "profit_percent" => "x Marge (%)",
 "add_new_product" => "Nouveau produit",

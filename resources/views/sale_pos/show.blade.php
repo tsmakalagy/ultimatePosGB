@@ -6,6 +6,7 @@
     </h4>
 </div>
 <div class="modal-body">
+ 
     <div class="row">
       <div class="col-xs-12">
           <p class="pull-right"><b>@lang('messages.date'):</b> {{ @format_date($sell->transaction_date) }}</p>
@@ -118,7 +119,7 @@
       @if(!empty($sell->shipping_date))
       <br><strong>@lang('lang_v1.shipping_date'): </strong> {{$sell->shipping_date}}
       @endif
-      @if(!empty($sell->delivery_fee))
+      @if(!empty($sell->shipping_charges))
       <br><strong>@lang('lang_v1.shipping_charges'): </strong> <span class="display_currency" data-currency_symbol="true">{{$sell->shipping_charges}}</span>
       @endif
       @if(!empty($shipper->shipper_name))

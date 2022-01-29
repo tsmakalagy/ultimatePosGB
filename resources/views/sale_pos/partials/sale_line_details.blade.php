@@ -16,7 +16,7 @@
         @endif
         <th>{{ __('sale.unit_price') }}</th>
         <th>{{ __('sale.discount') }}</th>
-        <th>{{ __('sale.tax') }}</th>
+        <th ><div style="margin-left:10px;">{{ __('product.image') }}</div></th>
         <th>{{ __('sale.price_inc_tax') }}</th>
         <th>{{ __('sale.subtotal') }}</th>
     </tr>
@@ -75,11 +75,16 @@
             <td>
                 <span class="display_currency" data-currency_symbol="true">{{ $sell_line->get_discount_amount() }}</span> @if($sell_line->line_discount_type == 'percentage') ({{$sell_line->line_discount_amount}}%) @endif
             </td>
-            <td>
-                <span class="display_currency" data-currency_symbol="true">{{ $sell_line->item_tax }}</span> 
-                @if(!empty($taxes[$sell_line->tax_id]))
-                ( {{ $taxes[$sell_line->tax_id]}} )
-                @endif
+            <td style="width:150px;">
+                 <div style="width:150px;">
+                    <div class="thumbnail">
+                      @if(!empty($sell_line->product->image ))
+                        <a href="#" id="pop">
+                        <img id="imageresource" src="{{$sell_line->product->image_url}}" alt="Responsive image" width="124" height="110">            
+                        </a>
+                      @endif
+                    </div>                
+                </div>
             </td>
             <td>
                 <span class="display_currency" data-currency_symbol="true">{{ $sell_line->unit_price_inc_tax }}</span>
@@ -128,3 +133,27 @@
         @endif
     @endforeach
 </table>
+
+<!-- Creates the bootstrap modal where the image will appear -->
+<div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog" >
+      <div class="modal-content" >
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="myModalLabel">{{ $sell_line->product->name }}</h4>
+        </div>
+        <div class="modal-body">
+          <img src="" id="imagepreview" style="width: 400px; height: 364px;" >
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script type="text/javascript">
+  $("#pop").on("click", function() {
+   $('#imagepreview').attr('src', $('#imageresource').attr('src')); // here asign the image to the modal when the user click the enlarge link
+   $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
+});
+    </script>

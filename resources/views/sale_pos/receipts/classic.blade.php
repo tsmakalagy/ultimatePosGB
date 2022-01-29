@@ -289,15 +289,7 @@
                             @if(!empty($line['warranty_description'])) <small> {{$line['warranty_description'] ?? ''}}</small>@endif
                         </td>	
 						<td class="text-right">
-							<div style="width:50px;">
-								<div class="thumbnail">
-								 
-									<a href="#" id="pop">
-									<img id="imageresource" src="" alt="Responsive image" width="124" height="110">            
-									</a>
-								 
-								</div>                
-							</div>
+							
 						</td>
 						<td class="text-right">{{$line['quantity']}} {{$line['units']}} </td>
 						<td class="text-right">{{$line['unit_price_before_discount']}}</td>

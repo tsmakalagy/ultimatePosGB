@@ -1107,7 +1107,7 @@ class TransactionUtil extends Util
 
         $output['date_label'] = $il->date_label;
         if (blank($il->date_time_format)) {
-            $output['invoice_date'] = $this->format_date($transaction->transaction_date, true, $business_details);
+            $output['invoice_date'] = $this->format_date($transaction->transaction_date, false, $business_details);
         } else {
             $output['invoice_date'] = \Carbon::createFromFormat('Y-m-d H:i:s', $transaction->transaction_date)->format($il->date_time_format);
         }

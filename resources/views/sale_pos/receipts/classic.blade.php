@@ -497,17 +497,18 @@
 							{!! $receipt_details->total_label !!}
 						</th>
 						<td class="text-right">
-							{{$receipt_details->total}}
-							@if(!empty($receipt_details->total_in_words))
-								<br>
-								<small>({{$receipt_details->total_in_words}})</small>
-							@endif
+							{{$receipt_details->total}}							
 						</td>
 					</tr>
 				</tbody>
         	</table>
         </div>
     </div>
+    @if(!empty($receipt_details->total_in_words))
+        <div class="col-xs-12">
+            <p>Arrêté la présente facture à la somme de {!! nl2br($receipt_details->total_in_words) !!} Ariary</p>
+        </div>
+    @endif
     <div class="col-xs-12">
     	<p>{!! nl2br($receipt_details->additional_notes) !!}</p>
     </div>

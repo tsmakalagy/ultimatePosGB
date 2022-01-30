@@ -5,7 +5,7 @@ return [
     'shipping_date' => 'Shipping date',
     'shipping_charges' => 'Shipping charges',
     'shipper_name' => 'Shipper',
-    "delivery_fee" => "delivery fee",
+    "delivery_fee" => "Delivery fee",
     'sales_commission_agents' => 'Sales Commission Agents',
     "disable" => 'Disable',
     'logged_in_user' => 'Logged in user',

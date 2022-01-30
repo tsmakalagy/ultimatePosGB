@@ -62,11 +62,11 @@
                         <th>@lang('lang_v1.added_by')</th>
                         <th>@lang('sale.sell_note')</th>
                         <th>@lang('sale.staff_note')</th>
-                        <th>@lang('lang_v1.shipping_status')</th>
-                        <th>@lang('shipper_name')</th>                       
-                        <th>@lang('lang_v1.shipping_charges')</th>
-                        <th>@lang('sale.shipping_details')</th>
-                        <th>@lang('lang_v1.shipping_date')</th>
+                        <th>@lang('shipper.shipping_status')</th>
+                        <th>@lang('shipper.shipper_name')</th>
+                        <th>@lang('shipper.shipping_charges')</th>
+                        <th>@lang('shipper.shipping_details')</th>
+                        <th>@lang('shipper.shipping_date')</th>
                         <th>@lang('sale.status_date_updating')</th>
                         <th>@lang('restaurant.table')</th>
                         <th>@lang('restaurant.service_staff')</th>

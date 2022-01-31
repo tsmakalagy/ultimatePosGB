@@ -293,8 +293,7 @@
 								<div class="thumbnail">
 								 
 									<a href="#" id="pop">
-									<img id="imageresource" src="" alt="Responsive image" width="124" height="110">            
-									</a>
+d									</a>
 								 
 								</div>                
 							</div>

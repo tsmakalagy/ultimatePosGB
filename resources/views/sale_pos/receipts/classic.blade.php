@@ -257,7 +257,7 @@
 			<thead>
 				<tr>
 					<th width="{{$p_width}}%">{{$receipt_details->table_product_label}}</th>
-					<th class="text-right" >image</th>
+					<th class="text-right" >@lang('lang_v1.image')</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_qty_label}}</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_unit_price_label}}</th>
 					@if(!empty($receipt_details->item_discount_label))

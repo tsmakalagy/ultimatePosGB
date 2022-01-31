@@ -13,6 +13,8 @@ return [
 
     'shipper' => 'Shipper',
     'name' => 'Name',
+    'shipper_name' => 'Shipper',
+    'shipping_details' => 'Shipping details',
     'type' => 'Type',
     'tel' => 'Tel',
     'shipper_details' => 'Shipper_details',
@@ -24,5 +26,8 @@ return [
     'all_shippers' => 'All shippers',
     'shipper_added_successfully' => 'Shipper added successfully',
     'delete_success' => 'Shipper deleted successfully',
-    'view_details' => 'View shipper details'
+    'view_details' => 'View shipper details',
+    'shipping_charges' => 'Shipping Charges',
+    'shipping_date' => 'Shipping date',
+    'shipping_status' => 'Shipping Status',
 ];

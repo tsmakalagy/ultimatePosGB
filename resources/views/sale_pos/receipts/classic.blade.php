@@ -257,7 +257,7 @@
 			<thead>
 				<tr>
 					<th width="{{$p_width}}%">{{$receipt_details->table_product_label}}</th>
-					<th class="text-right" >image</th>
+					<th class="text-right" >@lang('lang_v1.image')</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_qty_label}}</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_unit_price_label}}</th>
 					@if(!empty($receipt_details->item_discount_label))
@@ -508,17 +508,18 @@ d									</a>
 							{!! $receipt_details->total_label !!}
 						</th>
 						<td class="text-right">
-							{{$receipt_details->total}}
-							@if(!empty($receipt_details->total_in_words))
-								<br>
-								<small>({{$receipt_details->total_in_words}})</small>
-							@endif
+							{{$receipt_details->total}}							
 						</td>
 					</tr>
 				</tbody>
         	</table>
         </div>
     </div>
+    @if(!empty($receipt_details->total_in_words))
+        <div class="col-xs-12">
+            <p>Arrêté la présente facture à la somme de {!! nl2br($receipt_details->total_in_words) !!} Ariary</p>
+        </div>
+    @endif
     <div class="col-xs-12">
     	<p>{!! nl2br($receipt_details->additional_notes) !!}</p>
     </div>

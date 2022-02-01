@@ -257,7 +257,7 @@
 			<thead>
 				<tr>
 					<th width="{{$p_width}}%">{{$receipt_details->table_product_label}}</th>
-					<th class="text-right" >@lang('lang_v1.image')</th>
+					<th>@lang('lang_v1.image')</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_qty_label}}</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_unit_price_label}}</th>
 					@if(!empty($receipt_details->item_discount_label))
@@ -289,13 +289,10 @@
                             @if(!empty($line['warranty_description'])) <small> {{$line['warranty_description'] ?? ''}}</small>@endif
                         </td>	
 						<td class="text-right">
-							<div style="width:50px;">
-								<div class="thumbnail">
-								 
-									<a href="#" id="pop">
-d									</a>
-								 
-								</div>                
+							<div >
+								@if(!empty($line['image']))
+								<img src="{{$line['image']}}" alt="Image" width="80" style="float: right; margin-left: 15px;">
+							@endif            
 							</div>
 						</td>
 						<td class="text-right">{{$line['quantity']}} {{$line['units']}} </td>

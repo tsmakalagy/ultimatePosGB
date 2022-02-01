@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddStatusDateUpdatingColumnsToTransactionsTable extends Migration
+class UpdateShippersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddStatusDateUpdatingColumnsToTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            $table->dateTime('status_date_updating')->after('shipping_date')->nullable();
+        Schema::table('shippers', function(Blueprint $table) {
+            $table->renameColumn('name', 'shipper_name');
         });
     }
 
@@ -25,8 +25,8 @@ class AddStatusDateUpdatingColumnsToTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::table('transactions', function (Blueprint $table) {
-            //
+        Schema::table('shippers', function(Blueprint $table) {
+            $table->renameColumn('shipper_name', 'name');
         });
     }
 }

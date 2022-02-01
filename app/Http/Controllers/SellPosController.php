@@ -2591,9 +2591,11 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $receipt_contents = $this->transactionUtil->getPdfContentsForGivenTransaction($business_id, $id);
-        $receipt_details = $receipt_contents['receipt_details'];
+         dd($receipt_contents);
+         $receipt_details = $receipt_contents['receipt_details'];
         $location_details = $receipt_contents['location_details'];
         $is_email_attachment = false;
+       
         
         $blade_file = 'download_pdf';
         if (!empty($receipt_details->is_export)) {

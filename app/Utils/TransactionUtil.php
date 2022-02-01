@@ -1107,7 +1107,7 @@ class TransactionUtil extends Util
 
         $output['date_label'] = $il->date_label;
         if (blank($il->date_time_format)) {
-            $output['invoice_date'] = $this->format_date($transaction->transaction_date, false, $business_details);
+            $output['invoice_date'] = $this->format_date($transaction->transaction_date, true, $business_details);
         } else {
             $output['invoice_date'] = \Carbon::createFromFormat('Y-m-d H:i:s', $transaction->transaction_date)->format($il->date_time_format);
         }
@@ -1750,6 +1750,8 @@ class TransactionUtil extends Util
             $line_array = [
                 //Field for 1st column
                 'name' => $product->name,
+                'image' => $product->image_url,
+              
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 'product_variation' => (empty($product_variation->name) || $product_variation->name == 'DUMMY') ? '' : $product_variation->name,
                 //Field for 2nd column
@@ -1832,15 +1834,7 @@ class TransactionUtil extends Util
             if ($il->show_sku == 1) {
                 $line_array['sub_sku'] = !empty($variation->sub_sku) ? $variation->sub_sku : '';
             }
-            if ($il->show_image == 1) {
-                $media = $variation->media;
-                if (count($media)) {
-                    $first_img = $media->first();
-                    $line_array['image'] = !empty($first_img->display_url) ? $first_img->display_url : asset('/img/default.png');
-                } else {
-                    $line_array['image'] = $product->image_url;
-                }
-            }
+           
             if ($il->show_cat_code == 1) {
                 $line_array['cat_code'] = !empty($cat->short_code) ? $cat->short_code : '';
             }
@@ -1883,6 +1877,7 @@ class TransactionUtil extends Util
                     $modifier_line_array = [
                         //Field for 1st column
                         'name' => $product->name,
+                      
                         'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                         //Field for 2nd column
                         'quantity' => $this->num_f($modifier_line->quantity, false, $business_details),
@@ -1964,6 +1959,7 @@ class TransactionUtil extends Util
             $line_array = [
                 //Field for 1st column
                 'name' => $product->name,
+                'image' => $product->image_url,
                 'variation' => (empty($variation->name) || $variation->name == 'DUMMY') ? '' : $variation->name,
                 //Field for 2nd column
                 'quantity' => $this->num_f($line->quantity_returned, false, $business_details, true),

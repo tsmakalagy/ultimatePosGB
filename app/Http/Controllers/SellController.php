@@ -773,8 +773,8 @@ class SellController extends Controller
             'shippers.id',
                 '=',
             'transactions.shipper_id'
-    )->where('transactions.id', $id)->firstorFail();
-        
+    )->where('transactions.id', $id)->first();
+       
         $activities = Activity::forSubject($sell)
            ->with(['causer', 'subject'])
            ->latest()

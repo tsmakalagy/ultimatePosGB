@@ -61,10 +61,6 @@
         </div>
 
         {!! Form::close()  !!}
-
-        
-        <div class="container-fluid">
-    
     </div>
 </div>
 
@@ -98,7 +94,7 @@
                 <thead>
                     <tr>
                         <th>@lang('messages.action')</th>
-                        <th>@lang('shipper_name')</th>                       
+                        <th>@lang('shipper.name')</th>                       
                         <th>@lang('shipper.type')</th>
                         <th>@lang('shipper.tel')</th>
                         <th>@lang('shipper.other_details')</th>

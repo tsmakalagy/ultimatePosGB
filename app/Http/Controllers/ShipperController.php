@@ -1051,10 +1051,9 @@ class ShipperController extends Controller
                 return $total_remaining;})
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
                 ->editColumn('total_items', '{{@format_quantity($total_items)}}')
-                ->filterColumn('conatct_name', function ($query, $keyword) {
+                ->filterColumn('name', function ($query, $keyword) {
                     $query->where( function($q) use($keyword) {
-                        $q->where('contacts.name', 'like', "%{$keyword}%")
-                        ->orWhere('contacts.supplier_business_name', 'like', "%{$keyword}%");
+                        $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
                     });
                 })
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {

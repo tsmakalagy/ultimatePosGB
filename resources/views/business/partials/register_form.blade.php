@@ -98,12 +98,12 @@
 
 <div class="col-md-6">
     <div class="form-group">
-    {!! Form::label('state',__('business.state') . ':*') !!}
+    {!! Form::label('state',__('business.state') . ':') !!}
     <div class="input-group">
         <span class="input-group-addon">
             <i class="fa fa-map-marker"></i>
         </span>
-        {!! Form::text('state', null, ['class' => 'form-control','placeholder' => __('business.state'), 'required']); !!}
+        {!! Form::text('state', null, ['class' => 'form-control','placeholder' => __('business.state')]); !!}
     </div>
     </div>
 </div>
@@ -121,12 +121,12 @@
 </div>
 <div class="col-md-6">
     <div class="form-group">
-    {!! Form::label('zip_code', __('business.zip_code') . ':*') !!}
+    {!! Form::label('zip_code', __('business.zip_code') . ':') !!}
     <div class="input-group">
         <span class="input-group-addon">
             <i class="fa fa-map-marker"></i>
         </span>
-        {!! Form::text('zip_code', null, ['class' => 'form-control','placeholder' => __('business.zip_code_placeholder'), 'required']); !!}
+        {!! Form::text('zip_code', null, ['class' => 'form-control','placeholder' => __('business.zip_code_placeholder')]); !!}
     </div>
     </div>
 </div>

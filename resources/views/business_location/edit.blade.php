@@ -39,15 +39,15 @@
         </div>
         <div class="col-sm-6">
           <div class="form-group">
-            {!! Form::label('zip_code', __( 'business.zip_code' ) . ':*') !!}
-              {!! Form::text('zip_code', $location->zip_code, ['class' => 'form-control', 'placeholder' => __( 'business.zip_code'), 'required' ]); !!}
+            {!! Form::label('zip_code', __( 'business.zip_code' ) . ':') !!}
+              {!! Form::text('zip_code', $location->zip_code, ['class' => 'form-control', 'placeholder' => __( 'business.zip_code')]); !!}
           </div>
         </div>
         <div class="clearfix"></div>
         <div class="col-sm-6">
           <div class="form-group">
-            {!! Form::label('state', __( 'business.state' ) . ':*') !!}
-              {!! Form::text('state', $location->state, ['class' => 'form-control', 'placeholder' => __( 'business.state'), 'required' ]); !!}
+            {!! Form::label('state', __( 'business.state' ) . ':') !!}
+              {!! Form::text('state', $location->state, ['class' => 'form-control', 'placeholder' => __( 'business.state') ]); !!}
           </div>
         </div>
         <div class="col-sm-6">

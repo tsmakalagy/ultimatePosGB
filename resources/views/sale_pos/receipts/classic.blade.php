@@ -257,7 +257,7 @@
 			<thead>
 				<tr>
 					<th width="{{$p_width}}%">{{$receipt_details->table_product_label}}</th>
-					<th>@lang('lang_v1.image')</th>
+					<th width="90px" class="text-center"><div style="margin-left:20px;"> @lang('lang_v1.image')</div></th>
 					<th class="text-right" width="15%">{{$receipt_details->table_qty_label}}</th>
 					<th class="text-right" width="15%">{{$receipt_details->table_unit_price_label}}</th>
 					@if(!empty($receipt_details->item_discount_label))
@@ -269,10 +269,7 @@
 			<tbody>
 				@forelse($receipt_details->lines as $line)
 					<tr>
-						<td>
-							@if(!empty($line['image']))
-								<img src="{{$line['image']}}" alt="Image" width="50" style="float: left; margin-right: 8px;">
-							@endif
+						<td>							
                             {{$line['name']}} {{$line['product_variation']}} {{$line['variation']}} 
                             @if(!empty($line['sub_sku'])), {{$line['sub_sku']}} @endif @if(!empty($line['brand'])), {{$line['brand']}} @endif @if(!empty($line['cat_code'])), {{$line['cat_code']}}@endif
                             @if(!empty($line['product_custom_fields'])), {{$line['product_custom_fields']}} @endif
@@ -289,12 +286,12 @@
                             @if(!empty($line['warranty_description'])) <small> {{$line['warranty_description'] ?? ''}}</small>@endif
                         </td>	
 						<td class="text-right">
-							<div >
-								@if(!empty($line['image']))
-								<img src="{{$line['image']}}" alt="Image" width="80" style="float: right; margin-left: 15px;">
-							@endif            
-							</div>
-						</td>
+							<div class="text-right" style="margin-left:10px;">							  
+								 @if(!empty($line['image'] ))								  
+								   <img id="imageresource" src="{{$line['image']}}" alt="Responsive image" width="80px"  style="margin-left:10px;">            								 
+								 @endif							               
+						   </div>
+					   </td>
 						<td class="text-right">{{$line['quantity']}} {{$line['units']}} </td>
 						<td class="text-right">{{$line['unit_price_before_discount']}}</td>
 						@if(!empty($receipt_details->item_discount_label))

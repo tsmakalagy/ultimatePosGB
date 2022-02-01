@@ -530,6 +530,12 @@ class SellController extends Controller
                         ->orWhere('contacts.supplier_business_name', 'like', "%{$keyword}%");
                     });
                 })
+                ->filterColumn('shipper_name', function ($query, $keyword) {
+                    $query->where( function($q) use($keyword) {
+                        $q->where('shippers.shipper_name', 'like', "%{$keyword}%")
+                        ;
+                    });
+                })
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
                     $methods = array_unique($row->payment_lines->pluck('method')->toArray());
                     $count = count($methods);

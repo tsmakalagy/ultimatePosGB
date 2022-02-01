@@ -665,7 +665,7 @@
 			<div class="col-md-4">
 				
 				<div class="form-group">
-		            {!! Form::label('shipper_id', __('shippers')) !!}
+		            {!! Form::label('shipper_id', __('shipper.shipper')) !!}
 					
 		            {!! Form::select('shipper_id',$shipper, null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
 		        

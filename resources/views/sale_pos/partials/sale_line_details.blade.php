@@ -16,7 +16,7 @@
         @endif
         <th>{{ __('sale.unit_price') }}</th>
         <th>{{ __('sale.discount') }}</th>
-        <th ><div style="margin-left:10px;">{{ __('product.image') }}</div></th>
+        <th ><div style="margin-left:10px;">{{ __('lang_v1.image') }}</div></th>
         <th>{{ __('sale.price_inc_tax') }}</th>
         <th>{{ __('sale.subtotal') }}</th>
     </tr>

@@ -12,7 +12,7 @@ return [
     */
 
     'exc_of_tax' => 'Exc. tax',
-    'image' => 'image',
+    'image' => 'Image',
     'inc_of_tax' => 'Inc. tax',
     'profit_percent' => 'x Margin(%)',
     'add_new_product' => 'Add new product',

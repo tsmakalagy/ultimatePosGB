@@ -40,7 +40,7 @@
         @php
             $custom_labels = json_decode(session('business.custom_labels'), true);
          @endphp
-            <table class="table table-bordered table-striped ajax_view" id="sell_table">
+            <table class="table table-bordered table-striped ajax_view" id="sell_table" >
                 <thead>
                     <tr>
                         <th>@lang('messages.action')</th>

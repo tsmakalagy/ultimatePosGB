@@ -90,10 +90,11 @@
         @php
             $custom_labels = json_decode(session('business.custom_labels'), true);
          @endphp
-            <table class="table table-bordered table-striped ajax_view" id="sell_table">
-                <thead>
-                    <tr>
-                        <th>@lang('messages.action')</th>
+         <div class="container-fluid">
+            <table class="table table-bordered table-striped ajax_view " id="sell_table" style="min-width: 100% " >
+                <thead class="text-center">
+                    <tr >
+                        <th >@lang('messages.action')</th>
                         <th>@lang('shipper.name')</th>                       
                         <th>@lang('shipper.type')</th>
                         <th>@lang('shipper.tel')</th>
@@ -103,6 +104,7 @@
                 <tbody></tbody>
    
             </table>
+         </div>
         @endif
     @endcomponent
 </section>

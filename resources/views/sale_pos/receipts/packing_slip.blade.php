@@ -205,6 +205,15 @@
 		</table>
 	</div>
 </div>
+<div>
+	@foreach($receipt_details->lines as $line)
+	@if(!empty($line['image'] ))								  
+	<img id="imageresource" src="{{$line['image']}}" alt="Responsive image" width="200px"  style="margin-left:5px;">            								 
+  @endif
+  @endforeach	
+</div>
+<br>
+<br>
 
 <div class="row invoice-info color-555" style="page-break-inside: avoid !important">
 	<div class="col-md-6 invoice-col width-50">
@@ -229,6 +238,7 @@
 		</div>
 	</div>
 @endif
+
 
 			</td>
 		</tr>

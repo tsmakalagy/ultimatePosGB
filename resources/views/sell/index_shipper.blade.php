@@ -144,6 +144,7 @@ $(document).ready( function(){
                 d.created_by = $('#created_by').val();
                 d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
                 d.service_staffs = $('#service_staffs').val();
+                d.shippers = $('#shippers').val();
                 
                 // shipper_id from the view
                 d.shipper_id = shipper_id;
@@ -224,7 +225,7 @@ $(document).ready( function(){
         }
     });
 
-    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status',  function() {
+    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #shippers',  function() {
         sell_table.ajax.reload();
     });
     @if($is_woocommerce)

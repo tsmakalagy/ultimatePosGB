@@ -67,6 +67,16 @@
         </div>
     </div>
 @endif
+@if(!empty($shippers))
+    <div class="col-md-3">
+        <div class="form-group">
+            {!! Form::label('shippers', __('lang_v1.shipper_name')) !!}
+            {!! Form::select('shippers',$shippers,null,  ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
+        </div>	
+    </div>
+    @else
+    <p>jbkldj</p>
+@endif
 @if(empty($only) || in_array('only_subscriptions', $only))
 <div class="col-md-3">
     <div class="form-group">

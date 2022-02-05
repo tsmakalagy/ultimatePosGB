@@ -1651,8 +1651,8 @@ class ShipperController extends Controller
             if (!empty(request()->start_date) && !empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end = request()->end_date;
-                $sells->whereDate('transactions.transaction_date', '>=', $start)
-                    ->whereDate('transactions.transaction_date', '<=', $end);
+                $sells->whereDate('transactions.shipping_date', '>=', $start)
+                    ->whereDate('transactions.shipping_date', '<=', $end);
             }
 
             //Check is_direct sell

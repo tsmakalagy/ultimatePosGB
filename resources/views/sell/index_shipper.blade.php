@@ -3,45 +3,45 @@
 
 @section('content')
 
-<!-- Content Header (Page header) -->
-<section class="content-header no-print">
-    <h1>@lang( 'sale.sells')
-    </h1>
-</section>
+    <!-- Content Header (Page header) -->
+    <section class="content-header no-print">
+        <h1>@lang( 'sale.sells')
+        </h1>
+    </section>
 
-<!-- Main content -->
-<section class="content no-print">
-    
-    @component('components.filters', ['title' => __('report.filters')])
-        @include('sell.partials.sell_list_filters')
-        @if($is_woocommerce)
-            <div class="col-md-3">
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                          {!! Form::checkbox('only_woocommerce_sells', 1, false, 
-                          [ 'class' => 'input-icheck', 'id' => 'synced_from_woocommerce']); !!} {{ __('lang_v1.synced_from_woocommerce') }}
-                        </label>
+    <!-- Main content -->
+    <section class="content no-print">
+
+        @component('components.filters', ['title' => __('report.filters')])
+            @include('sell.partials.sell_list_filters')
+            @if($is_woocommerce)
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="checkbox">
+                            <label>
+                                {!! Form::checkbox('only_woocommerce_sells', 1, false,
+                                [ 'class' => 'input-icheck', 'id' => 'synced_from_woocommerce']); !!} {{ __('lang_v1.synced_from_woocommerce') }}
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
-        @endif
-    @endcomponent
-    @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.all_sales')])
-        @can('direct_sell.access')
-            @slot('tool')
-                <div class="box-tools">
-                    <a class="btn btn-block btn-primary" href="{{action('SellController@create')}}">
-                    <i class="fa fa-plus"></i> @lang('messages.add')</a>
-                </div>
-            @endslot
-        @endcan
-        @if(auth()->user()->can('direct_sell.view') ||  auth()->user()->can('view_own_sell_only') ||  auth()->user()->can('view_commission_agent_sell'))
-        @php
-            $custom_labels = json_decode(session('business.custom_labels'), true);
-         @endphp
-            <table class="table table-bordered table-striped ajax_view" id="sell_table">
-                <thead>
+            @endif
+        @endcomponent
+        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.all_sales')])
+            @can('direct_sell.access')
+                @slot('tool')
+                    <div class="box-tools">
+                        <a class="btn btn-block btn-primary" href="{{action('SellController@create')}}">
+                            <i class="fa fa-plus"></i> @lang('messages.add')</a>
+                    </div>
+                @endslot
+            @endcan
+            @if(auth()->user()->can('direct_sell.view') ||  auth()->user()->can('view_own_sell_only') ||  auth()->user()->can('view_commission_agent_sell'))
+                @php
+                    $custom_labels = json_decode(session('business.custom_labels'), true);
+                @endphp
+                <table class="table table-bordered table-striped ajax_view" id="sell_table">
+                    <thead>
                     <tr>
                         <th>@lang('messages.action')</th>
                         <th>@lang('messages.date')</th>
@@ -66,14 +66,14 @@
                         <th>@lang('lang_v1.shipping_date')</th>
                         <th>@lang('lang_v1.shipping_charges')</th>
                         <th>@lang('sale.shipping_details')</th>
-                        
+
                         <th>@lang('restaurant.table')</th>
                         <th>@lang('restaurant.service_staff')</th>
-                        
+
                     </tr>
-                </thead>
-                <tbody></tbody>
-                <tfoot>
+                    </thead>
+                    <tbody></tbody>
+                    <tfoot>
                     <tr class="bg-gray font-17 footer-total text-center">
                         <td colspan="6"><strong>@lang('sale.total'):</strong></td>
                         <td class="footer_payment_status_count"></td>
@@ -86,158 +86,168 @@
                         <td class="service_type_count"></td>
                         <td colspan="7"></td>
                     </tr>
-                </tfoot>
-            </table>
-        @endif
-    @endcomponent
-</section>
-<!-- /.content -->
-<div class="modal fade payment_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
-</div>
+                    </tfoot>
+                </table>
+            @endif
+        @endcomponent
+    </section>
+    <!-- /.content -->
+    <div class="modal fade payment_modal" tabindex="-1" role="dialog"
+         aria-labelledby="gridSystemModalLabel">
+    </div>
 
-<div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
-</div>
+    <div class="modal fade edit_payment_modal" tabindex="-1" role="dialog"
+         aria-labelledby="gridSystemModalLabel">
+    </div>
 
-<!-- This will be printed -->
-<!-- <section class="invoice print_section" id="receipt_section">
-</section> -->
+    <!-- This will be printed -->
+    <!-- <section class="invoice print_section" id="receipt_section">
+    </section> -->
 
 @stop
 
 @section('javascript')
-<script type="text/javascript">
-$(document).ready( function(){
-    var shipper_id = {{$shipper_id}};
-    //Date range as a button
-    $('#sell_list_filter_date_range').daterangepicker(
-        dateRangeSettings,
-        function (start, end) {
-            $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
-            sell_table.ajax.reload();
-        }
-    );
-    $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
-        $('#sell_list_filter_date_range').val('');
-        sell_table.ajax.reload();
-    });
-
-    sell_table = $('#sell_table').DataTable({
-        processing: true,
-        serverSide: true,
-        aaSorting: [[1, 'desc']],
-        "ajax": {
-            "url": "/get-shipper-sales",
-            "data": function ( d ) {
-                if($('#sell_list_filter_date_range').val()) {
-                    var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                    var end = $('#sell_list_filter_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                    d.start_date = start;
-                    d.end_date = end;
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var shipper_id = {{$shipper_id}};
+            //Date range as a button
+            $('#sell_list_filter_date_range').daterangepicker(
+                dateRangeSettings,
+                function (start, end) {
+                    $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+                    sell_table.ajax.reload();
                 }
-                d.is_direct_sale = 1;
+            );
+            $('#sell_list_filter_date_range').on('cancel.daterangepicker', function (ev, picker) {
+                $('#sell_list_filter_date_range').val('');
+                sell_table.ajax.reload();
+            });
 
-                d.location_id = $('#sell_list_filter_location_id').val();
-                d.customer_id = $('#sell_list_filter_customer_id').val();
-                d.payment_status = $('#sell_list_filter_payment_status').val();
-                d.created_by = $('#created_by').val();
-                d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
-                d.service_staffs = $('#service_staffs').val();
-                d.shippers = $('#shippers').val();
-                
-                // shipper_id from the view
-                d.shipper_id = shipper_id;
+            sell_table = $('#sell_table').DataTable({
+                processing: true,
+                serverSide: true,
+                aaSorting: [[1, 'desc']],
+                "ajax": {
+                    "url": "/get-shipper-sales",
+                    // "url": "/shipper/sales/",
+                    "data": function (d) {
+                        if ($('#sell_list_filter_date_range').val()) {
+                            var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                            var end = $('#sell_list_filter_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                            d.start_date = start;
+                            d.end_date = end;
+                        }
+                        d.is_direct_sale = 1;
 
-                if($('#shipping_status').length) {
-                    d.shipping_status = $('#shipping_status').val();
-                }
-                
-                @if($is_woocommerce)
-                    if($('#synced_from_woocommerce').is(':checked')) {
-                        d.only_woocommerce_sells = 1;
+                        d.location_id = $('#sell_list_filter_location_id').val();
+                        d.customer_id = $('#sell_list_filter_customer_id').val();
+                        d.payment_status = $('#sell_list_filter_payment_status').val();
+                        d.created_by = $('#created_by').val();
+                        d.sales_cmsn_agnt = $('#sales_cmsn_agnt').val();
+                        d.service_staffs = $('#service_staffs').val();
+                        d.shippers = $('#shippers').val();
+
+                        // shipper_id from the view
+                        d.shipper_id = shipper_id;
+
+                        if ($('#shipping_status').length) {
+                            d.shipping_status = $('#shipping_status').val();
+                        }
+
+                        @if($is_woocommerce)
+                        if ($('#synced_from_woocommerce').is(':checked')) {
+                            d.only_woocommerce_sells = 1;
+                        }
+                        @endif
+
+                        if ($('#only_subscriptions').is(':checked')) {
+                            d.only_subscriptions = 1;
+                        }
+
+                        d = __datatable_ajax_callback(d);
                     }
-                @endif
+                },
+                scrollY: "75vh",
+                scrollX: true,
+                scrollCollapse: true,
+                columns: [
+                    {data: 'action', name: 'action', orderable: false, "searchable": false},
+                    {data: 'transaction_date', name: 'transaction_date'},
+                    {data: 'invoice_no', name: 'invoice_no'},
+                    {data: 'conatct_name', name: 'conatct_name'},
+                    {data: 'mobile', name: 'contacts.mobile'},
+                    {data: 'business_location', name: 'bl.name'},
+                    {data: 'payment_status', name: 'payment_status'},
+                    {data: 'payment_methods', orderable: false, "searchable": false},
+                    {data: 'final_total', name: 'final_total'},
+                    {data: 'total_paid', name: 'total_paid', "searchable": false},
+                    {data: 'total_remaining', name: 'total_remaining'},
+                    {data: 'return_due', orderable: false, "searchable": false},
+                    {data: 'shipping_status', name: 'shipping_status'},
+                    {data: 'total_items', name: 'total_items', "searchable": false},
+                    {
+                        data: 'types_of_service_name',
+                        name: 'tos.name',
+                        @if(empty($is_types_service_enabled)) visible: false @endif},
+                    {
+                        data: 'service_custom_field_1',
+                        name: 'service_custom_field_1',
+                        @if(empty($is_types_service_enabled)) visible: false @endif},
+                    {data: 'added_by', name: 'u.first_name'},
+                    {data: 'additional_notes', name: 'additional_notes'},
+                    {data: 'staff_note', name: 'staff_note'},
+                    {data: 'shipper_name', name: 'shipper_name'},
+                    {data: 'shipping_date', name: 'shipping_date'},
+                    {data: 'shipping_charges', name: 'shipping_charges'},
+                    {data: 'shipping_details', name: 'shipping_details'},
+                    {data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
+                    {
+                        data: 'waiter',
+                        name: 'ss.first_name',
+                        @if(empty($is_service_staff_enabled)) visible: false @endif },
+                ],
+                "fnDrawCallback": function (oSettings) {
+                    __currency_convert_recursively($('#sell_table'));
+                },
+                "footerCallback": function (row, data, start, end, display) {
+                    var footer_sale_total = 0;
+                    var footer_total_paid = 0;
+                    var footer_total_remaining = 0;
+                    var footer_total_sell_return_due = 0;
+                    for (var r in data) {
+                        footer_sale_total += $(data[r].final_total).data('orig-value') ? parseFloat($(data[r].final_total).data('orig-value')) : 0;
+                        footer_total_paid += $(data[r].total_paid).data('orig-value') ? parseFloat($(data[r].total_paid).data('orig-value')) : 0;
+                        footer_total_remaining += $(data[r].total_remaining).data('orig-value') ? parseFloat($(data[r].total_remaining).data('orig-value')) : 0;
+                        footer_total_sell_return_due += $(data[r].return_due).find('.sell_return_due').data('orig-value') ? parseFloat($(data[r].return_due).find('.sell_return_due').data('orig-value')) : 0;
+                    }
 
-                if($('#only_subscriptions').is(':checked')) {
-                    d.only_subscriptions = 1;
+                    $('.footer_total_sell_return_due').html(__currency_trans_from_en(footer_total_sell_return_due));
+                    $('.footer_total_remaining').html(__currency_trans_from_en(footer_total_remaining));
+                    $('.footer_total_paid').html(__currency_trans_from_en(footer_total_paid));
+                    $('.footer_sale_total').html(__currency_trans_from_en(footer_sale_total));
+
+                    $('.footer_payment_status_count').html(__count_status(data, 'payment_status'));
+                    $('.service_type_count').html(__count_status(data, 'types_of_service_name'));
+                    $('.payment_method_count').html(__count_status(data, 'payment_methods'));
+                },
+                createdRow: function (row, data, dataIndex) {
+                    $(row).find('td:eq(6)').attr('class', 'clickable_td');
                 }
+            });
 
-                d = __datatable_ajax_callback(d);
-            }
-        },
-        scrollY:        "75vh",
-        scrollX:        true,
-        scrollCollapse: true,
-        columns: [
-            { data: 'action', name: 'action', orderable: false, "searchable": false},
-            { data: 'transaction_date', name: 'transaction_date'  },
-            { data: 'invoice_no', name: 'invoice_no'},
-            { data: 'conatct_name', name: 'conatct_name'},
-            { data: 'mobile', name: 'contacts.mobile'},
-            { data: 'business_location', name: 'bl.name'},
-            { data: 'payment_status', name: 'payment_status'},
-            { data: 'payment_methods', orderable: false, "searchable": false},
-            { data: 'final_total', name: 'final_total'},
-            { data: 'total_paid', name: 'total_paid', "searchable": false},
-            { data: 'total_remaining', name: 'total_remaining'},
-            { data: 'return_due', orderable: false, "searchable": false},
-            { data: 'shipping_status', name: 'shipping_status'},
-            { data: 'total_items', name: 'total_items', "searchable": false},
-            { data: 'types_of_service_name', name: 'tos.name', @if(empty($is_types_service_enabled)) visible: false @endif},
-            { data: 'service_custom_field_1', name: 'service_custom_field_1', @if(empty($is_types_service_enabled)) visible: false @endif},
-            { data: 'added_by', name: 'u.first_name'},
-            { data: 'additional_notes', name: 'additional_notes'},
-            { data: 'staff_note', name: 'staff_note'},
-            { data: 'shipper_name', name: 'shipper_name'},
-            { data: 'shipping_date', name: 'shipping_date'},
-            { data: 'shipping_charges', name: 'shipping_charges'},
-            { data: 'shipping_details', name: 'shipping_details'},
-            { data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
-            { data: 'waiter', name: 'ss.first_name', @if(empty($is_service_staff_enabled)) visible: false @endif },
-        ],
-        "fnDrawCallback": function (oSettings) {
-            __currency_convert_recursively($('#sell_table'));
-        },
-        "footerCallback": function ( row, data, start, end, display ) {
-            var footer_sale_total = 0;
-            var footer_total_paid = 0;
-            var footer_total_remaining = 0;
-            var footer_total_sell_return_due = 0;
-            for (var r in data){
-                footer_sale_total += $(data[r].final_total).data('orig-value') ? parseFloat($(data[r].final_total).data('orig-value')) : 0;
-                footer_total_paid += $(data[r].total_paid).data('orig-value') ? parseFloat($(data[r].total_paid).data('orig-value')) : 0;
-                footer_total_remaining += $(data[r].total_remaining).data('orig-value') ? parseFloat($(data[r].total_remaining).data('orig-value')) : 0;
-                footer_total_sell_return_due += $(data[r].return_due).find('.sell_return_due').data('orig-value') ? parseFloat($(data[r].return_due).find('.sell_return_due').data('orig-value')) : 0;
-            }
+            $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #shippers', function () {
+                sell_table.ajax.reload();
+            });
+            @if($is_woocommerce)
+            $('#synced_from_woocommerce').on('ifChanged', function (event) {
+                sell_table.ajax.reload();
+            });
+            @endif
 
-            $('.footer_total_sell_return_due').html(__currency_trans_from_en(footer_total_sell_return_due));
-            $('.footer_total_remaining').html(__currency_trans_from_en(footer_total_remaining));
-            $('.footer_total_paid').html(__currency_trans_from_en(footer_total_paid));
-            $('.footer_sale_total').html(__currency_trans_from_en(footer_sale_total));
-
-            $('.footer_payment_status_count').html(__count_status(data, 'payment_status'));
-            $('.service_type_count').html(__count_status(data, 'types_of_service_name'));
-            $('.payment_method_count').html(__count_status(data, 'payment_methods'));
-        },
-        createdRow: function( row, data, dataIndex ) {
-            $( row ).find('td:eq(6)').attr('class', 'clickable_td');
-        }
-    });
-
-    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status, #shippers',  function() {
-        sell_table.ajax.reload();
-    });
-    @if($is_woocommerce)
-        $('#synced_from_woocommerce').on('ifChanged', function(event){
-            sell_table.ajax.reload();
+            $('#only_subscriptions').on('ifChanged', function (event) {
+                sell_table.ajax.reload();
+            });
         });
-    @endif
-
-    $('#only_subscriptions').on('ifChanged', function(event){
-        sell_table.ajax.reload();
-    });
-});
-</script>
-<script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+    </script>
+    <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 @endsection

@@ -31,4 +31,5 @@ return [
     'shipping_charges' => 'Frais de livraison',
     'shipping_date' => 'Date de livraison',
     'shipping_status' => 'État de livraison',
+    'edit_shipper' => 'Modifier le livreur',
 ];

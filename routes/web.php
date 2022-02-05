@@ -389,6 +389,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('shipper/show/{id}', 'ShipperController@show')->name('shipper.show');
     //route for the shipper sales
     Route::get('get-shipper-sales','ShipperController@shipperSell');
+    Route::get('shipper/sales/{id}','ShipperController@shipperSales');
 
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');

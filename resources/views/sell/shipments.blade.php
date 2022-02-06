@@ -51,11 +51,17 @@
                 {!! Form::select('shipping_status', $shipping_statuses, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all') ]); !!}
             </div>
         </div>
-        @if(!empty($service_staffs))
+        <div class="col-md-3">
+            <div class="form-group">
+                {!! Form::label('shipment_list_filter_date_range', __('shipper.shipping_date') . ':') !!}
+                {!! Form::text('shipment_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']); !!}
+            </div>
+        </div>
+        @if(!empty($shippers))
             <div class="col-md-3">
                 <div class="form-group">
-                    {!! Form::label('service_staffs', __('restaurant.service_staff') . ':') !!}
-                    {!! Form::select('service_staffs', $service_staffs, null, ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
+                    {!! Form::label('shippers', __('lang_v1.shipper_name') . ':') !!}
+                    {!! Form::select('shippers',$shippers, null,  ['class' => 'form-control select2', 'style' => 'width:100%', 'placeholder' => __('lang_v1.all')]); !!}
                 </div>
             </div>
         @endif
@@ -81,7 +87,6 @@
                             <th>@lang('lang_v1.shipper_name')</th>
                             <th>@lang('lang_v1.shipping_charges')</th>
                             <th>@lang('lang_v1.shipping_date')</th>
-                            <th>@lang('sale.status_date_updating')</th>
                             @if(!empty($custom_labels['shipping']['custom_field_1']))
                                 <th>
                                     {{$custom_labels['shipping']['custom_field_1']}}
@@ -148,6 +153,19 @@ $(document).ready( function(){
         sell_table.ajax.reload();
     });
 
+    //Shipment Date range
+    $('#shipment_list_filter_date_range').daterangepicker(
+        dateRangeSettings,
+        function (start, end) {
+            $('#shipment_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+            sell_table.ajax.reload();
+        }
+    );
+    $('#shipment_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
+        $('#shipment_list_filter_date_range').val('');
+        sell_table.ajax.reload();
+    });
+
     sell_table = $('#sell_table').DataTable({
         processing: true,
         serverSide: true,
@@ -163,6 +181,12 @@ $(document).ready( function(){
                     var end = $('#sell_list_filter_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
                     d.start_date = start;
                     d.end_date = end;
+                }
+                if($('#shipment_list_filter_date_range').val()) {
+                    var start = $('#shipment_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
+                    var end = $('#shipment_list_filter_date_range').data('daterangepicker').endDate.format('YYYY-MM-DD');
+                    d.shipment_start_date = start;
+                    d.shipment_end_date = end;
                 }
                 if($('#sell_list_filter_location_id').length) {
                     d.location_id = $('#sell_list_filter_location_id').val();
@@ -180,6 +204,8 @@ $(document).ready( function(){
                 }
                 d.only_shipments = true;
                 d.shipping_status = $('#shipping_status').val();
+
+                d.shippers = $('#shippers').val();
             }
         },
         columns: [
@@ -193,7 +219,6 @@ $(document).ready( function(){
             { data: 'shipper_name', name: 'shipper_name'},
             { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_date', name: 'shipping_date'},
-            { data: 'status_date_updating', name: 'status_date_updating'},
             @if(!empty($custom_labels['shipping']['custom_field_1']))
                 { data: 'shipping_custom_field_1', name: 'shipping_custom_field_1'},
             @endif
@@ -220,7 +245,7 @@ $(document).ready( function(){
         }
     });
 
-    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #shipping_status, #service_staffs',  function() {
+    $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #shipping_status, #service_staffs, #shippers',  function() {
         sell_table.ajax.reload();
     });
 });

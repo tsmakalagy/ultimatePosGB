@@ -67,7 +67,6 @@
                         <th>@lang('shipper.shipping_charges')</th>
                         <th>@lang('shipper.shipping_details')</th>
                         <th>@lang('shipper.shipping_date')</th>
-                        <th>@lang('sale.status_date_updating')</th>
                         <th>@lang('restaurant.table')</th>
                         <th>@lang('restaurant.service_staff')</th>
                         
@@ -190,7 +189,6 @@ $(document).ready( function(){
             { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_details', name: 'shipping_details'},
             { data: 'shipping_date', name: 'shipping_date'},
-            { data: 'status_date_updating', name: 'status_date_updating'},
             { data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
             { data: 'waiter', name: 'ss.first_name', @if(empty($is_service_staff_enabled)) visible: false @endif },
         ],

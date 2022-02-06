@@ -56,7 +56,7 @@
                @foreach($sales_orders as $so)
                 <tr>
                   <td>{{$so->invoice_no}}</td>
-                  <td>{{@format_datetime($so->transaction_date)}}</td>
+                  <td>{{@format_date($so->transaction_date)}}</td>
                 </tr>
                @endforeach
              </table>
@@ -117,7 +117,7 @@
         <br><strong>@lang('lang_v1.delivered_to'): </strong> {{$sell->delivered_to}}
       @endif
       @if(!empty($sell->shipping_date))
-      <br><strong>@lang('lang_v1.shipping_date'): </strong> {{$sell->shipping_date}}
+      <br><strong>@lang('lang_v1.shipping_date'): </strong> {{@format_date($sell->shipping_date)}}
       @endif
       @if(!empty($sell->shipping_charges))
       <br><strong>@lang('lang_v1.shipping_charges'): </strong> <span class="display_currency" data-currency_symbol="true">{{$sell->shipping_charges}}</span>

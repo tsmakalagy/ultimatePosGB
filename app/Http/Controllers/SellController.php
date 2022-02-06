@@ -199,6 +199,18 @@ class SellController extends Controller
                 $sells->whereDate('transactions.transaction_date', '>=', $start)
                     ->whereDate('transactions.transaction_date', '<=', $end);
             }
+            // ADD FILTER FOR SHIPPING DATE
+            if (!empty(request()->shipment_start_date) && !empty(request()->shipment_start_date)) {
+                $start = request()->shipment_start_date;
+                $end = request()->shipment_end_date;
+                $sells->whereDate('transactions.shipping_date', '>=', $start)
+                    ->whereDate('transactions.shipping_date', '<=', $end);
+            }
+
+            // ADD CONDITION FOR SHIPPER
+            if (!empty(request()->input('shippers'))) {
+                $sells->where('shippers.id', request()->input('shippers'));
+            }
 
             //Check is_direct sell
             if (request()->has('is_direct_sale')) {
@@ -442,13 +454,13 @@ class SellController extends Controller
                         return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
                     }
                 )
-                ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
+                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
                 ->editColumn('shipper_name',
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
                 ->editColumn('status_date_updating',
                     '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
                 ->editColumn('shipping_date',
-                    '<span class="shipping_date"> {{($shipping_date)}} </span>')
+                    '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
                 ->editColumn('shipping_charges',
                     '<span class="shipping_charges" data-orig-value=""> @format_currency($shipping_charges)  </span>')
                 ->editColumn(
@@ -510,10 +522,6 @@ class SellController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->addColumn('status_date_updating', function ($row) {
-                    $total_remaining = '';
-                    return $total_remaining;
-                })
                 ->addColumn('shipping_date', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -572,7 +580,7 @@ class SellController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'status_date_updating', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -1599,8 +1607,10 @@ class SellController extends Controller
             $service_staffs = $this->productUtil->serviceStaffDropdown($business_id);
         }
 
+        $shippers = Shipper::pluck('shipper_name', 'id');
+
         return view('sell.shipments')->with(compact('shipping_statuses'))
-            ->with(compact('business_locations', 'customers', 'sales_representative', 'is_service_staff_enabled', 'service_staffs'));
+            ->with(compact('business_locations', 'customers', 'sales_representative', 'is_service_staff_enabled', 'service_staffs', 'shippers'));
     }
 
     public function viewMedia($model_id)

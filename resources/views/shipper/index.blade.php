@@ -11,98 +11,38 @@
 
     <!-- Main content -->
     <section class="content no-print">
-
-        @component('components.widget', ['class' => 'box-solid'])
-
-            <div class="row">
-                <div class="col-md-12">
-
-                    <div class="container-fluid">
-                        {!! Form::open(['route' => 'shipper.store', 'class' => 'form-horizontal']) !!}
-                        <div class="col-md-3">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    {!! Form::label('shipper_name', __('shipper.name') . '*:') !!}
-                                    {!! Form::text('shipper_name', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <div class="col-md-12">
-                                    {!! Form::label('type', __('shipper.type') . '*:') !!}
-                                    {!! Form::text('type', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    {!! Form::label('tel', __('shipper.tel') . '*:') !!}
-                                    {!! Form::text('tel', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    {!! Form::label('other_details', __('shipper.other_details') . ':') !!}
-                                    {!! Form::text('other_details', $value = null, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-group">
-                            <div class="col-lg-10 col-lg-offset-2">
-                                {!! Form::submit(__('messages.add'), ['class' => 'btn btn-lg btn-info pull-right'] ) !!}
-                            </div>
-                        </div>
-
-                        {!! Form::close()  !!}
+        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'shipper.shipper') ])
+            @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
+                @slot('tool')
+                    <div class="box-tools">
+                        <button type="button" class="btn btn-block btn-primary btn-modal"
+                                data-href="{{action('ShipperController@create')}}"
+                                data-container=".shipper_modal">
+                            <i class="fa fa-plus"></i> @lang('messages.add')</button>
                     </div>
-                </div>
-                @endcomponent
-                @component('components.widget', ['class' => 'box-primary', 'title' => __( 'shipper.shipper')])
-                    @can('direct_sell.access')
-                        @slot('tool')
-                            <div class="box-tools">
-                                <a class="btn btn-block btn-primary" href="{{action('ShipperController@create')}}">
-                                    <i class="fa fa-plus"></i> @lang('messages.add')</a>
-                            </div>
-                        @endslot
-                    @endcan
-                    @if(auth()->user()->can('direct_sell.view') ||  auth()->user()->can('view_own_sell_only') ||  auth()->user()->can('view_commission_agent_sell'))
-                        @php
-                            $custom_labels = json_decode(session('business.custom_labels'), true);
-                        @endphp
-                        <div class="container-fluid">
-                            <table class="table table-bordered table-striped ajax_view " id="sell_table"
-                                   style="min-width: 100% ">
-                                <thead class="text-center">
-                                <tr>
-                                    <th>@lang('messages.action')</th>
-                                    <th>@lang('shipper.name')</th>
-                                    <th>@lang('shipper.type')</th>
-                                    <th>@lang('shipper.tel')</th>
-                                    <th>@lang('shipper.other_details')</th>
-                                </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                        </div>
+                @endslot
+            @endif
+            @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
+                <table class="table table-bordered table-striped ajax_view " id="shipper_table"
+                       style="min-width: 100% ">
+                    <thead class="text-center">
+                    <tr>
+                        <th>@lang('messages.action')</th>
+                        <th>@lang('shipper.name')</th>
+                        <th>@lang('shipper.type')</th>
+                        <th>@lang('shipper.tel')</th>
+                        <th>@lang('shipper.other_details')</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             @endif
         @endcomponent
+            <div class="modal fade shipper_modal" tabindex="-1" role="dialog"
+                 aria-labelledby="gridSystemModalLabel">
+            </div>
     </section>
     <!-- /.content -->
-    <div class="modal fade payment_modal" tabindex="-1" role="dialog"
-         aria-labelledby="gridSystemModalLabel">
-    </div>
-
-    <div class="modal fade edit_payment_modal" tabindex="-1" role="dialog"
-         aria-labelledby="gridSystemModalLabel">
-    </div>
 
     <!-- This will be printed -->
     <!-- <section class="invoice print_section" id="receipt_section">
@@ -113,20 +53,9 @@
 @section('javascript')
     <script type="text/javascript">
         $(document).ready(function () {
-            //Date range as a button
-            $('#sell_list_filter_date_range').daterangepicker(
-                dateRangeSettings,
-                function (start, end) {
-                    $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
-                    sell_table.ajax.reload();
-                }
-            );
-            $('#sell_list_filter_date_range').on('cancel.daterangepicker', function (ev, picker) {
-                $('#sell_list_filter_date_range').val('');
-                sell_table.ajax.reload();
-            });
 
-            sell_table = $('#sell_table').DataTable({
+
+            shipper_table = $('#shipper_table').DataTable({
                 processing: true,
                 serverSide: true,
                 aaSorting: [[1, 'desc']],
@@ -152,15 +81,6 @@
                             d.shipping_status = $('#shipping_status').val();
                         }
 
-                        @if($is_woocommerce)
-                        if ($('#synced_from_woocommerce').is(':checked')) {
-                            d.only_woocommerce_sells = 1;
-                        }
-                        @endif
-
-                        if ($('#only_subscriptions').is(':checked')) {
-                            d.only_subscriptions = 1;
-                        }
 
                         d = __datatable_ajax_callback(d);
                     }
@@ -170,8 +90,6 @@
                 scrollCollapse: true,
                 columns: [
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
-
-
                     {data: 'name', name: 'name'},
                     {data: 'type', name: 'type'},
                     {data: 'tel', name: 'tel'},
@@ -190,15 +108,11 @@
             $(document).on('change', '#sell_list_filter_location_id, #sell_list_filter_customer_id, #sell_list_filter_payment_status, #created_by, #sales_cmsn_agnt, #service_staffs, #shipping_status', function () {
                 sell_table.ajax.reload();
             });
-            @if($is_woocommerce)
-            $('#synced_from_woocommerce').on('ifChanged', function (event) {
-                sell_table.ajax.reload();
-            });
-            @endif
-
-            $('#only_subscriptions').on('ifChanged', function (event) {
-                sell_table.ajax.reload();
-            });
+        });
+    </script>
+    <script type="text/javascript">
+        $(document).on('shown.bs.modal', '.shipper_modal', function(e) {
+            // initAutocomplete();
         });
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>

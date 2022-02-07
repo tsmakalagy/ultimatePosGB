@@ -12,7 +12,7 @@ return [
     */
 
     'shipper' => 'Shipper',
-    'name' => 'Name',
+    'name' => 'Shipper Name',
     'shipper_name' => 'Shipper',
     'shipping_details' => 'Shipping details',
     'type' => 'Type',
@@ -21,7 +21,7 @@ return [
     'other_details' => 'Detail',
     'other_detail' => 'Other details',
     'details' => 'Shipper details',
-    'list' => 'List Shippers',
+    'list' => 'List of Shippers',
     'add' => 'Add Shipper',
     'all_shippers' => 'All shippers',
     'shipper_added_successfully' => 'Shipper added successfully',

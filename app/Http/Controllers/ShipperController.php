@@ -2069,7 +2069,11 @@ class ShipperController extends Controller
      */
     public function create()
     {
-        return view('shipper.create');
+        if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('shipper.create_modal');
     }
 
     /**

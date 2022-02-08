@@ -87,6 +87,11 @@
                             <th>@lang('lang_v1.shipper_name')</th>
                             <th>@lang('lang_v1.shipping_charges')</th>
                             <th>@lang('lang_v1.shipping_date')</th>
+                            <th>@lang('shipper.shipping_details')</th>
+                            <th>@lang('lang_v1.shipping_address')</th>
+                            <th>@lang('sale.total_amount')</th>
+                            <th>@lang('sale.total_paid')</th>
+                            <th>@lang('lang_v1.sell_due')</th>
                             @if(!empty($custom_labels['shipping']['custom_field_1']))
                                 <th>
                                     {{$custom_labels['shipping']['custom_field_1']}}
@@ -219,6 +224,13 @@ $(document).ready( function(){
             { data: 'shipper_name', name: 'shipper_name'},
             { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_date', name: 'shipping_date'},
+            { data: 'shipping_details', name: 'shipping_details'},
+            { data: 'shipping_address', name: 'shipping_address'},
+            { data: 'final_total', name: 'final_total'},
+            { data: 'total_paid', name: 'total_paid', "searchable": false},
+            { data: 'total_remaining', name: 'total_remaining'},
+            
+           
             @if(!empty($custom_labels['shipping']['custom_field_1']))
                 { data: 'shipping_custom_field_1', name: 'shipping_custom_field_1'},
             @endif

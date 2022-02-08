@@ -241,38 +241,7 @@
 <script type="text/javascript">
   $(document).ready(function(){
     $("form#quick_add_product_form").validate({
-      rules: {
-          sku: {
-              remote: {
-                  url: "/products/check_product_sku",
-                  type: "post",
-                  data: {
-                      sku: function() {
-                          return $( "#sku" ).val();
-                      },
-                      product_id: function() {
-                          if($('#product_id').length > 0 ){
-                              return $('#product_id').val();
-                          } else {
-                              return '';
-                          }
-                      },
-                  }
-              }
-          },
-          expiry_period:{
-              required: {
-                  depends: function(element) {
-                      return ($('#expiry_period_type').val().trim() != '');
-                  }
-              }
-          }
-      },
-      messages: {
-          sku: {
-              remote: LANG.sku_already_exists
-          }
-      },
+   
       submitHandler: function (form) {
         
         var form = $("form#quick_add_product_form");

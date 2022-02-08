@@ -1,5 +1,6 @@
 <?php
 return [
+    "shipper_added_success" =>"Ajout du livreur avec succès",
     "enable_editing_product_from_purchase" => "Activer l'édition du prix du produit à partir de l'écran d'achat",
     "sales_commission_agent" => "Agent de la Commission des ventes",
     "shipping_date" => "Date de livraison",

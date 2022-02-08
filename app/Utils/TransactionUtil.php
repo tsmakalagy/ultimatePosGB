@@ -4700,6 +4700,7 @@ class TransactionUtil extends Util
                 'transactions.additional_notes',
                 'transactions.staff_note',
                 'transactions.shipping_details',
+                'transactions.shipping_address',
                 'transactions.document',
                 'transactions.shipping_custom_field_1',
                 'transactions.shipping_custom_field_2',

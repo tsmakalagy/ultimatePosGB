@@ -1,5 +1,6 @@
 <?php
 return [
+    "shipper_added_success" =>"Shipper added successfully",
     "enable_editing_product_from_purchase" => 'Enable editing product price from purchase screen',
     'sales_commission_agent' => 'Sales Commission Agent',
     'shipping_date' => 'Shipping date',

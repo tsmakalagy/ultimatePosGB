@@ -761,257 +761,282 @@ class ShipperController extends Controller
                 }
                 $sales_order_statuses = Transaction::sales_order_statuses();
                 $datatable = Datatables::of($sells)
-                    ->addColumn(
-                        'action',
-                        function ($row) use ($only_shipments, $is_admin, $sale_type) {
-                            $html = '<div class="btn-group">
+                ->addColumn(
+                    'action',
+                    function ($row) use ($only_shipments, $is_admin, $sale_type) {
+                        $html = '<div class="btn-group">
                                     <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
                                         data-toggle="dropdown" aria-expanded="false">' .
-                                __("messages.actions") .
-                                '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                            __("messages.actions") .
+                            '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
-                            if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
-                                $html .= '<li><a href="#" data-href="' . action("SellController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
-                            }
-                            if (!$only_shipments) {
-                                if ($row->is_direct_sale == 0) {
-                                    if (auth()->user()->can("sell.update")) {
-                                        $html .= '<li><a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                    }
-                                } elseif ($row->type == 'sales_order') {
-                                    if (auth()->user()->can("so.update")) {
-                                        $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                    }
-                                } else {
-                                    if (auth()->user()->can("direct_sell.update")) {
-                                        $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                    }
+                        if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
+                            $html .= '<li><a href="#" data-href="' . action("SellController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
+                        }
+                        if (!$only_shipments) {
+                            if ($row->is_direct_sale == 0) {
+                                if (auth()->user()->can("sell.update")) {
+                                    $html .= '<li><a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
-
-                                $delete_link = '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __("messages.delete") . '</a></li>';
-                                if ($row->is_direct_sale == 0) {
-                                    if (auth()->user()->can("sell.delete")) {
-                                        $html .= $delete_link;
-                                    }
-                                } elseif ($row->type == 'sales_order') {
-                                    if (auth()->user()->can("so.delete")) {
-                                        $html .= $delete_link;
-                                    }
-                                } else {
-                                    if (auth()->user()->can("direct_sell.delete")) {
-                                        $html .= $delete_link;
-                                    }
+                            } elseif ($row->type == 'sales_order') {
+                                if (auth()->user()->can("so.update")) {
+                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
+                                }
+                            } else {
+                                if (auth()->user()->can("direct_sell.update")) {
+                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             }
 
-                            if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
-                                $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
-
-                                if (!empty($row->shipping_status)) {
-                                    $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_paking_pdf") . '</a></li>';
+                            $delete_link = '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __("messages.delete") . '</a></li>';
+                            if ($row->is_direct_sale == 0) {
+                                if (auth()->user()->can("sell.delete")) {
+                                    $html .= $delete_link;
+                                }
+                            } elseif ($row->type == 'sales_order') {
+                                if (auth()->user()->can("so.delete")) {
+                                    $html .= $delete_link;
+                                }
+                            } else {
+                                if (auth()->user()->can("direct_sell.delete")) {
+                                    $html .= $delete_link;
                                 }
                             }
+                        }
 
-                            if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {
-                                if (!empty($row->document)) {
-                                    $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document;
-                                    $html .= '<li><a href="' . url('uploads/documents/' . $row->document) . '" download="' . $document_name . '"><i class="fas fa-download" aria-hidden="true"></i>' . __("purchase.download_document") . '</a></li>';
-                                    if (isFileImage($document_name)) {
-                                        $html .= '<li><a href="#" data-href="' . url('uploads/documents/' . $row->document) . '" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>' . __("lang_v1.view_document") . '</a></li>';
-                                    }
+                        if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
+                            $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
+
+                            if (!empty($row->shipping_status)) {
+                                $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_paking_pdf") . '</a></li>';
+                            }
+                        }
+
+                        if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {
+                            if (!empty($row->document)) {
+                                $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document;
+                                $html .= '<li><a href="' . url('uploads/documents/' . $row->document) . '" download="' . $document_name . '"><i class="fas fa-download" aria-hidden="true"></i>' . __("purchase.download_document") . '</a></li>';
+                                if (isFileImage($document_name)) {
+                                    $html .= '<li><a href="#" data-href="' . url('uploads/documents/' . $row->document) . '" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>' . __("lang_v1.view_document") . '</a></li>';
                                 }
                             }
+                        }
 
-                            if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
-                                $html .= '<li><a href="#" data-href="' . action('SellController@editShipping', [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __("lang_v1.edit_shipping") . '</a></li>';
-                            }
+                        if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
+                            $html .= '<li><a href="#" data-href="' . action('SellController@editShipping', [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __("lang_v1.edit_shipping") . '</a></li>';
+                        }
 
-                            if ($row->type == 'sell') {
-                                if (auth()->user()->can("print_invoice")) {
-                                    $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.print_invoice") . '</a></li>
+                        if ($row->type == 'sell') {
+                            if (auth()->user()->can("print_invoice")) {
+                                $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.print_invoice") . '</a></li>
                                     <li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> ' . __("lang_v1.packing_slip") . '</a></li>';
+                            }
+                            $html .= '<li class="divider"></li>';
+                            if (!$only_shipments) {
+                                if ($row->payment_status != "paid" && auth()->user()->can("sell.payments")) {
+                                    $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>';
                                 }
-                                $html .= '<li class="divider"></li>';
-                                if (!$only_shipments) {
-                                    if ($row->payment_status != "paid" && auth()->user()->can("sell.payments")) {
-                                        $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>';
-                                    }
 
-                                    $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>';
+                                $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>';
 
-                                    if (auth()->user()->can("sell.create")) {
-                                        $html .= '<li><a href="' . action('SellController@duplicateSell', [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>
+                                if (auth()->user()->can("sell.create")) {
+                                    $html .= '<li><a href="' . action('SellController@duplicateSell', [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>
 
                                     <li><a href="' . action('SellReturnController@add', [$row->id]) . '"><i class="fas fa-undo"></i> ' . __("lang_v1.sell_return") . '</a></li>
 
                                     <li><a href="' . action('SellPosController@showInvoiceUrl', [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i> ' . __("lang_v1.view_invoice_url") . '</a></li>';
-                                    }
                                 }
-
-                                $html .= '<li><a href="#" data-href="' . action('NotificationController@getTemplate', ["transaction_id" => $row->id, "template_for" => "new_sale"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_sale_notification") . '</a></li>';
-                            } else {
-                                $html .= '<li><a href="#" data-href="' . action('SellController@viewMedia', ["model_id" => $row->id, "model_type" => "App\Transaction", 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __("lang_v1.shipping_documents") . '</a></li>';
                             }
 
-                            $html .= '</ul></div>';
-
-                            return $html;
-                        }
-                    )
-                    ->removeColumn('id')
-                    ->editColumn(
-                        'final_total',
-                        '<span class="final-total" data-orig-value="{{$final_total}}">@format_currency($final_total)</span>'
-                    )
-                    ->editColumn(
-                        'tax_amount',
-                        '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
-                    )
-                    ->editColumn(
-                        'total_paid',
-                        '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
-                    )
-                    ->editColumn(
-                        'total_before_tax',
-                        '<span class="total_before_tax" data-orig-value="{{$total_before_tax}}">@format_currency($total_before_tax)</span>'
-                    )
-                    ->editColumn(
-                        'discount_amount',
-                        function ($row) {
-                            $discount = !empty($row->discount_amount) ? $row->discount_amount : 0;
-
-                            if (!empty($discount) && $row->discount_type == 'percentage') {
-                                $discount = $row->total_before_tax * ($discount / 100);
-                            }
-
-                            return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
-                        }
-                    )
-                    ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
-                    ->editColumn('shipper_name',
-                        '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
-                    ->editColumn('shipping_date',
-                        '<span class="shipping_date"> {{($shipping_date)}} </span>')
-                    ->editColumn('shipping_charges',
-                        '<span class="shipping_charges" data-orig-value=""> @format_currency($shipping_charges)  </span>')
-                    ->editColumn(
-                        'payment_status',
-                        function ($row) {
-                            $payment_status = Transaction::getPaymentStatus($row);
-                            return (string)view('sell.partials.payment_status', ['payment_status' => $payment_status, 'id' => $row->id]);
-                        }
-                    )
-                    ->editColumn(
-                        'types_of_service_name',
-                        '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
-                    )
-                    ->addColumn('total_remaining', function ($row) {
-                        $total_remaining = $row->final_total - $row->total_paid;
-                        $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
-
-
-                        return $total_remaining_html;
-                    })
-                    ->addColumn('return_due', function ($row) {
-                        $return_due_html = '';
-                        if (!empty($row->return_exists)) {
-                            $return_due = $row->amount_return - $row->return_paid;
-                            $return_due_html .= '<a href="' . action("TransactionPaymentController@show", [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
+                            $html .= '<li><a href="#" data-href="' . action('NotificationController@getTemplate', ["transaction_id" => $row->id, "template_for" => "new_sale"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_sale_notification") . '</a></li>';
+                        } else {
+                            $html .= '<li><a href="#" data-href="' . action('SellController@viewMedia', ["model_id" => $row->id, "model_type" => "App\Transaction", 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __("lang_v1.shipping_documents") . '</a></li>';
                         }
 
-                        return $return_due_html;
-                    })
-                    ->editColumn('invoice_no', function ($row) {
-                        $invoice_no = $row->invoice_no;
-                        if (!empty($row->woocommerce_order_id)) {
-                            $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
-                        }
-                        if (!empty($row->return_exists)) {
-                            $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') . '"><i class="fas fa-undo"></i></small>';
-                        }
-                        if (!empty($row->is_recurring)) {
-                            $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
-                        }
-
-                        if (!empty($row->recur_parent_id)) {
-                            $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
-                        }
-
-                        if (!empty($row->is_export)) {
-                            $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
-                        }
-
-                        return $invoice_no;
-                    })
-                    ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
-                        $status_color = !empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
-                        $status = !empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action('SellController@editShipping', [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
-
-                        return $status;
-                    })
-                    ->addColumn('shipper_name', function ($row) {
-                        $total_remaining = '';
-                        return $total_remaining;
-                    })
-                    ->addColumn('shipping_date', function ($row) {
-                        $total_remaining = '';
-                        return $total_remaining;
-                    })
-                    ->addColumn('shipping_charges', function ($row) {
-                        $total_remaining = '';
-                        return $total_remaining;
-                    })
-                    ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
-                    ->editColumn('total_items', '{{@format_quantity($total_items)}}')
-                    ->filterColumn('name', function ($query, $keyword) {
-                        $query->where(function ($q) use ($keyword) {
-                            $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
-                        });
-                    })
-                    ->addColumn('payment_methods', function ($row) use ($payment_types) {
-                        $methods = array_unique($row->payment_lines->pluck('method')->toArray());
-                        $count = count($methods);
-                        $payment_method = '';
-                        if ($count == 1) {
-                            $payment_method = $payment_types[$methods[0]];
-                        } elseif ($count > 1) {
-                            $payment_method = __('lang_v1.checkout_multi_pay');
-                        }
-
-                        $html = !empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
+                        $html .= '</ul></div>';
 
                         return $html;
-                    })
-                    ->editColumn('status', function ($row) use ($sales_order_statuses, $is_admin) {
-                        $status = '';
+                    }
+                )
+                ->removeColumn('id')
+                ->editColumn(
+                    'final_total',
+                    '<span class="final-total" data-orig-value="{{$final_total}}">@format_currency($final_total)</span>'
+                )
+                ->editColumn(
+                    'tax_amount',
+                    '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
+                )
+                ->editColumn(
+                    'total_paid',
+                    '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
+                )
+                ->editColumn(
+                    'total_before_tax',
+                    '<span class="total_before_tax" data-orig-value="{{$total_before_tax}}">@format_currency($total_before_tax)</span>'
+                )
+                ->editColumn(
+                    'discount_amount',
+                    function ($row) {
+                        $discount = !empty($row->discount_amount) ? $row->discount_amount : 0;
 
-                        if ($row->type == 'sales_order') {
-                            if ($is_admin && $row->status != 'completed') {
-                                $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action("SalesOrderController@getEditSalesOrderStatus", ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
-                            } else {
-                                $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
-                            }
+                        if (!empty($discount) && $row->discount_type == 'percentage') {
+                            $discount = $row->total_before_tax * ($discount / 100);
                         }
 
-                        return $status;
-                    })
-                    ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
-                    ->setRowAttr([
-                        'data-href' => function ($row) {
-                            if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
-                                return action('SellController@show', [$row->id]);
-                            } else {
-                                return '';
-                            }
-                        }]);
+                        return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
+                    }
+                )
+                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
+                ->editColumn('shipper_name',
+                    '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
+                    ->editColumn('shipping_address',
+                    '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
+                ->editColumn('status_date_updating',
+                    '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
+                ->editColumn('shipping_date',
+                    '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
+                ->editColumn('shipping_charges',
+                    '<span class="shipping_charges" data-orig-value=""> @format_currency($shipping_charges)  </span>')
+                ->editColumn(
+                    'payment_status',
+                    function ($row) {
+                        $payment_status = Transaction::getPaymentStatus($row);
+                        return (string)view('sell.partials.payment_status', ['payment_status' => $payment_status, 'id' => $row->id]);
+                    }
+                )
+                ->editColumn(
+                    'types_of_service_name',
+                    '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
+                )
+                ->addColumn('total_remaining', function ($row) {
+                    $total_remaining = $row->final_total - $row->total_paid;
+                    $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
 
-                $rawColumns = ['final_total', 'action', 'shipper_name', 'shipping_date', 'shipping_charges', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
 
-                return $datatable->rawColumns($rawColumns)
-                    ->make(true);
+                    return $total_remaining_html;
+                })
+                ->addColumn('return_due', function ($row) {
+                    $return_due_html = '';
+                    if (!empty($row->return_exists)) {
+                        $return_due = $row->amount_return - $row->return_paid;
+                        $return_due_html .= '<a href="' . action("TransactionPaymentController@show", [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
+                    }
+
+                    return $return_due_html;
+                })
+                ->editColumn('invoice_no', function ($row) {
+                    $invoice_no = $row->invoice_no;
+                    if (!empty($row->woocommerce_order_id)) {
+                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
+                    }
+                    if (!empty($row->return_exists)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') . '"><i class="fas fa-undo"></i></small>';
+                    }
+                    if (!empty($row->is_recurring)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
+                    }
+
+                    if (!empty($row->recur_parent_id)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
+                    }
+
+                    if (!empty($row->is_export)) {
+                        $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
+                    }
+
+                    return $invoice_no;
+                })
+                ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
+                    $status_color = !empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
+                    $status = !empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action('SellController@editShipping', [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
+
+                    return $status;
+                })
+                ->addColumn('shipper_name', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('shipping_address', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('shipping_date', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('shipping_charges', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
+                ->editColumn('total_items', '{{@format_quantity($total_items)}}')
+                ->filterColumn('conatct_name', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('contacts.name', 'like', "%{$keyword}%")
+                            ->orWhere('contacts.supplier_business_name', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipper_name', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_address', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_details', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
+                    });
+                })
+               
+                ->addColumn('payment_methods', function ($row) use ($payment_types) {
+                    $methods = array_unique($row->payment_lines->pluck('method')->toArray());
+                    $count = count($methods);
+                    $payment_method = '';
+                    if ($count == 1) {
+                        $payment_method = $payment_types[$methods[0]];
+                    } elseif ($count > 1) {
+                        $payment_method = __('lang_v1.checkout_multi_pay');
+                    }
+
+                    $html = !empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
+
+                    return $html;
+                })
+                ->editColumn('status', function ($row) use ($sales_order_statuses, $is_admin) {
+                    $status = '';
+
+                    if ($row->type == 'sales_order') {
+                        if ($is_admin && $row->status != 'completed') {
+                            $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action("SalesOrderController@getEditSalesOrderStatus", ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
+                        } else {
+                            $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
+                        }
+                    }
+
+                    return $status;
+                })
+                ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
+                ->setRowAttr([
+                    'data-href' => function ($row) {
+                        if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
+                            return action('SellController@show', [$row->id]);
+                        } else {
+                            return '';
+                        }
+                    }]);
+
+            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+
+            return $datatable->rawColumns($rawColumns)
+                ->make(true);
 
 
             } else {
@@ -1237,257 +1262,282 @@ class ShipperController extends Controller
                 }
                 $sales_order_statuses = Transaction::sales_order_statuses();
                 $datatable = Datatables::of($sells)
-                    ->addColumn(
-                        'action',
-                        function ($row) use ($only_shipments, $is_admin, $sale_type) {
-                            $html = '<div class="btn-group">
+                ->addColumn(
+                    'action',
+                    function ($row) use ($only_shipments, $is_admin, $sale_type) {
+                        $html = '<div class="btn-group">
                                     <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
                                         data-toggle="dropdown" aria-expanded="false">' .
-                                __("messages.actions") .
-                                '<span class="caret"></span><span class="sr-only">Toggle Dropdown
+                            __("messages.actions") .
+                            '<span class="caret"></span><span class="sr-only">Toggle Dropdown
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
-                            if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
-                                $html .= '<li><a href="#" data-href="' . action("SellController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
-                            }
-                            if (!$only_shipments) {
-                                if ($row->is_direct_sale == 0) {
-                                    if (auth()->user()->can("sell.update")) {
-                                        $html .= '<li><a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                    }
-                                } elseif ($row->type == 'sales_order') {
-                                    if (auth()->user()->can("so.update")) {
-                                        $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                    }
-                                } else {
-                                    if (auth()->user()->can("direct_sell.update")) {
-                                        $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
-                                    }
+                        if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
+                            $html .= '<li><a href="#" data-href="' . action("SellController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
+                        }
+                        if (!$only_shipments) {
+                            if ($row->is_direct_sale == 0) {
+                                if (auth()->user()->can("sell.update")) {
+                                    $html .= '<li><a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
-
-                                $delete_link = '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __("messages.delete") . '</a></li>';
-                                if ($row->is_direct_sale == 0) {
-                                    if (auth()->user()->can("sell.delete")) {
-                                        $html .= $delete_link;
-                                    }
-                                } elseif ($row->type == 'sales_order') {
-                                    if (auth()->user()->can("so.delete")) {
-                                        $html .= $delete_link;
-                                    }
-                                } else {
-                                    if (auth()->user()->can("direct_sell.delete")) {
-                                        $html .= $delete_link;
-                                    }
+                            } elseif ($row->type == 'sales_order') {
+                                if (auth()->user()->can("so.update")) {
+                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
+                                }
+                            } else {
+                                if (auth()->user()->can("direct_sell.update")) {
+                                    $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             }
 
-                            if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
-                                $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
-
-                                if (!empty($row->shipping_status)) {
-                                    $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_paking_pdf") . '</a></li>';
+                            $delete_link = '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __("messages.delete") . '</a></li>';
+                            if ($row->is_direct_sale == 0) {
+                                if (auth()->user()->can("sell.delete")) {
+                                    $html .= $delete_link;
+                                }
+                            } elseif ($row->type == 'sales_order') {
+                                if (auth()->user()->can("so.delete")) {
+                                    $html .= $delete_link;
+                                }
+                            } else {
+                                if (auth()->user()->can("direct_sell.delete")) {
+                                    $html .= $delete_link;
                                 }
                             }
+                        }
 
-                            if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {
-                                if (!empty($row->document)) {
-                                    $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document;
-                                    $html .= '<li><a href="' . url('uploads/documents/' . $row->document) . '" download="' . $document_name . '"><i class="fas fa-download" aria-hidden="true"></i>' . __("purchase.download_document") . '</a></li>';
-                                    if (isFileImage($document_name)) {
-                                        $html .= '<li><a href="#" data-href="' . url('uploads/documents/' . $row->document) . '" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>' . __("lang_v1.view_document") . '</a></li>';
-                                    }
+                        if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
+                            $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
+
+                            if (!empty($row->shipping_status)) {
+                                $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_paking_pdf") . '</a></li>';
+                            }
+                        }
+
+                        if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {
+                            if (!empty($row->document)) {
+                                $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document;
+                                $html .= '<li><a href="' . url('uploads/documents/' . $row->document) . '" download="' . $document_name . '"><i class="fas fa-download" aria-hidden="true"></i>' . __("purchase.download_document") . '</a></li>';
+                                if (isFileImage($document_name)) {
+                                    $html .= '<li><a href="#" data-href="' . url('uploads/documents/' . $row->document) . '" class="view_uploaded_document"><i class="fas fa-image" aria-hidden="true"></i>' . __("lang_v1.view_document") . '</a></li>';
                                 }
                             }
+                        }
 
-                            if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
-                                $html .= '<li><a href="#" data-href="' . action('SellController@editShipping', [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __("lang_v1.edit_shipping") . '</a></li>';
-                            }
+                        if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
+                            $html .= '<li><a href="#" data-href="' . action('SellController@editShipping', [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __("lang_v1.edit_shipping") . '</a></li>';
+                        }
 
-                            if ($row->type == 'sell') {
-                                if (auth()->user()->can("print_invoice")) {
-                                    $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.print_invoice") . '</a></li>
+                        if ($row->type == 'sell') {
+                            if (auth()->user()->can("print_invoice")) {
+                                $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.print_invoice") . '</a></li>
                                     <li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> ' . __("lang_v1.packing_slip") . '</a></li>';
+                            }
+                            $html .= '<li class="divider"></li>';
+                            if (!$only_shipments) {
+                                if ($row->payment_status != "paid" && auth()->user()->can("sell.payments")) {
+                                    $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>';
                                 }
-                                $html .= '<li class="divider"></li>';
-                                if (!$only_shipments) {
-                                    if ($row->payment_status != "paid" && auth()->user()->can("sell.payments")) {
-                                        $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>';
-                                    }
 
-                                    $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>';
+                                $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>';
 
-                                    if (auth()->user()->can("sell.create")) {
-                                        $html .= '<li><a href="' . action('SellController@duplicateSell', [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>
+                                if (auth()->user()->can("sell.create")) {
+                                    $html .= '<li><a href="' . action('SellController@duplicateSell', [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>
 
                                     <li><a href="' . action('SellReturnController@add', [$row->id]) . '"><i class="fas fa-undo"></i> ' . __("lang_v1.sell_return") . '</a></li>
 
                                     <li><a href="' . action('SellPosController@showInvoiceUrl', [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i> ' . __("lang_v1.view_invoice_url") . '</a></li>';
-                                    }
                                 }
-
-                                $html .= '<li><a href="#" data-href="' . action('NotificationController@getTemplate', ["transaction_id" => $row->id, "template_for" => "new_sale"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_sale_notification") . '</a></li>';
-                            } else {
-                                $html .= '<li><a href="#" data-href="' . action('SellController@viewMedia', ["model_id" => $row->id, "model_type" => "App\Transaction", 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __("lang_v1.shipping_documents") . '</a></li>';
                             }
 
-                            $html .= '</ul></div>';
-
-                            return $html;
-                        }
-                    )
-                    ->removeColumn('id')
-                    ->editColumn(
-                        'final_total',
-                        '<span class="final-total" data-orig-value="{{$final_total}}">@format_currency($final_total)</span>'
-                    )
-                    ->editColumn(
-                        'tax_amount',
-                        '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
-                    )
-                    ->editColumn(
-                        'total_paid',
-                        '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
-                    )
-                    ->editColumn(
-                        'total_before_tax',
-                        '<span class="total_before_tax" data-orig-value="{{$total_before_tax}}">@format_currency($total_before_tax)</span>'
-                    )
-                    ->editColumn(
-                        'discount_amount',
-                        function ($row) {
-                            $discount = !empty($row->discount_amount) ? $row->discount_amount : 0;
-
-                            if (!empty($discount) && $row->discount_type == 'percentage') {
-                                $discount = $row->total_before_tax * ($discount / 100);
-                            }
-
-                            return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
-                        }
-                    )
-                    ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
-                    ->editColumn('shipper_name',
-                        '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
-                    ->editColumn('shipping_date',
-                        '<span class="shipping_date"> {{($shipping_date)}} </span>')
-                    ->editColumn('shipping_charges',
-                        '<span class="shipping_charges" data-orig-value=""> @format_currency($shipping_charges)  </span>')
-                    ->editColumn(
-                        'payment_status',
-                        function ($row) {
-                            $payment_status = Transaction::getPaymentStatus($row);
-                            return (string)view('sell.partials.payment_status', ['payment_status' => $payment_status, 'id' => $row->id]);
-                        }
-                    )
-                    ->editColumn(
-                        'types_of_service_name',
-                        '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
-                    )
-                    ->addColumn('total_remaining', function ($row) {
-                        $total_remaining = $row->final_total - $row->total_paid;
-                        $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
-
-
-                        return $total_remaining_html;
-                    })
-                    ->addColumn('return_due', function ($row) {
-                        $return_due_html = '';
-                        if (!empty($row->return_exists)) {
-                            $return_due = $row->amount_return - $row->return_paid;
-                            $return_due_html .= '<a href="' . action("TransactionPaymentController@show", [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
+                            $html .= '<li><a href="#" data-href="' . action('NotificationController@getTemplate', ["transaction_id" => $row->id, "template_for" => "new_sale"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_sale_notification") . '</a></li>';
+                        } else {
+                            $html .= '<li><a href="#" data-href="' . action('SellController@viewMedia', ["model_id" => $row->id, "model_type" => "App\Transaction", 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __("lang_v1.shipping_documents") . '</a></li>';
                         }
 
-                        return $return_due_html;
-                    })
-                    ->editColumn('invoice_no', function ($row) {
-                        $invoice_no = $row->invoice_no;
-                        if (!empty($row->woocommerce_order_id)) {
-                            $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
-                        }
-                        if (!empty($row->return_exists)) {
-                            $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') . '"><i class="fas fa-undo"></i></small>';
-                        }
-                        if (!empty($row->is_recurring)) {
-                            $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
-                        }
-
-                        if (!empty($row->recur_parent_id)) {
-                            $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
-                        }
-
-                        if (!empty($row->is_export)) {
-                            $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
-                        }
-
-                        return $invoice_no;
-                    })
-                    ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
-                        $status_color = !empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
-                        $status = !empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action('SellController@editShipping', [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
-
-                        return $status;
-                    })
-                    ->addColumn('shipper_name', function ($row) {
-                        $total_remaining = '';
-                        return $total_remaining;
-                    })
-                    ->addColumn('shipping_date', function ($row) {
-                        $total_remaining = '';
-                        return $total_remaining;
-                    })
-                    ->addColumn('shipping_charges', function ($row) {
-                        $total_remaining = '';
-                        return $total_remaining;
-                    })
-                    ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
-                    ->editColumn('total_items', '{{@format_quantity($total_items)}}')
-                    ->filterColumn('shipper_name', function ($query, $keyword) {
-                        $query->where(function ($q) use ($keyword) {
-                            $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
-                        });
-                    })
-                    ->addColumn('payment_methods', function ($row) use ($payment_types) {
-                        $methods = array_unique($row->payment_lines->pluck('method')->toArray());
-                        $count = count($methods);
-                        $payment_method = '';
-                        if ($count == 1) {
-                            $payment_method = $payment_types[$methods[0]];
-                        } elseif ($count > 1) {
-                            $payment_method = __('lang_v1.checkout_multi_pay');
-                        }
-
-                        $html = !empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
+                        $html .= '</ul></div>';
 
                         return $html;
-                    })
-                    ->editColumn('status', function ($row) use ($sales_order_statuses, $is_admin) {
-                        $status = '';
+                    }
+                )
+                ->removeColumn('id')
+                ->editColumn(
+                    'final_total',
+                    '<span class="final-total" data-orig-value="{{$final_total}}">@format_currency($final_total)</span>'
+                )
+                ->editColumn(
+                    'tax_amount',
+                    '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
+                )
+                ->editColumn(
+                    'total_paid',
+                    '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
+                )
+                ->editColumn(
+                    'total_before_tax',
+                    '<span class="total_before_tax" data-orig-value="{{$total_before_tax}}">@format_currency($total_before_tax)</span>'
+                )
+                ->editColumn(
+                    'discount_amount',
+                    function ($row) {
+                        $discount = !empty($row->discount_amount) ? $row->discount_amount : 0;
 
-                        if ($row->type == 'sales_order') {
-                            if ($is_admin && $row->status != 'completed') {
-                                $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action("SalesOrderController@getEditSalesOrderStatus", ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
-                            } else {
-                                $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
-                            }
+                        if (!empty($discount) && $row->discount_type == 'percentage') {
+                            $discount = $row->total_before_tax * ($discount / 100);
                         }
 
-                        return $status;
-                    })
-                    ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
-                    ->setRowAttr([
-                        'data-href' => function ($row) {
-                            if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
-                                return action('SellController@show', [$row->id]);
-                            } else {
-                                return '';
-                            }
-                        }]);
+                        return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
+                    }
+                )
+                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
+                ->editColumn('shipper_name',
+                    '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
+                    ->editColumn('shipping_address',
+                    '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
+                ->editColumn('status_date_updating',
+                    '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
+                ->editColumn('shipping_date',
+                    '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
+                ->editColumn('shipping_charges',
+                    '<span class="shipping_charges" data-orig-value=""> @format_currency($shipping_charges)  </span>')
+                ->editColumn(
+                    'payment_status',
+                    function ($row) {
+                        $payment_status = Transaction::getPaymentStatus($row);
+                        return (string)view('sell.partials.payment_status', ['payment_status' => $payment_status, 'id' => $row->id]);
+                    }
+                )
+                ->editColumn(
+                    'types_of_service_name',
+                    '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
+                )
+                ->addColumn('total_remaining', function ($row) {
+                    $total_remaining = $row->final_total - $row->total_paid;
+                    $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
 
-                $rawColumns = ['final_total', 'action', 'shipper_name', 'shipping_date', 'shipping_charges', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
 
-                return $datatable->rawColumns($rawColumns)
-                    ->make(true);
+                    return $total_remaining_html;
+                })
+                ->addColumn('return_due', function ($row) {
+                    $return_due_html = '';
+                    if (!empty($row->return_exists)) {
+                        $return_due = $row->amount_return - $row->return_paid;
+                        $return_due_html .= '<a href="' . action("TransactionPaymentController@show", [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
+                    }
+
+                    return $return_due_html;
+                })
+                ->editColumn('invoice_no', function ($row) {
+                    $invoice_no = $row->invoice_no;
+                    if (!empty($row->woocommerce_order_id)) {
+                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
+                    }
+                    if (!empty($row->return_exists)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.some_qty_returned_from_sell') . '"><i class="fas fa-undo"></i></small>';
+                    }
+                    if (!empty($row->is_recurring)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
+                    }
+
+                    if (!empty($row->recur_parent_id)) {
+                        $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
+                    }
+
+                    if (!empty($row->is_export)) {
+                        $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
+                    }
+
+                    return $invoice_no;
+                })
+                ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
+                    $status_color = !empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
+                    $status = !empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action('SellController@editShipping', [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
+
+                    return $status;
+                })
+                ->addColumn('shipper_name', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('shipping_address', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('shipping_date', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('shipping_charges', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
+                ->editColumn('total_items', '{{@format_quantity($total_items)}}')
+                ->filterColumn('conatct_name', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('contacts.name', 'like', "%{$keyword}%")
+                            ->orWhere('contacts.supplier_business_name', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipper_name', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_address', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_details', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
+                    });
+                })
+               
+                ->addColumn('payment_methods', function ($row) use ($payment_types) {
+                    $methods = array_unique($row->payment_lines->pluck('method')->toArray());
+                    $count = count($methods);
+                    $payment_method = '';
+                    if ($count == 1) {
+                        $payment_method = $payment_types[$methods[0]];
+                    } elseif ($count > 1) {
+                        $payment_method = __('lang_v1.checkout_multi_pay');
+                    }
+
+                    $html = !empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
+
+                    return $html;
+                })
+                ->editColumn('status', function ($row) use ($sales_order_statuses, $is_admin) {
+                    $status = '';
+
+                    if ($row->type == 'sales_order') {
+                        if ($is_admin && $row->status != 'completed') {
+                            $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action("SalesOrderController@getEditSalesOrderStatus", ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
+                        } else {
+                            $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
+                        }
+                    }
+
+                    return $status;
+                })
+                ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
+                ->setRowAttr([
+                    'data-href' => function ($row) {
+                        if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
+                            return action('SellController@show', [$row->id]);
+                        } else {
+                            return '';
+                        }
+                    }]);
+
+            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+
+            return $datatable->rawColumns($rawColumns)
+                ->make(true);
             }
         }
 
@@ -2084,7 +2134,8 @@ class ShipperController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->filled('shipper_name', 'type', 'tel')) {
+        
+        if ($request->filled('shipper_name', 'tel')) {
             $shipper_name = $request->input('shipper_name');
             $type = $request->input('type');
             $tel = $request->input('tel');

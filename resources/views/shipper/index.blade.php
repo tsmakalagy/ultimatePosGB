@@ -38,8 +38,7 @@
                 </table>
             @endif
         @endcomponent
-            <div class="modal fade shipper_modal" tabindex="-1" role="dialog"
-                 aria-labelledby="gridSystemModalLabel">
+            <div class="modal fade shipper_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
             </div>
     </section>
     <!-- /.content -->

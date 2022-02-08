@@ -457,6 +457,8 @@ class SellController extends Controller
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
                 ->editColumn('shipper_name',
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
+                    ->editColumn('shipping_address',
+                    '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
                 ->editColumn('status_date_updating',
                     '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
                 ->editColumn('shipping_date',
@@ -522,6 +524,10 @@ class SellController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
+                ->addColumn('shipping_address', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
                 ->addColumn('shipping_date', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -543,6 +549,17 @@ class SellController extends Controller
                         $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
                     });
                 })
+                ->filterColumn('shipping_address', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_details', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
+                    });
+                })
+               
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
                     $methods = array_unique($row->payment_lines->pluck('method')->toArray());
                     $count = count($methods);
@@ -580,7 +597,7 @@ class SellController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);

@@ -1,10 +1,11 @@
+
 <div class="modal-dialog modal-lg" role="document">
   <div class="modal-content">
   @php
     $form_id = 'shipper_add_form';
-    $url = action('ShipperController@store');
+    $url = 'ShipperController@store';
   @endphp
-    {!! Form::open(['url' => $url, 'method' => 'post', 'id' => $form_id ]) !!}
+    {!! Form::open(['url' => action('ShipperController@store'), 'method' => 'post', 'id' => $form_id]) !!}
 
     <div class="modal-header">
       <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -20,7 +21,8 @@
                         <span class="input-group-addon">
                             <i class="fa fa-user"></i>
                         </span>
-                        {!! Form::text('shipper_name', null, ['class' => 'form-control','placeholder' => __('shipper.name')]); !!}
+                        {!! Form::text('shipper_name', null, ['class' => 'form-control ','placeholder' => __('shipper.name'),'required']); !!}
+                       
                     </div>
                 </div>
             </div>
@@ -31,18 +33,18 @@
                         <span class="input-group-addon">
                             <i class="fa fa-mobile"></i>
                         </span>
-                        {!! Form::text('tel', null, ['class' => 'form-control','placeholder' => __('shipper.tel')]); !!}
+                        {!! Form::text('tel', null, ['class' => 'form-control ','placeholder' => __('shipper.tel'),'required']); !!}
                     </div>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
-                    {!! Form::label('type', __('shipper.type') . ':*') !!}
+                    {!! Form::label('type', __('shipper.type') . ':') !!}
                     <div class="input-group">
                         <span class="input-group-addon">
                             <i class="fa fa-truck"></i>
                         </span>
-                        {!! Form::text('type', null, ['class' => 'form-control','placeholder' => __('shipper.type')]); !!}
+                        {!! Form::text('type', null, ['class' => 'form-control ','placeholder' => __('shipper.type'),]); !!}
                     </div>
                 </div>
             </div>
@@ -74,3 +76,40 @@
   
   </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
+
+
+
+ 
+  
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $("form#shipper_add_form").validate({
+    
+    submitHandler: function (form) {
+      
+      var form = $("form#shipper_add_form");
+      var url = form.attr('action');
+      
+      form.find('button[type="submit"]').attr('disabled', true);
+      $.ajax({
+          method: "POST",
+          url: url,
+          dataType: 'json',
+          data: $(form).serialize(),
+          success: function(data){
+              $('.shipper_modal').modal('hide');
+              if( data.success){
+                  toastr.success(data.msg);
+                 
+              } else {
+                  toastr.error(data.msg);
+              }
+          }
+      });
+      return true;
+    }
+  });
+});
+
+    </script>

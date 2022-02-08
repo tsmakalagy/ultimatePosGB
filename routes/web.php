@@ -380,7 +380,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
         
     //route pour shipper
-    Route::get('shipper', 'ShipperController@index')->name('shipper.index');;
+    Route::get('shipper', 'ShipperController@index')->name('shipper.index');
     Route::get('shipper/create', 'ShipperController@create')->name('shipper.create');
     Route::post('shipper/store', 'ShipperController@store')->name('shipper.store');
     Route::get('shipper/edit/{id}', 'ShipperController@edit')->name('shipper.edit');

@@ -316,13 +316,7 @@ class AdminSidebarMenu
                             );
                         }
 
-                        if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping']) ) {
-                            $sub->url(
-                                action('SellController@shipments'),
-                                __('lang_v1.shipments'),
-                                ['icon' => 'fa fas fa-truck', 'active' => request()->segment(1) == 'shipments']
-                            );
-                        }
+            
 
                         if (auth()->user()->can('discount.access')) {
                             $sub->url(
@@ -415,14 +409,22 @@ class AdminSidebarMenu
                         ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == null]
                     );
                 }
+            
                 if (auth()->user()->can('purchase.create')) {
                     $sub->url(
-                        action('ShipperController@create'),
-                        __('shipper.add'),
+                        action('ShipperController@createShipperType'),
+                        __('shipper.add_type'),
                         ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == 'create']
                     );
                 }
+                if (auth()->user()->can('purchase.create')) {
 
+                    $sub->url(
+                        action('SellController@shipments'),
+                        __('lang_v1.shipments'),
+                        ['icon' => 'fa fas fa-truck', 'active' => request()->segment(1) == 'shipments']
+                    );
+                }
                 
                
             },

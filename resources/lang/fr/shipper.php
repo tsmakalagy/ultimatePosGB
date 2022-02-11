@@ -22,8 +22,12 @@ return [
     'details' => 'Detail du livreur',
     'other_detail' => 'Autre detail',
     'shipper_details' => 'Details du livreur',
+    'shipper_type'=> 'Type du livreur',
     'list' => 'Liste des livreurs',
     'add' => 'Ajouter un livreur',
+    'add_type' => 'Ajout du type de livreur',
+    'list_shipper_type'=> 'Liste du type des livreurs',
+
     'all_shippers' => 'Tous les livreurs',
     'shipper_added_successfully' => 'Livreur ajouté avec succès',
     'delete_success' => 'Livreur supprimé avec succès',

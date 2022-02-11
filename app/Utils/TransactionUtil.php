@@ -19,6 +19,7 @@ use App\Restaurant\ResTable;
 use App\TaxRate;
 use App\Transaction;
 use App\Shipper;
+use App\ShipperType;
 use App\TransactionPayment;
 use App\TransactionSellLine;
 use App\TransactionSellLinesPurchaseLines;
@@ -4741,11 +4742,48 @@ class TransactionUtil extends Util
      * @return object
      */
     public function getListShippers()
-    {   $shippers= Shipper::All();
+    {   $shippers= Shipper::leftJoin(
+        'shipper_types',
+        'shippers.shipper_type_id',
+        '=',
+        'shipper_types.id'
+    )->select(
+        'shippers.id',
+        'shippers.shipper_name',
+        'shippers.tel',
+        'shippers.other_details',
+        'shipper_types.type'
+    );
 
   
 
         return $shippers;
+    }
+    public function getListShipperTypes()
+    {   $shippers= ShipperType::All();
+
+  
+
+        return $shippers;
+    }
+
+  public function getListShippersWithShipperType($id)
+    {  $shippers= Shipper::leftJoin(
+        'shipper_types',
+        'shippers.shipper_type_id',
+        '=',
+        'shipper_types.id'
+    )
+    ->findOrFail($id)
+    ->select(
+        'shippers.id',
+        'shippers.shipper_name',
+        'shippers.tel',
+        'shippers.other_details',
+        'shipper_types.type'
+    );
+
+    return $shippers;
     }
 
     /**

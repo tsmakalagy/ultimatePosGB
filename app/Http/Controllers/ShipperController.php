@@ -7,6 +7,7 @@ use App\Business;
 use App\BusinessLocation;
 use App\Contact;
 use App\Shipper;
+use App\ShipperType;
 use App\CustomerGroup;
 use App\InvoiceScheme;
 use App\SellingPriceGroup;
@@ -329,9 +330,7 @@ class ShipperController extends Controller
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
-                        if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
-                            $html .= '<li><a href="#" data-href="' . action("ShipperController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
-                        }
+                      
                         if (auth()->user()->can('product.update')) {
                             $html .=
                                 '<li><a target="_blank" href="' . action('ShipperController@edit', [$row->id]) . '"><i class="glyphicon glyphicon-edit"></i> ' . __("messages.edit") . '</a></li>';
@@ -453,6 +452,8 @@ class ShipperController extends Controller
                 })
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
                 ->editColumn('total_items', '')
+              
+     
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
                     $html = '';
 
@@ -462,7 +463,9 @@ class ShipperController extends Controller
                     $status = '';
                     return $status;
                 })
+                          
                 ->editColumn('so_qty_remaining', '')
+           
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
@@ -772,7 +775,7 @@ class ShipperController extends Controller
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
-
+    
                         if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
                             $html .= '<li><a href="#" data-href="' . action("SellController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
                         }
@@ -790,7 +793,7 @@ class ShipperController extends Controller
                                     $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             }
-
+    
                             $delete_link = '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __("messages.delete") . '</a></li>';
                             if ($row->is_direct_sale == 0) {
                                 if (auth()->user()->can("sell.delete")) {
@@ -806,15 +809,15 @@ class ShipperController extends Controller
                                 }
                             }
                         }
-
+    
                         if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
                             $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
-
+    
                             if (!empty($row->shipping_status)) {
                                 $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_paking_pdf") . '</a></li>';
                             }
                         }
-
+    
                         if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {
                             if (!empty($row->document)) {
                                 $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document;
@@ -824,11 +827,11 @@ class ShipperController extends Controller
                                 }
                             }
                         }
-
+    
                         if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
                             $html .= '<li><a href="#" data-href="' . action('SellController@editShipping', [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __("lang_v1.edit_shipping") . '</a></li>';
                         }
-
+    
                         if ($row->type == 'sell') {
                             if (auth()->user()->can("print_invoice")) {
                                 $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.print_invoice") . '</a></li>
@@ -839,25 +842,25 @@ class ShipperController extends Controller
                                 if ($row->payment_status != "paid" && auth()->user()->can("sell.payments")) {
                                     $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>';
                                 }
-
+    
                                 $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>';
-
+    
                                 if (auth()->user()->can("sell.create")) {
                                     $html .= '<li><a href="' . action('SellController@duplicateSell', [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>
-
+    
                                     <li><a href="' . action('SellReturnController@add', [$row->id]) . '"><i class="fas fa-undo"></i> ' . __("lang_v1.sell_return") . '</a></li>
-
+    
                                     <li><a href="' . action('SellPosController@showInvoiceUrl', [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i> ' . __("lang_v1.view_invoice_url") . '</a></li>';
                                 }
                             }
-
+    
                             $html .= '<li><a href="#" data-href="' . action('NotificationController@getTemplate', ["transaction_id" => $row->id, "template_for" => "new_sale"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_sale_notification") . '</a></li>';
                         } else {
                             $html .= '<li><a href="#" data-href="' . action('SellController@viewMedia', ["model_id" => $row->id, "model_type" => "App\Transaction", 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __("lang_v1.shipping_documents") . '</a></li>';
                         }
-
+    
                         $html .= '</ul></div>';
-
+    
                         return $html;
                     }
                 )
@@ -882,11 +885,11 @@ class ShipperController extends Controller
                     'discount_amount',
                     function ($row) {
                         $discount = !empty($row->discount_amount) ? $row->discount_amount : 0;
-
+    
                         if (!empty($discount) && $row->discount_type == 'percentage') {
                             $discount = $row->total_before_tax * ($discount / 100);
                         }
-
+    
                         return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
                     }
                 )
@@ -895,8 +898,7 @@ class ShipperController extends Controller
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
                     ->editColumn('shipping_address',
                     '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
-                ->editColumn('status_date_updating',
-                    '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
+               
                 ->editColumn('shipping_date',
                     '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
                 ->editColumn('shipping_charges',
@@ -915,8 +917,8 @@ class ShipperController extends Controller
                 ->addColumn('total_remaining', function ($row) {
                     $total_remaining = $row->final_total - $row->total_paid;
                     $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
-
-
+    
+    
                     return $total_remaining_html;
                 })
                 ->addColumn('return_due', function ($row) {
@@ -925,7 +927,7 @@ class ShipperController extends Controller
                         $return_due = $row->amount_return - $row->return_paid;
                         $return_due_html .= '<a href="' . action("TransactionPaymentController@show", [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
                     }
-
+    
                     return $return_due_html;
                 })
                 ->editColumn('invoice_no', function ($row) {
@@ -939,21 +941,21 @@ class ShipperController extends Controller
                     if (!empty($row->is_recurring)) {
                         $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
                     }
-
+    
                     if (!empty($row->recur_parent_id)) {
                         $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
                     }
-
+    
                     if (!empty($row->is_export)) {
                         $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
                     }
-
+    
                     return $invoice_no;
                 })
                 ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
                     $status_color = !empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
                     $status = !empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action('SellController@editShipping', [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
-
+    
                     return $status;
                 })
                 ->addColumn('shipper_name', function ($row) {
@@ -990,11 +992,23 @@ class ShipperController extends Controller
                         $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
                     });
                 })
+                ->filterColumn('shipping_charges', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_charges', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_date', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_date', 'like', "%{$keyword}%");
+                    });
+                })
+                
                 ->filterColumn('shipping_details', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
                     });
                 })
+             
                
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
                     $methods = array_unique($row->payment_lines->pluck('method')->toArray());
@@ -1005,14 +1019,14 @@ class ShipperController extends Controller
                     } elseif ($count > 1) {
                         $payment_method = __('lang_v1.checkout_multi_pay');
                     }
-
+    
                     $html = !empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
-
+    
                     return $html;
                 })
                 ->editColumn('status', function ($row) use ($sales_order_statuses, $is_admin) {
                     $status = '';
-
+    
                     if ($row->type == 'sales_order') {
                         if ($is_admin && $row->status != 'completed') {
                             $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action("SalesOrderController@getEditSalesOrderStatus", ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
@@ -1020,7 +1034,7 @@ class ShipperController extends Controller
                             $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
                         }
                     }
-
+    
                     return $status;
                 })
                 ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
@@ -1032,12 +1046,11 @@ class ShipperController extends Controller
                             return '';
                         }
                     }]);
-
+    
             $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
-
+    
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
-
 
             } else {
                 $sells = $this->transactionUtil->getListSellsWithShipper($business_id, $sale_type, $id);
@@ -1273,7 +1286,7 @@ class ShipperController extends Controller
                                         </span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
-
+    
                         if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.view") || auth()->user()->can("view_own_sell_only")) {
                             $html .= '<li><a href="#" data-href="' . action("SellController@show", [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-eye" aria-hidden="true"></i> ' . __("messages.view") . '</a></li>';
                         }
@@ -1291,7 +1304,7 @@ class ShipperController extends Controller
                                     $html .= '<li><a target="_blank" href="' . action('SellController@edit', [$row->id]) . '"><i class="fas fa-edit"></i> ' . __("messages.edit") . '</a></li>';
                                 }
                             }
-
+    
                             $delete_link = '<li><a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i> ' . __("messages.delete") . '</a></li>';
                             if ($row->is_direct_sale == 0) {
                                 if (auth()->user()->can("sell.delete")) {
@@ -1307,15 +1320,15 @@ class ShipperController extends Controller
                                 }
                             }
                         }
-
+    
                         if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
                             $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
-
+    
                             if (!empty($row->shipping_status)) {
                                 $html .= '<li><a href="' . route('packing.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_paking_pdf") . '</a></li>';
                             }
                         }
-
+    
                         if (auth()->user()->can("sell.view") || auth()->user()->can("direct_sell.access")) {
                             if (!empty($row->document)) {
                                 $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document;
@@ -1325,11 +1338,11 @@ class ShipperController extends Controller
                                 }
                             }
                         }
-
+    
                         if ($is_admin || auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
                             $html .= '<li><a href="#" data-href="' . action('SellController@editShipping', [$row->id]) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-truck" aria-hidden="true"></i>' . __("lang_v1.edit_shipping") . '</a></li>';
                         }
-
+    
                         if ($row->type == 'sell') {
                             if (auth()->user()->can("print_invoice")) {
                                 $html .= '<li><a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.print_invoice") . '</a></li>
@@ -1340,25 +1353,25 @@ class ShipperController extends Controller
                                 if ($row->payment_status != "paid" && auth()->user()->can("sell.payments")) {
                                     $html .= '<li><a href="' . action('TransactionPaymentController@addPayment', [$row->id]) . '" class="add_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.add_payment") . '</a></li>';
                                 }
-
+    
                                 $html .= '<li><a href="' . action('TransactionPaymentController@show', [$row->id]) . '" class="view_payment_modal"><i class="fas fa-money-bill-alt"></i> ' . __("purchase.view_payments") . '</a></li>';
-
+    
                                 if (auth()->user()->can("sell.create")) {
                                     $html .= '<li><a href="' . action('SellController@duplicateSell', [$row->id]) . '"><i class="fas fa-copy"></i> ' . __("lang_v1.duplicate_sell") . '</a></li>
-
+    
                                     <li><a href="' . action('SellReturnController@add', [$row->id]) . '"><i class="fas fa-undo"></i> ' . __("lang_v1.sell_return") . '</a></li>
-
+    
                                     <li><a href="' . action('SellPosController@showInvoiceUrl', [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i> ' . __("lang_v1.view_invoice_url") . '</a></li>';
                                 }
                             }
-
+    
                             $html .= '<li><a href="#" data-href="' . action('NotificationController@getTemplate', ["transaction_id" => $row->id, "template_for" => "new_sale"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_sale_notification") . '</a></li>';
                         } else {
                             $html .= '<li><a href="#" data-href="' . action('SellController@viewMedia', ["model_id" => $row->id, "model_type" => "App\Transaction", 'model_media_type' => 'shipping_document']) . '" class="btn-modal" data-container=".view_modal"><i class="fas fa-paperclip" aria-hidden="true"></i>' . __("lang_v1.shipping_documents") . '</a></li>';
                         }
-
+    
                         $html .= '</ul></div>';
-
+    
                         return $html;
                     }
                 )
@@ -1383,11 +1396,11 @@ class ShipperController extends Controller
                     'discount_amount',
                     function ($row) {
                         $discount = !empty($row->discount_amount) ? $row->discount_amount : 0;
-
+    
                         if (!empty($discount) && $row->discount_type == 'percentage') {
                             $discount = $row->total_before_tax * ($discount / 100);
                         }
-
+    
                         return '<span class="total-discount" data-orig-value="' . $discount . '">' . $this->transactionUtil->num_f($discount, true) . '</span>';
                     }
                 )
@@ -1396,8 +1409,7 @@ class ShipperController extends Controller
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
                     ->editColumn('shipping_address',
                     '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
-                ->editColumn('status_date_updating',
-                    '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
+               
                 ->editColumn('shipping_date',
                     '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
                 ->editColumn('shipping_charges',
@@ -1416,8 +1428,8 @@ class ShipperController extends Controller
                 ->addColumn('total_remaining', function ($row) {
                     $total_remaining = $row->final_total - $row->total_paid;
                     $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
-
-
+    
+    
                     return $total_remaining_html;
                 })
                 ->addColumn('return_due', function ($row) {
@@ -1426,7 +1438,7 @@ class ShipperController extends Controller
                         $return_due = $row->amount_return - $row->return_paid;
                         $return_due_html .= '<a href="' . action("TransactionPaymentController@show", [$row->return_transaction_id]) . '" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="' . $return_due . '">' . $this->transactionUtil->num_f($return_due, true) . '</span></a>';
                     }
-
+    
                     return $return_due_html;
                 })
                 ->editColumn('invoice_no', function ($row) {
@@ -1440,21 +1452,21 @@ class ShipperController extends Controller
                     if (!empty($row->is_recurring)) {
                         $invoice_no .= ' &nbsp;<small class="label bg-red label-round no-print" title="' . __('lang_v1.subscribed_invoice') . '"><i class="fas fa-recycle"></i></small>';
                     }
-
+    
                     if (!empty($row->recur_parent_id)) {
                         $invoice_no .= ' &nbsp;<small class="label bg-info label-round no-print" title="' . __('lang_v1.subscription_invoice') . '"><i class="fas fa-recycle"></i></small>';
                     }
-
+    
                     if (!empty($row->is_export)) {
                         $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
                     }
-
+    
                     return $invoice_no;
                 })
                 ->editColumn('shipping_status', function ($row) use ($shipping_statuses) {
                     $status_color = !empty($this->shipping_status_colors[$row->shipping_status]) ? $this->shipping_status_colors[$row->shipping_status] : 'bg-gray';
                     $status = !empty($row->shipping_status) ? '<a href="#" class="btn-modal" data-href="' . action('SellController@editShipping', [$row->id]) . '" data-container=".view_modal"><span class="label ' . $status_color . '">' . $shipping_statuses[$row->shipping_status] . '</span></a>' : '';
-
+    
                     return $status;
                 })
                 ->addColumn('shipper_name', function ($row) {
@@ -1491,11 +1503,23 @@ class ShipperController extends Controller
                         $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
                     });
                 })
+                ->filterColumn('shipping_charges', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_charges', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_date', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_date', 'like', "%{$keyword}%");
+                    });
+                })
+                
                 ->filterColumn('shipping_details', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
                     });
                 })
+             
                
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
                     $methods = array_unique($row->payment_lines->pluck('method')->toArray());
@@ -1506,14 +1530,14 @@ class ShipperController extends Controller
                     } elseif ($count > 1) {
                         $payment_method = __('lang_v1.checkout_multi_pay');
                     }
-
+    
                     $html = !empty($payment_method) ? '<span class="payment-method" data-orig-value="' . $payment_method . '" data-status-name="' . $payment_method . '">' . $payment_method . '</span>' : '';
-
+    
                     return $html;
                 })
                 ->editColumn('status', function ($row) use ($sales_order_statuses, $is_admin) {
                     $status = '';
-
+    
                     if ($row->type == 'sales_order') {
                         if ($is_admin && $row->status != 'completed') {
                             $status = '<span class="edit-so-status label ' . $sales_order_statuses[$row->status]['class'] . '" data-href="' . action("SalesOrderController@getEditSalesOrderStatus", ['id' => $row->id]) . '">' . $sales_order_statuses[$row->status]['label'] . '</span>';
@@ -1521,7 +1545,7 @@ class ShipperController extends Controller
                             $status = '<span class="label ' . $sales_order_statuses[$row->status]['class'] . '" >' . $sales_order_statuses[$row->status]['label'] . '</span>';
                         }
                     }
-
+    
                     return $status;
                 })
                 ->editColumn('so_qty_remaining', '{{@format_quantity($so_qty_remaining)}}')
@@ -1533,9 +1557,9 @@ class ShipperController extends Controller
                             return '';
                         }
                     }]);
-
+    
             $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
-
+    
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
             }
@@ -2101,16 +2125,7 @@ class ShipperController extends Controller
     }
 
 
-    /**
-     * info pour un article
-     * @param $id
-     * @return View
-     */
-    public function show($id)
-    {
-        $shipper = Shipper::findOrFail($id);
-        return view('shipper.show', compact('shipper'));
-    }
+  
 
     /**
      * Show the form for creating a new resource.
@@ -2122,9 +2137,12 @@ class ShipperController extends Controller
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
+        $shipper_types = ShipperType::pluck('type', 'id');
 
-        return view('shipper.create_modal');
+        return view('shipper.create_modal',compact('shipper_types'));
     }
+  
+   
 
     /**
      * Store a newly created resource in storage.
@@ -2136,12 +2154,13 @@ class ShipperController extends Controller
     {
         
         if ($request->filled('shipper_name', 'tel')) {
+            
             $shipper_name = $request->input('shipper_name');
             $type = $request->input('type');
             $tel = $request->input('tel');
             $other_details = $request->input('other_details');
 
-            $shipper = Shipper::firstOrCreate(['shipper_name' => $shipper_name, 'type' => $type, 'tel' => $tel, 'other_details' => $other_details]);
+            $shipper = Shipper::firstOrCreate(['shipper_name' => $shipper_name, 'shipper_type_id' => $type, 'tel' => $tel, 'other_details' => $other_details]);
             return redirect()->route('shipper.index');
 
 
@@ -2159,8 +2178,10 @@ class ShipperController extends Controller
     public function edit($id)
     {
         $shipper = Shipper::findOrFail($id);
+        $shipper_types = ShipperType::pluck('type', 'id');
 
-        return view('shipper.update', compact('shipper'));
+
+        return view('shipper.update', compact('shipper','shipper_types'));
 
     }
 
@@ -2193,15 +2214,45 @@ class ShipperController extends Controller
 
     }
 
-    /**
-     * method pour rechercher
+    //controller for shipper_type
+
+     /**
+     * Show the form for creating a new resource.
      *
-     * @return View
+     * @return \Illuminate\Http\Response
      */
-    public function search(Request $request)
+    public function createShipperType()
     {
-        $search = $request->input('search');
-        $shipper = Shipper::searchByTitle($search)->get();    //on utilise un scope searchByTitle dands le modele App
-        return view('shipper.index', compact('shipper', 'search'));
+        if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        return view('shipper.create_shipper_type');
     }
+    
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeShipperType(Request $request)
+    {
+        
+        if ($request->filled('shipper_type')) {
+            $shipper_type = $request->input('shipper_type');
+           
+
+            $shipper_type = ShipperType::firstOrCreate(['type' => $shipper_type]);
+            return redirect()->route('shipper.index');
+
+
+        } else {
+            return redirect()->route('shipper.index');
+        }
+
+    }
+
+
+
 }

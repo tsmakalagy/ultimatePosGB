@@ -44,7 +44,8 @@
                         <span class="input-group-addon">
                             <i class="fa fa-truck"></i>
                         </span>
-                        {!! Form::text('type', null, ['class' => 'form-control ','placeholder' => __('shipper.type'),]); !!}
+                        {!! Form::select('type', $shipper_types, null, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select')]); !!}
+
                     </div>
                 </div>
             </div>

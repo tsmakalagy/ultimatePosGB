@@ -766,8 +766,7 @@ class ProductController extends Controller
                 '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
                 ->editColumn('shipping_address',
                 '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
-            ->editColumn('status_date_updating',
-                '<span class="status_date_updating" data-orig-value="{{$status_date_updating}}">@if(!empty($status_date_updating)) {{$status_date_updating}} @endif </span>')
+           
             ->editColumn('shipping_date',
                 '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
             ->editColumn('shipping_charges',
@@ -861,11 +860,23 @@ class ProductController extends Controller
                     $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
                 });
             })
+            ->filterColumn('shipping_charges', function ($query, $keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('transactions.shipping_charges', 'like', "%{$keyword}%");
+                });
+            })
+            ->filterColumn('shipping_date', function ($query, $keyword) {
+                $query->where(function ($q) use ($keyword) {
+                    $q->where('transactions.shipping_date', 'like', "%{$keyword}%");
+                });
+            })
+            
             ->filterColumn('shipping_details', function ($query, $keyword) {
                 $query->where(function ($q) use ($keyword) {
                     $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
                 });
             })
+         
            
             ->addColumn('payment_methods', function ($row) use ($payment_types) {
                 $methods = array_unique($row->payment_lines->pluck('method')->toArray());

@@ -30,8 +30,9 @@
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('type', __('shipper.type') . ':*') !!}
-                                {!! Form::text('type', $shipper->type, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::label('shipper_type_id', __('shipper.type') . ':*') !!}
+                                {!! Form::select('shipper_type_id', $shipper_types, !empty($shipper->shipper_type_id) ? $shipper->shipper_type_id : null, ['class' => 'form-control', 'placeholder' => __('messages.please_select')]); !!}
+
                             </div>
                         </div>
                         <div class="col-md-6">

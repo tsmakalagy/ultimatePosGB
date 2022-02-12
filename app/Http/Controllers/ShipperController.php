@@ -2672,7 +2672,7 @@ class ShipperController extends Controller
            
 
             $shipper_type = ShipperType::firstOrCreate(['type' => $shipper_type]);
-            return redirect()->route('shipper.index_shipper_type');
+            return redirect()->route('shipper.shipperType');
 
 
         } else {

@@ -412,8 +412,8 @@ class AdminSidebarMenu
             
                 if (auth()->user()->can('purchase.create')) {
                     $sub->url(
-                        action('ShipperController@createShipperType'),
-                        __('shipper.add_type'),
+                        action('ShipperController@ShipperType'),
+                        __('shipper.list_shipper_type'),
                         ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == 'create']
                     );
                 }

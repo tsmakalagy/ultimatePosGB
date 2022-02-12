@@ -395,6 +395,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('shipper/type/edit/{id}', 'ShipperController@editShipperType')->name('shipper.editShipperType');
     Route::post('shipper/type/update/{id}', 'ShipperController@updateShipperType')->name('shipper.updateShipperType');
     Route::get('shipper/type/delete/{id}', 'ShipperController@deleteShipperType')->name('shipper.deleteShipperType');
+    //route for shippers shipperType
+    Route::get('get-shippers-shipperType','ShipperController@shipperswithShipperType');
 
     //route for the shipper sales
     Route::get('get-shipper-sales','ShipperController@shipperSell');

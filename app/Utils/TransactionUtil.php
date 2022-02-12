@@ -4754,11 +4754,10 @@ class TransactionUtil extends Util
         'shippers.other_details',
         'shipper_types.type'
     );
-
-  
-
         return $shippers;
     }
+
+
     public function getListShipperTypes()
     {   $shippers= ShipperType::All();
 
@@ -4767,14 +4766,14 @@ class TransactionUtil extends Util
         return $shippers;
     }
 
-  public function getListShippersWithShipperType($id)
+    public function getListShipperswihtShipperType($shipper_type_id)
     {  $shippers= Shipper::leftJoin(
         'shipper_types',
         'shippers.shipper_type_id',
         '=',
         'shipper_types.id'
     )
-    ->findOrFail($id)
+    ->where('shipper_types.id', $shipper_type_id)
     ->select(
         'shippers.id',
         'shippers.shipper_name',
@@ -4785,6 +4784,9 @@ class TransactionUtil extends Util
 
     return $shippers;
     }
+
+
+   
 
     /**
      * common function to get

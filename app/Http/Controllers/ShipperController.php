@@ -463,6 +463,26 @@ class ShipperController extends Controller
                     $status = '';
                     return $status;
                 })
+                ->filterColumn('name', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('type', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('shipper_types.type', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('tel', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('shippers.tel', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('other_details', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('shippers.other_details', 'like', "%{$keyword}%");
+                    });
+                })
                           
                 ->editColumn('so_qty_remaining', '')
            
@@ -2051,9 +2071,24 @@ class ShipperController extends Controller
                 })
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif {{$name}}')
                 ->editColumn('total_items', '{{@format_quantity($total_items)}}')
-                ->filterColumn('name', function ($query, $keyword) {
+                ->filterColumn('shipper_name', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_address', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_charges', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_charges', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_date', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_date', 'like', "%{$keyword}%");
                     });
                 })
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {

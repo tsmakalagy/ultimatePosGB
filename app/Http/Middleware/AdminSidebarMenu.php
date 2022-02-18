@@ -425,7 +425,7 @@ class AdminSidebarMenu
                         ['icon' => 'fa fas fa-truck', 'active' => request()->segment(1) == 'shipments']
                     );
                 }
-                
+ 
                
             },
             ['icon' => 'fa fas fa-arrow-circle-down', 'id' => 'tour_step6']

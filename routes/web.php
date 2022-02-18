@@ -129,6 +129,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/sells/draft-dt', 'SellController@getDraftDatables');
     Route::resource('sells', 'SellController')->except(['show']);
 
+   
+
     Route::get('/import-sales', 'ImportSalesController@index');
     Route::post('/import-sales/preview', 'ImportSalesController@preview');
     Route::post('/import-sales', 'ImportSalesController@import');
@@ -401,6 +403,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     //route for the shipper sales
     Route::get('get-shipper-sales','ShipperController@shipperSell');
     Route::get('shipper/sales/{id}','ShipperController@shipperSales');
+
+    //route for the test shipping address
+    Route::get('test_shipping_address','ShipperController@testAddress');
+    Route::post('test_shipping_address','ShipperController@testAddress');
 
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');

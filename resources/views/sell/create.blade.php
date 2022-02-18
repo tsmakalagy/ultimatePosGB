@@ -524,11 +524,11 @@
 		            {!! Form::textarea('shipping_details',null, ['class' => 'form-control','placeholder' => __('sale.shipping_details') ,'rows' => '3', 'cols'=>'30']); !!}
 		        </div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-4">				
 				<div class="form-group">
-		            {!! Form::label('shipping_address', __('lang_v1.shipping_address')) !!}
-		            {!! Form::textarea('shipping_address',null, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_address') ,'rows' => '3', 'cols'=>'30']); !!}
-		        </div>
+		            {!! Form::label('shipper_id', __('shipper.shipper')) !!}
+		            {!! Form::select('shipper_id',$shipper, null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
+				</div>			
 			</div>
 			<div class="col-md-4">
 				<div class="form-group">
@@ -548,12 +548,19 @@
 		            {!! Form::select('shipping_status',$shipping_statuses, null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
 		        </div>
 			</div>
+		
 			<div class="col-md-4">
-		        <div class="form-group">
-		            {!! Form::label('delivered_to', __('lang_v1.delivered_to') . ':' ) !!}
-		            {!! Form::text('delivered_to', null, ['class' => 'form-control','placeholder' => __('lang_v1.delivered_to')]); !!}
-		        </div>
-		    </div>
+				<div class="form-group">
+					{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
+					<div class="input-group">
+						<span class="input-group-addon">
+							<i class="fa fa-calendar"></i>
+						</span>
+						{!! Form::text('shipping_date', null, ['class' => 'form-control calendar', 'placeholder' => __('YYYY-MM-DD')]); !!}
+					</div>
+				</div>
+			</div>
+		
 		    @php
 		        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
 
@@ -662,30 +669,37 @@
                 </div>
             </div>
 			<div class="clearfix"></div>
-			<div class="col-md-4">
-				
-				<div class="form-group">
-		            {!! Form::label('shipper_id', __('shipper.shipper')) !!}
-					
-		            {!! Form::select('shipper_id',$shipper, null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
-		        
-				</div>
-				
-			</div>
-			<div class="@if(!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
+			
+			<div class="col-md-12">
+				<div class="col-md-6">
 					<div class="form-group">
-						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
-						<div class="input-group">
-							<span class="input-group-addon">
-								<i class="fa fa-calendar"></i>
-							</span>
-							{!! Form::text('shipping_date', null, ['class' => 'form-control calendar', 'placeholder' => __('YYYY-MM-DD')]); !!}
-						</div>
+						
+						{!! Form::label('shipper_type_id', __('lang_v1.shipping_address') . ':') !!}
+						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
+
+						
 					</div>
 				</div>
 
+				<div class="col-md-6">
+					<div class="form-group">
+						
+						{!! Form::label('address_id', __('lang_v1.shipping_address') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control" >
+							<option value=""selected>@lang('messages.please_select')</option>
+							</select> 
+					</div>
+				</div>
+			</div>
+
 			
 	        <div class="clearfix"></div>
+			<div class="col-md-12">
+				<div class="col-md-4">			
+				</div>
+			</div>
+			
+		
 
 		    <div class="col-md-4 col-md-offset-8">
 		    	@if(!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
@@ -826,6 +840,11 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function() {
+			$("#test").change(function () {
+				$('.cacher2').focus();		
+       // $('.cacher').prop('disabled',false);
+    });
+
     		$('#status').change(function(){
     			if ($(this).val() == 'final') {
     				$('#payment_rows_div').removeClass('hide');
@@ -895,6 +914,27 @@
 	                $('div.export_div').hide();
 	            }
 	        });
+
+			$("#shipper_type_id").change(function() {
+       var selectedbrand = $(this).val();
+ 
+$.ajax({
+        type: 'GET',
+        url: '/sells/create',
+        data: {selectedbrand:selectedbrand},
+        success: function(response) {
+		$("option").remove(".theOption");
+        var text = "";
+        var i;
+        for (i = 0; i < response.length; i++) {
+           
+           text+='<option value="'+response[i].id+'" class="theOption">'+response[i].nom+'</option>';
+    
+        }  $("#address_id").append(text);
+        }
+    });
+ 
+    }); 
     	});
     </script>
 @endsection

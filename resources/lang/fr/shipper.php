@@ -27,6 +27,7 @@ return [
     'add' => 'Ajouter un livreur',
     'add_type' => 'Ajout du type de livreur',
     'list_shipper_type'=> 'Liste du type des livreurs',
+    'test_address' => 'Test addresse',
 
     'all_shippers' => 'Tous les livreurs',
     'shipper_added_successfully' => 'Livreur ajouté avec succès',

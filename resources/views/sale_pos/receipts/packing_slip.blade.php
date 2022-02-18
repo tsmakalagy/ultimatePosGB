@@ -112,7 +112,9 @@
 	</div>
 	<div class="col-md-6 invoice-col width-50 word-wrap">
 		<strong>@lang('lang_v1.shipping_address'):</strong><br>
+		@if(!empty($receipt_details->shipping_address ))
 		{!! $receipt_details->shipping_address !!}
+		@endif
 		@if(!empty($receipt_details->shipping_custom_field_1_label))
 			<br><strong>{!!$receipt_details->shipping_custom_field_1_label!!} :</strong> {!!$receipt_details->shipping_custom_field_1_value ?? ''!!}
 		@endif

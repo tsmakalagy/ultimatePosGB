@@ -27,6 +27,8 @@ return [
     'list_shipper_type'=> 'List of Shippers type',
     'shipper_type'=> 'Shippers type',
     'all_shippers' => 'All shippers',
+    'test_address' => 'Test address',
+    
     'shipper_added_successfully' => 'Shipper added successfully',
     'delete_success' => 'Shipper deleted successfully',
     'view_details' => 'View shipper details',

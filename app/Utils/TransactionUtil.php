@@ -19,6 +19,7 @@ use App\Restaurant\ResTable;
 use App\TaxRate;
 use App\Transaction;
 use App\Shipper;
+use App\Address;
 use App\ShipperType;
 use App\TransactionPayment;
 use App\TransactionSellLine;
@@ -80,6 +81,7 @@ class TransactionUtil extends Util
             'is_quotation' => isset($input['is_quotation']) ? $input['is_quotation'] : 0,
             'shipping_details' => isset($input['shipping_details']) ? $input['shipping_details'] : null,
             'shipper_id' => isset($input['shipper_id']) ? $input['shipper_id'] : null,
+            'address_id' => isset($input['address_id']) ? $input['address_id'] : null,
             
             'shipping_address' => isset($input['shipping_address']) ? $input['shipping_address'] : null,
             'shipping_status' => isset($input['shipping_status']) ? $input['shipping_status'] : null,
@@ -184,6 +186,7 @@ class TransactionUtil extends Util
             'sub_status' => !empty($input['sub_status']) ? $input['sub_status'] : null,
             'shipping_details' => isset($input['shipping_details']) ? $input['shipping_details'] : null,
             'shipper_id' => isset($input['shipper_id']) ? $input['shipper_id'] : null,
+            'address_id' => isset($input['address_id']) ? $input['address_id'] : null,
          
             'shipping_date' => isset($input['shipping_date']) ? $input['shipping_date'] : null,
             'status_date_updating' => isset($input['status_date_updating']) ? $input['status_date_updating'] : null,
@@ -837,6 +840,14 @@ class TransactionUtil extends Util
         $il = $invoice_layout;
 
         $transaction = Transaction::find($transaction_id);
+              //address
+        $address = Address::join(
+                'transactions',
+                'addresses.id',
+                '=',
+                'transactions.address_id'
+            )->where('transactions.id', $transaction_id)->first();
+
         $transaction_type = $transaction->type;
 
         $output = [
@@ -1086,7 +1097,7 @@ class TransactionUtil extends Util
         //Invoice info
         $output['invoice_no'] = $transaction->invoice_no;
         $output['invoice_no_prefix'] = $il->invoice_no_prefix;
-        $output['shipping_address'] = !empty($transaction->shipping_address()) ? $transaction->shipping_address() : $transaction->shipping_address;
+        $output['shipping_address'] = !empty($address->nom) ? $address->nom :null;
 
         //Heading & invoice label, when quotation use the quotation heading.
         if ($transaction_type == 'sell_return') {
@@ -4656,6 +4667,12 @@ class TransactionUtil extends Util
                 'shippers.id'
             )
             ->leftJoin(
+                'addresses',
+                'transactions.address_id',
+                '=',
+                'addresses.id'
+            )
+            ->leftJoin(
                 'transactions AS SR',
                 'transactions.id',
                 '=',
@@ -4673,6 +4690,7 @@ class TransactionUtil extends Util
                 'transactions.id',
                 'transactions.shipping_date',
                 'shippers.shipper_name',
+                'addresses.nom',
                 'transactions.transaction_date',
                 'transactions.shipping_charges',
                 'transactions.status_date_updating',

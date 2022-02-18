@@ -14,12 +14,7 @@
 			        </div>
 			    </div>
 
-			    <div class="col-md-6">
-			        <div class="form-group">
-			            {!! Form::label('shipping_address', __('lang_v1.shipping_address') . ':' ) !!}
-			            {!! Form::textarea('shipping_address',!empty($transaction->shipping_address) ? $transaction->shipping_address : '', ['class' => 'form-control','placeholder' => __('lang_v1.shipping_address') ,'rows' => '4']); !!}
-			        </div>
-			    </div>
+		
 
 			    <div class="col-md-6">
 			        <div class="form-group">
@@ -28,12 +23,12 @@
 			        </div>
 			    </div>
 
-			    <div class="col-md-6">
-			        <div class="form-group">
-			            {!! Form::label('delivered_to', __('lang_v1.delivered_to') . ':' ) !!}
-			            {!! Form::text('delivered_to', !empty($transaction->delivered_to) ? $transaction->delivered_to : null, ['class' => 'form-control','placeholder' => __('lang_v1.delivered_to')]); !!}
-			        </div>
-			    </div>
+				<div class="col-md-6">				
+				<div class="form-group">
+		            {!! Form::label('shipping_charges', __('lang_v1.shipping_charges')) !!}
+					{!! Form::text('shipping_charges', !empty($transaction->shipping_charges) ? $transaction->shipping_charges : null, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_charges')]); !!}
+				</div>
+			</div>
 				<div class="col-md-6">
 					<div class="form-group">
 						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
@@ -51,12 +46,44 @@
 		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}
 				</div>				
 			</div>
-			<div class="col-md-6">				
-				<div class="form-group">
-		            {!! Form::label('shipping_charges', __('lang_v1.shipping_charges')) !!}
-					{!! Form::text('shipping_charges', !empty($transaction->shipping_charges) ? $transaction->shipping_charges : null, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_charges')]); !!}
+			<div class="col-md-12">
+				<div class="col-md-6">
+					<div class="form-group">
+						
+						{!! Form::label('shipper_type_id', __('lang_v1.shipping_address') . ':') !!}
+						
+						
+						<select name="shipper_type_id" id="shipper_type_id" class="form-control" >
+						
+							
+
+							<option value="3">@lang('messages.please_select')</option>
+							<option value="1">TANA-VILLE</option>
+							<option value="2">PROVINCE</option>
+
+							</select> 
+						
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group id_100">
+						
+						{!! Form::label('address_id', __('lang_v1.shipping_address') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control" >
+							
+							@if(isset($address))
+							@foreach($all_address as $all_addresses)
+							<option value="{{$all_addresses->id}}"  {{($all_addresses->id == $address->address_id) ? ' selected'  : null}}  class="theOption">{{$all_addresses->nom}}</option>
+							@endforeach							
+							@else
+							<option value="" class="theOption">@lang('messages.please_select')</option>
+							@endif
+							</select> 
+					</div>
 				</div>
 			</div>
+		
 			    @php
 			        $custom_labels = json_decode(session('business.custom_labels'), true);
 
@@ -223,5 +250,42 @@ var time = '<?php echo $carbon ?>';
                 ignoreReadonly: true,
             });
 
+//addresses
+var val=$("#address_id").val();	
+	$("#shipper_type_id").change(function() {
+	
+		
+   var selectedbrand = $(this).val();
+   var type_id = {{$type_id}};
+  
+   var form = $("form#edit_sell_form");
+   var url = form.attr('action');
+	$.ajax({
+	type: 'GET',
+	url: '/sells/edit-shipping/'+type_id,
+	data: {selectedbrand:selectedbrand},
+	success: function(response) {
+	
+
+	//$("option").remove(".theOption");
+	//$(".theOption").hide();
+	$("#address_id option").each(function (index) {
+        if ($(this).is(':selected')) {
+            $(this).prop('disabled', false);
+         }
+         else {
+            $(this).remove();
+         }
+      });
+	var text;
+	var i;
+	for (i = 0; i < response.length; i++) {
+	  
+	   text+='<option value="'+response[i].id+'" class="theOption">'+response[i].nom+'</option>';
+	} 
+	 $("#address_id").append(text);
+	}	
+});
+}); 
   	});
     </script>

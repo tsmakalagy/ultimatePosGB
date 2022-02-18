@@ -7,6 +7,9 @@ use App\Business;
 use App\BusinessLocation;
 use App\Contact;
 use App\Shipper;
+use App\Province;
+use App\CentreVille;
+use App\Address;
 use App\ShipperType;
 use App\CustomerGroup;
 use App\InvoiceScheme;
@@ -3200,5 +3203,51 @@ class ShipperController extends Controller
             ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses','shipper_type_id'));
     }
 
+
+    
+  /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function testAddress(Request $request)
+    {
+        if (request()->ajax()) {
+            //$centre_villes= CentreVille::pluck('commune', 'id');
+            $selectedbrand= $request->get('selectedbrand',false);
+            if($selectedbrand==1){
+                $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
+                return $addresses;
+            }  
+            if($selectedbrand==2){
+                $addresses= Address::where('id_indication',2)->get();
+                return $addresses;
+            }   
+            else{
+                return '';
+            }
+            }
+
+      //  $shipper_types = ShipperType::pluck('type', 'id');
+      $centre_villes= CentreVille::all();
+     
+        return view('shipper.test_shipping_address',compact('centre_villes'));
+    }
+    
+
+    public function test(Request $request)
+    {
+        $data = $request->all();
+        #create or update your data here
+
+       // return response()->json(['success'=>'Ajax request submitted successfully']);
+       if (request()->ajax()) {
+    return $request->get();
+    }
+    else{
+        return'error';
+    }
+    }
+    
 
 }

@@ -64,6 +64,7 @@
                         <th>@lang('sale.staff_note')</th>
                         <th>@lang('shipper.shipping_status')</th>
                         <th>@lang('shipper.shipper_name')</th>
+                        <th>@lang('lang_v1.shipping_address')</th>
                         <th>@lang('shipper.shipping_charges')</th>
                         <th>@lang('shipper.shipping_details')</th>
                         <th>@lang('shipper.shipping_date')</th>
@@ -186,6 +187,7 @@ $(document).ready( function(){
             { data: 'staff_note', name: 'staff_note'},
             { data: 'shipping_status', name: 'shipping_status'},
             { data: 'shipper_name', name: 'shipper_name'},
+            { data: 'shipping_address', name: 'shipping_address'},
             { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_details', name: 'shipping_details'},
             { data: 'shipping_date', name: 'shipping_date'},

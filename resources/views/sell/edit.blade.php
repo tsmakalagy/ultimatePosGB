@@ -480,11 +480,11 @@
 		            {!! Form::textarea('shipping_details',$transaction->shipping_details, ['class' => 'form-control','placeholder' => __('sale.shipping_details') ,'rows' => '3', 'cols'=>'30']); !!}
 		        </div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-4">				
 				<div class="form-group">
-		            {!! Form::label('shipping_address', __('lang_v1.shipping_address')) !!}
-		            {!! Form::textarea('shipping_address', $transaction->shipping_address, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_address') ,'rows' => '3', 'cols'=>'30']); !!}
-		        </div>
+		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
+		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}		        
+				</div>				
 			</div>
 			<div class="col-md-4">
 				<div class="form-group">
@@ -504,12 +504,20 @@
 		            {!! Form::select('shipping_status',$shipping_statuses, $transaction->shipping_status, ['class' => 'form-control shipping_change','placeholder' => __('messages.please_select')]); !!}
 		        </div>
 			</div>
+	
 			<div class="col-md-4">
-		        <div class="form-group">
-		            {!! Form::label('delivered_to', __('lang_v1.delivered_to') . ':' ) !!}
-		            {!! Form::text('delivered_to', $transaction->delivered_to, ['class' => 'form-control','placeholder' => __('lang_v1.delivered_to')]); !!}
-		        </div>
-		    </div>
+				<div class="form-group">
+					{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
+					<div class="input-group">
+						<span class="input-group-addon">
+							<i class="fa fa-calendar"></i>
+						</span>
+						{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? $transaction->shipping_date : null, ['class' => 'form-control date_shipping', 'readonly', 'required']);!!}
+						
+					</div>
+				</div>
+			</div>
+		
 		    @php
 		        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
 
@@ -607,12 +615,6 @@
 			        </div>
 			    </div>
 	        @endif
-			<div class="col-md-4">				
-				<div class="form-group">
-		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
-		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}		        
-				</div>				
-			</div>
 		
 	        <div class="col-md-4">
                 <div class="form-group">
@@ -628,19 +630,38 @@
                     @include('sell.partials.media_table', ['medias' => $medias, 'delete' => true])
                 </div>
             </div>
-			<div class="col-md-4">
+				<div class="col-md-12">
+				<div class="col-md-6">
 					<div class="form-group">
-						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
-						<div class="input-group">
-							<span class="input-group-addon">
-								<i class="fa fa-calendar"></i>
-							</span>
-							{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? $transaction->shipping_date : null, ['class' => 'form-control date_shipping', 'readonly', 'required']);!!}
-							
-						</div>
+						
+						{!! Form::label('shipper_type_id', __('lang_v1.shipping_address') . ':') !!}
+						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
+
+						
 					</div>
 				</div>
+
+				<div class="col-md-6">
+					<div class="form-group id_100">
+						
+						{!! Form::label('address_id', __('lang_v1.shipping_address') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control" >
+							
+							@if(isset($address))
+							@foreach($all_address as $all_addresses)
+							<option value="{{$all_addresses->id}}"  {{($all_addresses->id == $address->address_id) ? ' selected'  : null}}  class="theOption">{{$all_addresses->nom}}</option>
+							@endforeach							
+							@else
+							<option value="" class="theOption">@lang('messages.please_select')</option>
+							@endif
+							</select> 
+					</div>
+				</div>
+			</div>
+			
 	        <div class="clearfix"></div>
+		
+			
 		    <div class="col-md-4 col-md-offset-8">
 		    	@if(!empty($pos_settings['amount_rounding_method']) && $pos_settings['amount_rounding_method'] > 0)
 		    	<small id="round_off"><br>(@lang('lang_v1.round_off'): <span id="round_off_text">0</span>)</small>
@@ -829,6 +850,37 @@
                 format: 'YYYY-MM-DD HH:mm:ss',
                 ignoreReadonly: true,
             });
+	//addresses
+	var val=$("#address_id").val();	
+		$("#shipper_type_id").change(function() {
+		
+       var selectedbrand = $(this).val();
+	   var type_id = {{$type_id}};
+	  
+	   var form = $("form#edit_sell_form");
+	   var url = form.attr('action');
+		$.ajax({
+        type: 'GET',
+        url: '/sells/'+type_id+'/edit',
+        data: {selectedbrand:selectedbrand},
+        success: function(response) {
+			
+ 
+        $(".theOption").hide();
+        var text = '<option value="" class="theOption">@lang('messages.please_select')</option>';
+        var i;
+        for (i = 0; i < response.length; i++) {
+          
+           text+='<option value="'+response[i].id+'" class="theOption">'+response[i].nom+'</option>';
+    
+        } 
+         $("#address_id").append(text);
+		 
+        
+        }
+    });
+ 
+    }); 
 			
     	});
     </script>

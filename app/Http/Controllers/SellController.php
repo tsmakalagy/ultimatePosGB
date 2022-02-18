@@ -7,6 +7,7 @@ use App\Business;
 use App\BusinessLocation;
 use App\Contact;
 use App\Shipper;
+use App\Address;
 use App\CustomerGroup;
 use App\InvoiceScheme;
 use App\SellingPriceGroup;
@@ -458,7 +459,7 @@ class SellController extends Controller
                 ->editColumn('shipper_name',
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
                     ->editColumn('shipping_address',
-                    '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
+                    '<span class="shipping_address" data-orig-value="{{$nom}}">@if(!empty($nom)) {{$nom}} @endif </span>')
              
                 ->editColumn('shipping_date',
                     '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
@@ -550,7 +551,7 @@ class SellController extends Controller
                 })
                 ->filterColumn('shipping_address', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
-                        $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
+                        $q->where('addresses.nom', 'like', "%{$keyword}%");
                     });
                 })
                 ->filterColumn('shipping_charges', function ($query, $keyword) {
@@ -569,6 +570,7 @@ class SellController extends Controller
                         $q->where('transactions.shipping_details', 'like', "%{$keyword}%");
                     });
                 })
+        
              
                
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
@@ -643,7 +645,7 @@ class SellController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
         $sale_type = request()->get('sale_type', '');
 
@@ -659,6 +661,25 @@ class SellController extends Controller
 
 
         $business_id = request()->session()->get('user.business_id');
+
+        //requete ajax
+        if (request()->ajax()) {
+            //$centre_villes= CentreVille::pluck('commune', 'id');
+            $selectedbrand= $request->get('selectedbrand',false);
+            if($selectedbrand==1){
+                $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
+                return $addresses;
+            }  
+            if($selectedbrand==2){
+                $addresses= Address::where('id_indication',2)->select(['id','nom'])->get();
+                return $addresses;
+            }   
+            else{
+                return '';
+            }
+        }
+
+  
 
         //Check if subscribed or not, then check for users quota
         if (!$this->moduleUtil->isSubscribed($business_id)) {
@@ -739,6 +760,8 @@ class SellController extends Controller
         if ($sale_type == 'sales_order') {
             $status = 'ordered';
         }
+        
+      
 
         $shipper = Shipper::all()->pluck('shipper_name', 'id');
 
@@ -808,11 +831,20 @@ class SellController extends Controller
 
         $sell = $query->firstOrFail();
 
+        //shipper
         $shipper = Shipper::join(
             'transactions',
             'shippers.id',
             '=',
             'transactions.shipper_id'
+        )->where('transactions.id', $id)->first();
+        
+        //address
+        $address = Address::join(
+            'transactions',
+            'addresses.id',
+            '=',
+            'transactions.address_id'
         )->where('transactions.id', $id)->first();
 
         $activities = Activity::forSubject($sell)
@@ -867,6 +899,7 @@ class SellController extends Controller
                 'taxes',
                 'sell',
                 'shipper',
+                'address',
                 'payment_types',
                 'order_taxes',
                 'pos_settings',
@@ -887,13 +920,13 @@ class SellController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($id,Request $request)
     {
 
         if (!auth()->user()->can('direct_sell.update') && !auth()->user()->can('so.update')) {
             abort(403, 'Unauthorized action.');
         }
-
+$type_id=$id;
         //Check if the transaction can be edited or not.
         $edit_days = request()->session()->get('business.transaction_edit_days');
         if (!$this->transactionUtil->canBeEdited($id, $edit_days)) {
@@ -935,6 +968,32 @@ class SellController extends Controller
 
         $shippers = Shipper::pluck('shipper_name', 'id');
 
+    
+        $address = Address::join(
+            'transactions',
+            'addresses.id',
+            '=',
+            'transactions.address_id'
+        )->where('transactions.id', $id)->first();    
+
+        $all_address= Address::All();
+      
+        //requete ajax
+        if (request()->ajax()) {
+            //$centre_villes= CentreVille::pluck('commune', 'id');
+            $selectedbrand= $request->get('selectedbrand',false);
+            if($selectedbrand==1){
+                $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
+                return $addresses;
+            }  
+            if($selectedbrand==2){
+                $addresses= Address::where('id_indication',2)->select(['id','nom'])->get();
+                return $addresses;
+            }   
+            else{
+                return $all_address;
+            }
+        }
 
         $sell_details = TransactionSellLine::
         join(
@@ -1173,7 +1232,7 @@ class SellController extends Controller
         $change_return = $this->dummyPaymentLine;
         $carbon = \Carbon::now();
         return view('sell.edit')
-            ->with(compact('business_details', 'taxes', 'shipper', 'shippers', 'carbon', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return'));
+            ->with(compact('business_details', 'taxes', 'shipper', 'shippers', 'carbon', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return','type_id','address','all_address'));
     }
 
     /**
@@ -1522,12 +1581,42 @@ class SellController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function editShipping($id)
+    public function editShipping($id,Request $request)
     {
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
             abort(403, 'Unauthorized action.');
+        }
+
+        $type_id=$id;
+        $address = Address::join(
+            'transactions',
+            'addresses.id',
+            '=',
+            'transactions.address_id'
+        )->where('transactions.id', $type_id)->first();    
+
+        $all_address= Address::All();
+        //requete ajax
+        if (request()->ajax()) {
+            //$centre_villes= CentreVille::pluck('commune', 'id');
+            $selectedbrand= $request->get('selectedbrand',false);
+            if($selectedbrand==1){
+                $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
+                return $addresses;
+            }
+
+           if($selectedbrand==2){
+                $addresses= Address::where('id_indication',2)->select(['id','nom'])->get();
+                return $addresses;
+            }
+            if($selectedbrand==3){
+               
+                return $all_address;
+            }
+      
+          
         }
 
         $business_id = request()->session()->get('user.business_id');
@@ -1555,7 +1644,7 @@ class SellController extends Controller
             ->get();
         $carbon = \Carbon::now();
         return view('sell.partials.edit_shipping')
-            ->with(compact('transaction', 'shippers', 'shipper', 'shipping_statuses', 'activities', 'carbon'));
+            ->with(compact('transaction', 'shippers', 'shipper', 'shipping_statuses', 'activities', 'carbon','all_address','address','type_id'));
     }
 
     /**
@@ -1574,7 +1663,7 @@ class SellController extends Controller
 
         try {
             $input = $request->only([
-                'shipping_details', 'shipping_date', 'shipping_charges', 'shipping_address', 'shipper_id',
+                'shipping_details', 'shipping_date', 'shipping_charges', 'address_id', 'shipper_id',
                 'shipping_status', 'delivered_to', 'shipping_custom_field_1', 'shipping_custom_field_2', 'shipping_custom_field_3', 'shipping_custom_field_4', 'shipping_custom_field_5'
             ]);
 

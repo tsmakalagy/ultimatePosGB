@@ -551,7 +551,8 @@ class SellController extends Controller
                 })
                 ->filterColumn('shipping_address', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
-                        $q->where('addresses.nom', 'like', "%{$keyword}%");
+                        $q->where('addresses.nom', 'like', "%{$keyword}%")
+                        ->orWhere('addresses.lieu', 'like', "%{$keyword}%");
                     });
                 })
                 ->filterColumn('shipping_charges', function ($query, $keyword) {

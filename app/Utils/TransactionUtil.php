@@ -4691,6 +4691,7 @@ class TransactionUtil extends Util
                 'transactions.shipping_date',
                 'shippers.shipper_name',
                 'addresses.nom',
+                'addresses.lieu',
                 'transactions.transaction_date',
                 'transactions.shipping_charges',
                 'transactions.status_date_updating',

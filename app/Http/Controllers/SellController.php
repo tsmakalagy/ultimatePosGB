@@ -458,9 +458,12 @@ class SellController extends Controller
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
                 ->editColumn('shipper_name',
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
+                    ->editColumn('delivered_to',
+                    '<span class="delivered_to" data-orig-value="{{$nom}}">@if(!empty($nom)) {{$nom}} @endif </span>')
+                    ->editColumn('location',
+                    '<span class="location" data-orig-value="{{$lieu}}">@if(!empty($lieu)) {{$lieu}} @endif </span>')
                     ->editColumn('shipping_address',
-                    '<span class="shipping_address" data-orig-value="{{$nom}}">@if(!empty($nom)) {{$nom}} @endif </span>')
-             
+                    '<span class="shipping_address" data-orig-value="{{$shipping_address}}">@if(!empty($shipping_address)) {{$shipping_address}} @endif </span>')
                 ->editColumn('shipping_date',
                     '<span class="shipping_date"> {{@format_date($shipping_date)}} </span>')
                 ->editColumn('shipping_charges',
@@ -524,6 +527,14 @@ class SellController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
+                ->addColumn('delivered_to', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('location', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
                 ->addColumn('shipping_address', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -549,10 +560,16 @@ class SellController extends Controller
                         $q->where('shippers.shipper_name', 'like', "%{$keyword}%");
                     });
                 })
-                ->filterColumn('shipping_address', function ($query, $keyword) {
+                ->filterColumn('delivered_to', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('addresses.nom', 'like', "%{$keyword}%")
                         ->orWhere('addresses.lieu', 'like', "%{$keyword}%");
+                    });
+                })
+                ->filterColumn('shipping_address', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('transactions.shipping_address', 'like', "%{$keyword}%");
+                        
                     });
                 })
                 ->filterColumn('shipping_charges', function ($query, $keyword) {
@@ -611,7 +628,7 @@ class SellController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'delivered_to','types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'location','status'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);

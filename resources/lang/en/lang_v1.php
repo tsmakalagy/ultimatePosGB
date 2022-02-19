@@ -4,6 +4,7 @@ return [
     "enable_editing_product_from_purchase" => 'Enable editing product price from purchase screen',
     'sales_commission_agent' => 'Sales Commission Agent',
     'shipping_date' => 'Shipping date',
+    'location' => 'Location',
     'shipping_charges' => 'Shipping charges',
     'shipper_name' => 'Shipper',
     "delivery_fee" => "Delivery fee",

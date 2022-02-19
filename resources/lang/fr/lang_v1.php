@@ -7,6 +7,7 @@ return [
     'shipping_charges' => 'Frais de livraison',
     "delivery_fee" => "Frais de livraison",
     'shipper_name' => 'Livreur',
+    'location' => 'Lieu',
     "sales_commission_agents" => "Agents de la Commission",
     "disable" => "Désactiver",
     "logged_in_user" => "Utilisateur connecté",

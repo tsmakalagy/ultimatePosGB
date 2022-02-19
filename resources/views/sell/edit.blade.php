@@ -480,11 +480,11 @@
 		            {!! Form::textarea('shipping_details',$transaction->shipping_details, ['class' => 'form-control','placeholder' => __('sale.shipping_details') ,'rows' => '3', 'cols'=>'30']); !!}
 		        </div>
 			</div>
-			<div class="col-md-4">				
+			<div class="col-md-4">
 				<div class="form-group">
-		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
-		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}		        
-				</div>				
+		            {!! Form::label('shipping_address', __('lang_v1.shipping_address')) !!}
+		            {!! Form::textarea('shipping_address', $transaction->shipping_address, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_address') ,'rows' => '3', 'cols'=>'30']); !!}
+		        </div>
 			</div>
 			<div class="col-md-4">
 				<div class="form-group">
@@ -498,6 +498,14 @@
 				</div>
 			</div>
 			<div class="clearfix"></div>
+			<div class="col-md-4">				
+				<div class="form-group">
+		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
+		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}		        
+				</div>				
+			</div>
+		
+			
 			<div class="col-md-4">
 				<div class="form-group">
 		            {!! Form::label('shipping_status', __('lang_v1.shipping_status')) !!}
@@ -517,6 +525,34 @@
 					</div>
 				</div>
 			</div>
+
+			<div class="col-md-6">
+					<div class="form-group">
+						
+						{!! Form::label('shipper_type_id', __('lang_v1.delivered_to') . ':') !!}
+						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
+
+						
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group id_100">
+						
+						{!! Form::label('address_id', __('lang_v1.delivered_to') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control" >
+							
+							@if(isset($address))
+							@foreach($all_address as $all_addresses)
+							<option value="{{$all_addresses->id}}"  {{($all_addresses->id == $address->address_id) ? ' selected'  : null}}  class="theOption">{{$all_addresses->nom}}</option>
+							@endforeach							
+							@else
+							<option value="" class="theOption">@lang('messages.please_select')</option>
+							@endif
+							</select> 
+					</div>
+				</div>
+			
 		
 		    @php
 		        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
@@ -630,34 +666,7 @@
                     @include('sell.partials.media_table', ['medias' => $medias, 'delete' => true])
                 </div>
             </div>
-				<div class="col-md-12">
-				<div class="col-md-6">
-					<div class="form-group">
-						
-						{!! Form::label('shipper_type_id', __('lang_v1.shipping_address') . ':') !!}
-						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
-
-						
-					</div>
-				</div>
-
-				<div class="col-md-6">
-					<div class="form-group id_100">
-						
-						{!! Form::label('address_id', __('lang_v1.shipping_address') . ':') !!}
-						<select name="address_id" id="address_id" class="form-control" >
-							
-							@if(isset($address))
-							@foreach($all_address as $all_addresses)
-							<option value="{{$all_addresses->id}}"  {{($all_addresses->id == $address->address_id) ? ' selected'  : null}}  class="theOption">{{$all_addresses->nom}}</option>
-							@endforeach							
-							@else
-							<option value="" class="theOption">@lang('messages.please_select')</option>
-							@endif
-							</select> 
-					</div>
-				</div>
-			</div>
+			
 			
 	        <div class="clearfix"></div>
 		

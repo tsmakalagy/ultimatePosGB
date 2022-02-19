@@ -15,6 +15,12 @@
 			    </div>
 
 		
+				<div class="col-md-6">
+					<div class="form-group">
+						{!! Form::label('shipping_address', __('lang_v1.shipping_address') . ':' ) !!}
+						{!! Form::textarea('shipping_address',!empty($transaction->shipping_address) ? $transaction->shipping_address : '', ['class' => 'form-control','placeholder' => __('lang_v1.shipping_address') ,'rows' => '4']); !!}
+					</div>
+				</div>
 
 			    <div class="col-md-6">
 			        <div class="form-group">
@@ -29,6 +35,7 @@
 					{!! Form::text('shipping_charges', !empty($transaction->shipping_charges) ? $transaction->shipping_charges : null, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_charges')]); !!}
 				</div>
 			</div>
+			
 				<div class="col-md-6">
 					<div class="form-group">
 						{!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
@@ -40,17 +47,19 @@
 						</div>
 					</div>
 				</div>
+
+				
 				<div class="col-md-6">
 				<div class="form-group">
 		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
 		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}
 				</div>				
 			</div>
-			<div class="col-md-12">
+
 				<div class="col-md-6">
 					<div class="form-group">
 						
-						{!! Form::label('shipper_type_id', __('lang_v1.shipping_address') . ':') !!}
+						{!! Form::label('shipper_type_id', __('lang_v1.delivered_to') . ':') !!}
 						
 						
 						<select name="shipper_type_id" id="shipper_type_id" class="form-control" >
@@ -69,7 +78,7 @@
 				<div class="col-md-6">
 					<div class="form-group id_100">
 						
-						{!! Form::label('address_id', __('lang_v1.shipping_address') . ':') !!}
+						{!! Form::label('address_id', __('lang_v1.delivered_to') . ':') !!}
 						<select name="address_id" id="address_id" class="form-control" >
 							
 							@if(isset($address))
@@ -82,7 +91,7 @@
 							</select> 
 					</div>
 				</div>
-			</div>
+	
 		
 			    @php
 			        $custom_labels = json_decode(session('business.custom_labels'), true);

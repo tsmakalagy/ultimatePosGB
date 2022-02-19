@@ -1097,7 +1097,8 @@ class TransactionUtil extends Util
         //Invoice info
         $output['invoice_no'] = $transaction->invoice_no;
         $output['invoice_no_prefix'] = $il->invoice_no_prefix;
-        $output['shipping_address'] = !empty($address->nom) ? $address->nom :null;
+        $output['shipping_address'] = !empty($transaction->shipping_address()) ? $transaction->shipping_address() : $transaction->shipping_address;
+
 
         //Heading & invoice label, when quotation use the quotation heading.
         if ($transaction_type == 'sell_return') {

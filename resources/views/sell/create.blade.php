@@ -524,11 +524,11 @@
 		            {!! Form::textarea('shipping_details',null, ['class' => 'form-control','placeholder' => __('sale.shipping_details') ,'rows' => '3', 'cols'=>'30']); !!}
 		        </div>
 			</div>
-			<div class="col-md-4">				
+			<div class="col-md-4">
 				<div class="form-group">
-		            {!! Form::label('shipper_id', __('shipper.shipper')) !!}
-		            {!! Form::select('shipper_id',$shipper, null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
-				</div>			
+		            {!! Form::label('shipping_address', __('lang_v1.shipping_address')) !!}
+		            {!! Form::textarea('shipping_address',null, ['class' => 'form-control','placeholder' => __('lang_v1.shipping_address') ,'rows' => '3', 'cols'=>'30']); !!}
+		        </div>
 			</div>
 			<div class="col-md-4">
 				<div class="form-group">
@@ -541,7 +541,16 @@
 					</div>
 				</div>
 			</div>
+		
 			<div class="clearfix"></div>
+		
+			<div class="col-md-4">				
+				<div class="form-group">
+		            {!! Form::label('shipper_id', __('shipper.shipper')) !!}
+		            {!! Form::select('shipper_id',$shipper, null, ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}
+				</div>			
+			</div>
+			
 			<div class="col-md-4">
 				<div class="form-group">
 		            {!! Form::label('shipping_status', __('lang_v1.shipping_status')) !!}
@@ -560,6 +569,27 @@
 					</div>
 				</div>
 			</div>
+	
+				<div class="col-md-6">
+					<div class="form-group">
+						
+						{!! Form::label('shipper_type_id', __('lang_v1.delivered_to') . ':') !!}
+						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
+
+						
+					</div>
+				</div>
+
+				<div class="col-md-6">
+					<div class="form-group">
+						
+						{!! Form::label('address_id', __('lang_v1.delivered_to') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control" >
+							<option value=""selected>@lang('messages.please_select')</option>
+							</select> 
+					</div>
+				</div>
+			
 		
 		    @php
 		        $shipping_custom_label_1 = !empty($custom_labels['shipping']['custom_field_1']) ? $custom_labels['shipping']['custom_field_1'] : '';
@@ -670,27 +700,6 @@
             </div>
 			<div class="clearfix"></div>
 			
-			<div class="col-md-12">
-				<div class="col-md-6">
-					<div class="form-group">
-						
-						{!! Form::label('shipper_type_id', __('lang_v1.shipping_address') . ':') !!}
-						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
-
-						
-					</div>
-				</div>
-
-				<div class="col-md-6">
-					<div class="form-group">
-						
-						{!! Form::label('address_id', __('lang_v1.shipping_address') . ':') !!}
-						<select name="address_id" id="address_id" class="form-control" >
-							<option value=""selected>@lang('messages.please_select')</option>
-							</select> 
-					</div>
-				</div>
-			</div>
 
 			
 	        <div class="clearfix"></div>

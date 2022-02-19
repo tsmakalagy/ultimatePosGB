@@ -89,6 +89,8 @@
                             <th>@lang('lang_v1.shipping_date')</th>
                             <th>@lang('shipper.shipping_details')</th>
                             <th>@lang('lang_v1.shipping_address')</th>
+                            <th>@lang('lang_v1.delivered_to')</th>
+                            <th>@lang('lang_v1.location')</th>
                             <th>@lang('sale.total_amount')</th>
                             <th>@lang('sale.total_paid')</th>
                             <th>@lang('lang_v1.sell_due')</th>
@@ -226,6 +228,8 @@ $(document).ready( function(){
             { data: 'shipping_date', name: 'shipping_date'},
             { data: 'shipping_details', name: 'shipping_details'},
             { data: 'shipping_address', name: 'shipping_address'},
+            { data: 'delivered_to', name: 'delivered_to'},
+            { data: 'location', name: 'location'},
             { data: 'final_total', name: 'final_total'},
             { data: 'total_paid', name: 'total_paid', "searchable": false},
             { data: 'total_remaining', name: 'total_remaining'},

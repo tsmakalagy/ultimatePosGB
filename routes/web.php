@@ -406,7 +406,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
 
     //route for the test shipping address
     Route::get('test_shipping_address','ShipperController@testAddress');
-    Route::post('test_shipping_address','ShipperController@testAddress');
+    Route::post('details','ShipperController@imageStore');
 
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');

@@ -18,7 +18,7 @@
   $form_class = empty($duplicate_product) ? 'create' : '';
 @endphp
 {!! Form::open(['url' => action('ProductController@store'), 'method' => 'post', 
-    'id' => 'product_add_form','class' => 'product_form ' . $form_class, 'files' => true ]) !!}
+    'id' => 'product_add_form','class' => 'product_form ' . $form_class, 'files' => true,'enctype' =>'multipart/form-data' ]) !!}
     @component('components.widget', ['class' => 'box-primary'])
         <div class="row">
         <div class="col-sm-4">
@@ -149,10 +149,15 @@
         <div class="col-sm-4">
           <div class="form-group">
             {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
-            {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
+       
+          <!--  <input type="file" id="upload_image" name="image[]" multiple><br><br>-->
+          {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
             <small><p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)]) <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p></small>
           </div>
+         
         </div>
+  
+       
         </div>
         <div class="col-sm-4">
           <div class="form-group">
@@ -187,7 +192,7 @@
             <div class="form-group">
               <div class="multi-input">
                 {!! Form::label('expiry_period', __('product.expires_in') . ':') !!}<br>
-                {!! Form::text('expiry_period', !empty($duplicate_product->expiry_period) ? @num_format($duplicate_product->expiry_period) : $expiry_period, ['class' => 'form-control pull-left input_number',
+            {!! Form::text('expiry_period', !empty($duplicate_product->expiry_period) ? @num_format($duplicate_product->expiry_period) : $expiry_period, ['class' => 'form-control pull-left input_number',
                   'placeholder' => __('product.expiry_period'), 'style' => 'width:60%;']); !!}
                 {!! Form::select('expiry_period_type', ['months'=>__('product.months'), 'days'=>__('product.days'), '' =>__('product.not_applicable') ], !empty($duplicate_product->expiry_period_type) ? $duplicate_product->expiry_period_type : 'months', ['class' => 'form-control select2 pull-left', 'style' => 'width:40%;', 'id' => 'expiry_period_type']); !!}
               </div>
@@ -380,6 +385,35 @@
                 //     console.log('Pressed: ' + iKeyCode);
                 // }
             });
+          /*  $("#mybutton").click(function(){
+             var val= $('#upload_image').files.length;
+        alert(val);
+        //$('#upload_image').val('');
+            });
+            $('#upload_image').change(function(){
+              var val= $('#upload_image').val();
+              alert(val); 
+            })*/
+            /*arguments
+            var replaceMe = function(){
+	  var obj = $(this);
+	$(obj).css({'position':'absolute','left':'-9999px','display':'none'}).parent().prepend('<input type="file" name="'+obj.attr('name')+'"/>')
+	$('#upload_list').append('<div>'+obj.val()+'<input type="button" value="cancel"/><div>');
+	$("input[type='file']").change(replaceMe);
+	$("input[type='button']").click(function(){
+		$(this).parent().remove();
+		$(obj).remove();
+	});
+}
+$("input[type='file']").change(function(){
+  var obj = $(this);
+	$(obj).css({'position':'absolute','left':'-9999px','display':'none'}).parent().prepend('<input type="file" name="'+obj.attr('name')+'"/>')
+	$('#upload_list').append('<div>'+obj.val()+'<input type="button" value="cancel"/><div>');
+	$("input[type='file']").change(replaceMe);
+	$("input[type='button']").click(function(){
+		$(this).parent().remove();
+		$(obj).remove();
+});*/
         });
     </script>
 @endsection

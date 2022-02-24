@@ -8,6 +8,7 @@ use App\BusinessLocation;
 use App\Category;
 use App\Media;
 use App\Product;
+use App\Image;
 use App\ProductVariation;
 use App\PurchaseLine;
 use App\SellingPriceGroup;
@@ -1042,7 +1043,7 @@ class ProductController extends Controller
         if (!auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
-
+     
         try {
             $business_id = $request->session()->get('user.business_id');
             $form_fields = ['name', 'brand_id', 'unit_id', 'category_id', 'tax', 'type', 'barcode_type', 'sku', 'alert_quantity', 'tax_type', 'weight', 'product_custom_field1', 'product_custom_field2', 'product_custom_field3', 'product_custom_field4', 'product_description', 'sub_unit_ids'];
@@ -1051,8 +1052,9 @@ class ProductController extends Controller
             if (!empty($module_form_fields)) {
                 $form_fields = array_merge($form_fields, $module_form_fields);
             }
-            
+         
             $product_details = $request->only($form_fields);
+           // dd($request);
             $product_details['business_id'] = $business_id;
             $product_details['created_by'] = $request->session()->get('user.id');
 
@@ -1083,14 +1085,15 @@ class ProductController extends Controller
 
             //upload document
             $product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
+
             $common_settings = session()->get('business.common_settings');
 
             $product_details['warranty_id'] = !empty($request->input('warranty_id')) ? $request->input('warranty_id') : null;
 
             DB::beginTransaction();
-
             $product = Product::create($product_details);
-
+            
+         
             if (empty(trim($request->input('sku')))) {
                 $sku = $this->productUtil->generateProductSku($product->id);
                 $product->sku = $sku;
@@ -1141,7 +1144,11 @@ class ProductController extends Controller
             if (!empty($request->input('has_module_data'))) {
                 $this->moduleUtil->getModuleData('after_product_saved', ['product' => $product, 'request' => $request]);
             }
-
+         /*   $product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
+            //dd($product_details['image']);
+           foreach($product_details['image'] as $image){
+            $image=Image::create(['product_id'=>$product->id,'image'=>$image]);
+           }*/
             Media::uploadMedia($product->business_id, $product, $request, 'product_brochure', true);
 
             DB::commit();

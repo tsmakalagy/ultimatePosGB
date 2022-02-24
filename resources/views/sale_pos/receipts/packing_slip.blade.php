@@ -31,6 +31,9 @@
 		@if(!empty($receipt_details->display_name))
 			<p>
 				{{$receipt_details->display_name}}
+				<!-- NIF-STAT -->
+	<br>	@lang('lang_v1.NIF:') 4002930550 
+	<br>	@lang('lang_v1.STAT:') 46101 11 2018 0 10086
 				@if(!empty($receipt_details->address))
 					<br/>{!! $receipt_details->address !!}
 				@endif
@@ -59,10 +62,10 @@
 	</div>
 
 	<div class="col-md-6 invoice-col width-50">
-
+	
 		<p class="text-right font-30">
 			@if(!empty($receipt_details->invoice_no_prefix))
-				<span class="pull-left">{!! $receipt_details->invoice_no_prefix !!}</span>
+				<span class="pull-left">{{__('lang_v1.'. $receipt_details->invoice_no_prefix) }}</span>
 			@endif
 
 			{{$receipt_details->invoice_no}}
@@ -82,9 +85,9 @@
 
 <div class="row invoice-info ">
 	<br/>
-	<div class="col-md-6 invoice-col width-50 word-wrap">
+	<div class="col-md-4 invoice-col word-wrap">
 		@if(!empty($receipt_details->customer_label))
-			<b>{{ $receipt_details->customer_label }}</b><br/>
+			<b>{{ __('lang_v1.'. $receipt_details->customer_label) }}</b><br/>
 		@endif
 
 		<!-- customer info -->
@@ -110,7 +113,7 @@
 			<strong>{{ $receipt_details->sales_person_label }}</strong> {{ $receipt_details->sales_person }}
 		@endif
 	</div>
-	<div class="col-md-6 invoice-col width-50 word-wrap">
+	<div class="col-md-4 invoice-col word-wrap">
 		<strong>@lang('lang_v1.shipping_address'):</strong><br>
 		{!! $receipt_details->shipping_address !!}
 		@if(!empty($receipt_details->shipping_custom_field_1_label))
@@ -133,6 +136,7 @@
 			<br><strong>{!!$receipt_details->shipping_custom_field_2_label!!}:</strong> {!!$receipt_details->shipping_custom_field_5_value ?? ''!!}
 		@endif
 	</div>
+
 </div>
 
 <div class="row ">
@@ -144,11 +148,11 @@
 					<th class="text-left" style="background-color: #357ca5 !important;  width: 5% !important ">#</th>
 					
 					<th class="text-left" style="background-color: #357ca5 !important; border: 1px solid blac width: 65% !important">
-						{{$receipt_details->table_product_label}}
+						{{__('lang_v1.'. $receipt_details->table_product_label)}}
 					</th>
 					
 					<th class="text-left" style="background-color: #357ca5 !important; border: 1px solid blac width: 30% !important;">
-						{{$receipt_details->table_qty_label}}
+						{{__('lang_v1.'. $receipt_details->table_qty_label)}}
 					</th>
 				</tr>
 			</thead>

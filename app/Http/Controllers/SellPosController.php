@@ -149,6 +149,7 @@ class SellPosController extends Controller
      */
     public function create()
     {
+    
         $business_id = request()->session()->get('user.business_id');
 
         if (!(auth()->user()->can('superadmin') || auth()->user()->can('sell.create') || ($this->moduleUtil->hasThePermissionInSubscription($business_id, 'repair_module') && auth()->user()->can('repair.create')))) {
@@ -680,6 +681,9 @@ class SellPosController extends Controller
 
         $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
 
+        //nom utilisateur
+        $user=auth()->user();
+        
         $currency_details = [
             'symbol' => $business_details->currency_symbol,
             'thousand_separator' => $business_details->thousand_separator,
@@ -688,7 +692,7 @@ class SellPosController extends Controller
         $receipt_details->currency = $currency_details;
         
         if ($is_package_slip) {
-            $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details'))->render();
+            $output['html_content'] = view('sale_pos.receipts.packing_slip', compact('receipt_details','user'))->render();
             return $output;
         }
         //If print type browser - return the content, printer - return printer config data, and invoice format config
@@ -698,8 +702,8 @@ class SellPosController extends Controller
             $output['data'] = $receipt_details;
         } else {
             $layout = !empty($receipt_details->design) ? 'sale_pos.receipts.' . $receipt_details->design : 'sale_pos.receipts.classic';
-
-            $output['html_content'] = view($layout, compact('receipt_details'))->render();
+            $user=auth()->user();
+            $output['html_content'] = view($layout, compact('receipt_details','user'))->render();
         }
         
         return $output;
@@ -2591,7 +2595,7 @@ class SellPosController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $receipt_contents = $this->transactionUtil->getPdfContentsForGivenTransaction($business_id, $id);
-         dd($receipt_contents);
+         //dd($receipt_contents);
          $receipt_details = $receipt_contents['receipt_details'];
         $location_details = $receipt_contents['location_details'];
         $is_email_attachment = false;

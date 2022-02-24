@@ -6,6 +6,7 @@ use App\Account;
 use App\Business;
 use App\BusinessLocation;
 use App\Contact;
+use App\Image;
 use App\Shipper;
 use App\Province;
 use App\CentreVille;
@@ -3212,41 +3213,34 @@ class ShipperController extends Controller
      */
     public function testAddress(Request $request)
     {
-        if (request()->ajax()) {
-            //$centre_villes= CentreVille::pluck('commune', 'id');
-            $selectedbrand= $request->get('selectedbrand',false);
-            if($selectedbrand==1){
-                $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
-                return $addresses;
-            }  
-            if($selectedbrand==2){
-                $addresses= Address::where('id_indication',2)->get();
-                return $addresses;
-            }   
-            else{
-                return '';
-            }
-            }
-
-      //  $shipper_types = ShipperType::pluck('type', 'id');
-      $centre_villes= CentreVille::all();
+    
      
-        return view('shipper.test_shipping_address',compact('centre_villes'));
+        return view('shipper.test_shipping_address');
     }
     
 
-    public function test(Request $request)
-    {
-        $data = $request->all();
-        #create or update your data here
+  
+    public function imageStore(request $request) {
 
-       // return response()->json(['success'=>'Ajax request submitted successfully']);
-       if (request()->ajax()) {
-    return $request->get();
-    }
-    else{
-        return'error';
-    }
+        $input=$request->all();
+        $images=array();
+        if($files=$request->file('images')){
+            foreach($files as $file){
+                $name=$file->getClientOriginalName();
+                $file->move('image',$name);
+                $images[]=$name;
+            }
+        }
+        /*Insert your data*/
+    
+        Image::insert( [
+            'image'=>  implode("|",$images),
+            'product_id' =>1,
+            //you can put other insertion here
+        ]);
+    
+    
+        return redirect('redirecting page');
     }
     
 

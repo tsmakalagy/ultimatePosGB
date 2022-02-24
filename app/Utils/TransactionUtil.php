@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Utils\ModuleUtil;
 use App\Utils\BusinessUtil;
+use Mpdf\Tag\Br;
 
 class TransactionUtil extends Util
 {
@@ -849,9 +850,10 @@ class TransactionUtil extends Util
             )->where('transactions.id', $transaction_id)->first();
 
         $transaction_type = $transaction->type;
-
+        $text='Going Beyond SARL<br>NIF 4002930550 -STAT 46101112018010086<br>Lot IVH 42 E Bis Anosisoa Ambohimanarina<br>Tel: 034 06 940 48<br>Email: contact@goingbeyond.mg';                                 
+            
         $output = [
-            'header_text' => isset($il->header_text) ? $il->header_text : '',
+            'header_text' => isset($il->header_text) ? $il->header_text : $text,
             'business_name' => ($il->show_business_name == 1) ? $business_details->name : '',
             'location_name' => ($il->show_location_name == 1) ? $location_details->name : '',
             'sub_heading_line1' => trim($il->sub_heading_line1),
@@ -1087,12 +1089,14 @@ class TransactionUtil extends Util
         }
 
         //commission agent info
-        $output['commission_agent'] = '';
-        $output['commission_agent_label'] = '';
-        if ($il->show_commission_agent == 1) {
-            $output['commission_agent_label'] = !empty($il->commission_agent_label) ? $il->commission_agent_label : '';
+      //  $output['commission_agent'] = '';
+        //$output['commission_agent_label'] = '';
+      //  if ($il->show_commission_agent == 1) {
+            $output['commission_agent_label'] = 'Commission Agent';
             $output['commission_agent'] = !empty($transaction->sale_commission_agent->user_full_name) ? $transaction->sale_commission_agent->user_full_name : '';
-        }
+            $output['commission_agent_mobile'] = !empty($transaction->sale_commission_agent->contact_no) ? $transaction->sale_commission_agent->contact_no : '';
+
+            //}
 
         //Invoice info
         $output['invoice_no'] = $transaction->invoice_no;

@@ -1,28 +1,38 @@
 <!-- business information here -->
 
 <div class="row">
-
-	<!-- Logo -->
-	@if(!empty($receipt_details->logo))
-		<img style="max-height: 120px; width: auto;" src="{{$receipt_details->logo}}" class="img img-responsive center-block">
-	@endif
+	<br>
+		
+<p>
 
 	<!-- Header text -->
 	@if(!empty($receipt_details->header_text))
-		<div class="col-xs-12">
+	<div class="col-xs-6 text-left">
 			{!! $receipt_details->header_text !!}
-		</div>
+	</div>
 	@endif
+	
+<!-- Logo -->
+@if(!empty($receipt_details->logo))
+<div class="col-xs-6 text-right" >
+	<img style="max-height: 120px; width: auto;" src="{{$receipt_details->logo}}" class="img img-responsive center-block">
+</div>	
+@endif
+</p>	
 
 	<!-- business information here -->
 	<div class="col-xs-12 text-center">
+		@if(!empty($receipt_details->heade))
 		<h2 class="text-center">
 			<!-- Shop & Location Name  -->
 			@if(!empty($receipt_details->display_name))
 				{{$receipt_details->display_name}}
 			@endif
 		</h2>
-
+		<!-- NIF-STAT -->
+		<div class="text-center"><strong>@lang('lang_v1.NIF:')</strong> 4002930550, 
+		<strong>@lang('lang_v1.STAT:')</strong> 46101 11 2018 0 10086</div>
+	
 		<!-- Address -->
 		<p>
 		@if(!empty($receipt_details->address))
@@ -69,11 +79,11 @@
 			<b>{{ $receipt_details->tax_label2 }}</b> {{ $receipt_details->tax_info2 }}
 		@endif
 		</p>
-
+		@endif
 		<!-- Title of receipt -->
 		@if(!empty($receipt_details->invoice_heading))
 			<h3 class="text-center">
-				{!! $receipt_details->invoice_heading !!}
+				{{__('lang_v1.'.$receipt_details->invoice_heading)}}
 			</h3>
 		@endif
 
@@ -81,7 +91,7 @@
 		<p style="width: 100% !important" class="word-wrap">
 			<span class="pull-left text-left word-wrap">
 				@if(!empty($receipt_details->invoice_no_prefix))
-					<b>{!! $receipt_details->invoice_no_prefix !!}</b>
+					<b>{{__('lang_v1.'.$receipt_details->invoice_no_prefix) }}</b>
 				@endif
 				{{$receipt_details->invoice_no}}
 
@@ -115,7 +125,7 @@
 				<!-- customer info -->
 				@if(!empty($receipt_details->customer_info))
 					<br/>
-					<b>{{ $receipt_details->customer_label }}</b> <br> {!! $receipt_details->customer_info !!} <br>
+					<b>{{ __('lang_v1.'.$receipt_details->customer_label)}}</b> <br> {!! $receipt_details->customer_info !!} <br>
 				@endif
 				@if(!empty($receipt_details->client_id_label))
 					<br/>
@@ -132,9 +142,12 @@
 					<br/>
 					<b>{{ $receipt_details->sales_person_label }}</b> {{ $receipt_details->sales_person }}
 				@endif
-				@if(!empty($receipt_details->commission_agent_label))
+				@if(!empty($receipt_details->commission_agent))
 					<br/>
-					<strong>{{ $receipt_details->commission_agent_label }}</strong> {{ $receipt_details->commission_agent }}
+					<strong>{{ __('lang_v1.'.$receipt_details->commission_agent_label) }}</strong><br> 
+					{{ $receipt_details->commission_agent }} <br>
+					{{ $receipt_details->commission_agent_mobile }}
+
 				@endif
 				@if(!empty($receipt_details->customer_rp_label))
 					<br/>
@@ -233,6 +246,9 @@
 					<br>
 					<strong>@lang('lang_v1.order_dates'):</strong> {!!$receipt_details->sale_orders_invoice_date ?? ''!!}
 				@endif
+			
+				
+
 			</span>
 		</p>
 	</div>
@@ -256,14 +272,15 @@
 		<table class="table table-responsive table-slim">
 			<thead>
 				<tr>
-					<th width="{{$p_width}}%">{{$receipt_details->table_product_label}}</th>
+						
+					<th width="{{$p_width}}%">{{__('lang_v1.'.$receipt_details->table_product_label)}}</th>
 					<th width="90px" class="text-center"><div style="margin-left:20px;"> @lang('lang_v1.image')</div></th>
-					<th class="text-right" width="15%">{{$receipt_details->table_qty_label}}</th>
-					<th class="text-right" width="15%">{{$receipt_details->table_unit_price_label}}</th>
+					<th class="text-right" width="15%">{{__('lang_v1.'.$receipt_details->table_qty_label)}}</th>
+					<th class="text-right" width="15%">{{__('lang_v1.'.$receipt_details->table_unit_price_label)}}</th>
 					@if(!empty($receipt_details->item_discount_label))
 						<th class="text-right" width="15%">{{$receipt_details->item_discount_label}}</th>
 					@endif
-					<th class="text-right" width="15%">{{$receipt_details->table_subtotal_label}}</th>
+					<th class="text-right" width="15%">{{__('lang_v1.'.$receipt_details->table_subtotal_label)}}</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -337,7 +354,7 @@
 			@if(!empty($receipt_details->payments))
 				@foreach($receipt_details->payments as $payment)
 					<tr>
-						<td>{{$payment['method']}}</td>
+						<td>{{__('lang_v1.'.$payment['method'])}}</td>
 						<td class="text-right" >{{$payment['amount']}}</td>
 						<td class="text-right">{{$payment['date']}}</td>
 					</tr>
@@ -348,7 +365,7 @@
 			@if(!empty($receipt_details->total_paid))
 				<tr>
 					<th>
-						{!! $receipt_details->total_paid_label !!}
+						{{ __('lang_v1.'.$receipt_details->total_paid_label)}}
 					</th>
 					<td class="text-right">
 						{{$receipt_details->total_paid}}
@@ -397,7 +414,8 @@
 					@endif
 					<tr>
 						<th style="width:70%">
-							{!! $receipt_details->subtotal_label !!}
+							{{ __('lang_v1.'.$receipt_details->subtotal_label)}}
+							
 						</th>
 						<td class="text-right">
 							{{$receipt_details->subtotal}}
@@ -417,7 +435,7 @@
 					@if(!empty($receipt_details->shipping_charges))
 						<tr>
 							<th style="width:70%">
-								{!! $receipt_details->shipping_charges_label !!}
+								{{ __('lang_v1.'.$receipt_details->shipping_charges_label) }}
 							</th>
 							<td class="text-right">
 								{{$receipt_details->shipping_charges}}
@@ -440,7 +458,7 @@
 					@if( !empty($receipt_details->discount) )
 						<tr>
 							<th>
-								{!! $receipt_details->discount_label !!}
+								{{__('lang_v1.'.$receipt_details->discount_label)}}
 							</th>
 
 							<td class="text-right">
@@ -499,7 +517,7 @@
 					<!-- Total -->
 					<tr>
 						<th>
-							{!! $receipt_details->total_label !!}
+							{{__('lang_v1.'.$receipt_details->total_label)}}
 						</th>
 						<td class="text-right">
 							{{$receipt_details->total}}							

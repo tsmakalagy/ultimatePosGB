@@ -867,14 +867,7 @@ class TransactionUtil extends Util
             'table_subtotal_label' => $il->table_subtotal_label,
         ];
 
-        //Display name
-        $output['display_name'] = $output['business_name'];
-        if (!empty($output['location_name'])) {
-            if (!empty($output['display_name'])) {
-                $output['display_name'] .= ', ';
-            }
-            $output['display_name'] .= $output['location_name'];
-        }
+     
 
         //Codes
         if (!empty($business_details->code_label_1) && !empty($business_details->code_1)) {

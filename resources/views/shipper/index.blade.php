@@ -115,4 +115,6 @@
         });
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
 @endsection

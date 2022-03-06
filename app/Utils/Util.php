@@ -689,7 +689,7 @@ class Util
         if (config('app.env') == 'demo') {
             return null;
         }
-        
+/*     
         $uploaded_file_name = null;
         if ($request->hasFile($file_name) && $request->file($file_name)->isValid()) {
             
@@ -715,8 +715,8 @@ class Util
         }
 
         return $uploaded_file_name;
-
-    /*
+*/
+    
         $uploaded_file_name = null;
         if ($request->hasFile($file_name))  {
             foreach($request->$file_name as $file){
@@ -744,7 +744,7 @@ class Util
         }
 
         return $uploaded_file_name;
-        */
+        
     }
     
     public function serviceStaffDropdown($business_id, $location_id = null)

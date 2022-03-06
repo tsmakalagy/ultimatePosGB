@@ -395,29 +395,35 @@ class AdminSidebarMenu
 
 
     //shipperdropdown
-    if (in_array('purchases', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update'))) {
-        $menu->dropdown(
+   // if ( auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping']) ) {
+    if ($is_admin || auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'access_sell_return', 'direct_sell.view', 'direct_sell.update', 'access_own_sell_return']) ) {
+     
+    $menu->dropdown(
             __('shipper.shipper'),
-            function ($sub) use ($common_settings) {
-                
-               
+            function ($sub) use ($enabled_modules, $is_admin, $pos_settings) {
 
-                if (auth()->user()->can('purchase.view') || auth()->user()->can('view_own_purchase')) {
-                    $sub->url(
+
+              //  if (auth()->user()->can('access_shipping')) {
+            if (in_array('purchases', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update'))) {
+                
+                $sub->url(
                         action('ShipperController@index'),
                         __('shipper.list'),
                         ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == null]
                     );
                 }
             
-                if (auth()->user()->can('purchase.create')) {
+               // if (auth()->user()->can('access_shipping')) {
+                if (in_array('purchases', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update'))) {
+
                     $sub->url(
                         action('ShipperController@ShipperType'),
                         __('shipper.list_shipper_type'),
                         ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'shipper' && request()->segment(2) == 'create']
                     );
                 }
-                if (auth()->user()->can('purchase.create')) {
+            
+                if ($is_admin || auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping']) ) {
 
                     $sub->url(
                         action('SellController@shipments'),

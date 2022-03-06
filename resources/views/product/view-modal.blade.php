@@ -5,9 +5,9 @@
 		      <h4 class="modal-title" id="modalTitle">{{$product->name}}</h4>
 	    </div>
 	    <div class="modal-body">
-			
+	
       		<div class="row">
-      			<div class="col-sm-9">
+      			<div class="col-sm-12">
 	      			<div class="col-sm-4 invoice-col">
 	      				<b>@lang('product.sku'):</b>
 						{{$product->sku }}<br>
@@ -118,12 +118,21 @@
       					{!! $product->product_description !!}
       				</div>
 	      		</div>
-      			<div class="col-sm-3 col-md-3 invoice-col">
-      				<div class="thumbnail">
-      					<img src="{{$product->image_url}}" alt="Product image">
+			
+			</div>
+			<div class="row invoice-col">
+      			@foreach($images as $image)
+				  <div class="col-sm-3 col-md-3 ">
+      				
+					  <div class="thumbnail">
+						
+      					<img src="{{url('/uploads/img/'.$image->image)}}" alt="Product image">
+						  
       				</div>
+					  
       			</div>
-      		</div>
+				  @endforeach
+			</div>
       		@if($rack_details->count())
       		@if(session('business.enable_racks') || session('business.enable_row') || session('business.enable_position'))
       			<div class="row">

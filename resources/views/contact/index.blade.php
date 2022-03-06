@@ -293,10 +293,13 @@
 </script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{$api_key}}&libraries=places"
      async defer></script>
+ 
 <script type="text/javascript">
     $(document).on('shown.bs.modal', '.contact_modal', function(e) {
         initAutocomplete();
     });
 </script>
 @endif
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
 @endsection

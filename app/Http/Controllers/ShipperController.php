@@ -27,11 +27,13 @@ use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Warranty;
 use DB;
+use App\Http\Requests\ProfilRequest;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Product;
 use App\Media;
 use Spatie\Activitylog\Models\Activity;
+use Illuminate\Validation\Rule;
 
 class ShipperController extends Controller
 {
@@ -2192,21 +2194,20 @@ class ShipperController extends Controller
     public function store(Request $request)
     {
         
-        if ($request->filled('shipper_name', 'tel')) {
+        if($request->filled('shipper_name','tel')){
+            $shipper_name=$request->input('shipper_name');
+            $type=$request->input('type');
+            $tel=$request->input('tel');
+            $other_details=$request->input('other_details');
             
-            $shipper_name = $request->input('shipper_name');
-            $type = $request->input('type');
-            $tel = $request->input('tel');
-            $other_details = $request->input('other_details');
-
-            $shipper = Shipper::firstOrCreate(['shipper_name' => $shipper_name, 'shipper_type_id' => $type, 'tel' => $tel, 'other_details' => $other_details]);
+            $shipper=Shipper::firstOrCreate(['shipper_name'=>$shipper_name,'type'=>$type,'tel'=>$tel,'other_details'=>$other_details]);
             return redirect()->route('shipper.index');
-
-
-        } else {
+            
+           
+        }
+        else{
             return redirect()->route('shipper.index');
         }
-
     }
 
     /**

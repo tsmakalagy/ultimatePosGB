@@ -390,6 +390,10 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('shipper/delete/{id}', 'ShipperController@delete')->name('shipper.delete');
     Route::get('shipper/show/{id}', 'ShipperController@show')->name('shipper.show');
 
+    //ajax tel unique
+    Route::post('/validate_mobile/check', 'ContactController@check_validate')->name('contact.check_validate');
+
+
     //route for  the shipper type
     Route::get('shipper/type', 'ShipperController@ShipperType')->name('shipper.shipperType');
     Route::get('shipper/type/create', 'ShipperController@createShipperType')->name('shipper.createShipperType');

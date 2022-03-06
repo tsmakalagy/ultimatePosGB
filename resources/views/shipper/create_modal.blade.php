@@ -33,7 +33,8 @@
                         <span class="input-group-addon">
                             <i class="fa fa-mobile"></i>
                         </span>
-                        {!! Form::text('tel', null, ['class' => 'form-control ','placeholder' => __('shipper.tel'),'required']); !!}
+                        {!! Form::text('tel', null, ['class' => 'form-control ','placeholder' => __('(XXX) XX XXX XX'),'data-inputmask-mask'=>'(999) 99 999 99','required']); !!}
+                   
                     </div>
                 </div>
             </div>
@@ -72,7 +73,6 @@
       <button type="submit" class="btn btn-primary">@lang( 'messages.save' )</button>
       <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'messages.close' )</button>
     </div>
-
     {!! Form::close() !!}
   
   </div><!-- /.modal-content -->
@@ -85,6 +85,8 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
+            $("#tel").inputmask({"mask": "(999) 99 999 99"});
+
             $("form#shipper_add_form").validate({
     
     submitHandler: function (form) {
@@ -111,6 +113,8 @@
       return true;
     }
   });
+
+
 });
 
     </script>

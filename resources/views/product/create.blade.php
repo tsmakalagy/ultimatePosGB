@@ -150,8 +150,8 @@
           <div class="form-group">
             {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
        
-          <!--  <input type="file" id="upload_image" name="image[]" multiple><br><br>-->
-          {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!}
+           <input type="file" id="upload_image" name="image[]" multiple><br>
+          <!-- Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); -->
             <small><p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)]) <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p></small>
           </div>
          

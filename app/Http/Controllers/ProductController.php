@@ -117,6 +117,7 @@ class ProductController extends Controller
                 ->leftJoin('categories as c2', 'products.sub_category_id', '=', 'c2.id')
                 ->leftJoin('tax_rates', 'products.tax', '=', 'tax_rates.id')
                 ->join('variations as v', 'v.product_id', '=', 'products.id')
+                ->leftJoin('images as im', 'im.product_id', '=', 'products.id')
                 ->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')
                 ->where('products.business_id', $business_id)
                 ->where('products.type', '!=', 'modifier');
@@ -147,13 +148,15 @@ class ProductController extends Controller
                 'products.id',
                 'products.name as product',
                 'products.type',
+                'im.image',
+
                 'c1.name as category',
                 'c2.name as sub_category',
                 'units.actual_name as unit',
                 'brands.name as brand',
                 'tax_rates.name as tax',
                 'products.sku',
-                'products.image',
+               // 'products.image',
                 'products.enable_stock',
                 'products.is_inactive',
                 'products.not_for_selling',
@@ -307,7 +310,10 @@ class ProductController extends Controller
                     return $product;
                 })
                 ->editColumn('image', function ($row) {
-                    return '<div style="display: flex;"><img src="' . $row->image_url . '" alt="Product image" class="product-thumbnail-small"></div>';
+                   // foreach( $row->image_url as  $row->images_url){
+                   
+                       return '<div style="display: flex;"><img src="' . $row->image_url . '" alt="Product image" class="product-thumbnail-small"></div>';
+                   // }
                 })
                 ->editColumn('type', '@lang("lang_v1." . $type)')
                 ->addColumn('mass_delete', function ($row) {
@@ -1084,7 +1090,7 @@ class ProductController extends Controller
             }
 
             //upload document
-            $product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
+            //$product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
 
             $common_settings = session()->get('business.common_settings');
 
@@ -1144,11 +1150,14 @@ class ProductController extends Controller
             if (!empty($request->input('has_module_data'))) {
                 $this->moduleUtil->getModuleData('after_product_saved', ['product' => $product, 'request' => $request]);
             }
-         /*   $product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
+            $product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
             //dd($product_details['image']);
+            if (!empty($product_details['image'])) {
+
            foreach($product_details['image'] as $image){
             $image=Image::create(['product_id'=>$product->id,'image'=>$image]);
-           }*/
+           }
+        }
             Media::uploadMedia($product->business_id, $product, $request, 'product_brochure', true);
 
             DB::commit();
@@ -1198,6 +1207,7 @@ class ProductController extends Controller
 
         $business_id = request()->session()->get('user.business_id');
         $details = $this->productUtil->getRackDetails($business_id, $id, true);
+     
 
         return view('product.show')->with(compact('details'));
     }
@@ -1254,12 +1264,17 @@ class ProductController extends Controller
         $product_types = $this->product_types();
         $common_settings = session()->get('business.common_settings');
         $warranties = Warranty::forDropdown($business_id);
+        
+        //images
+        $images = Image::join('products',  'products.id', '=','images.product_id')
+            ->where('products.id',$id)
+            ->select('images.image')->get();
 
         //product screen view from module
         $pos_module_data = $this->moduleUtil->getModuleData('get_product_screen_top_view');
 
         return view('product.edit')
-                ->with(compact('categories', 'brands', 'units', 'sub_units', 'taxes', 'tax_attributes', 'barcode_types', 'product', 'sub_categories', 'default_profit_percent', 'business_locations', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'product_types', 'common_settings', 'warranties', 'pos_module_data'));
+                ->with(compact('categories', 'brands','images', 'units', 'sub_units', 'taxes', 'tax_attributes', 'barcode_types', 'product', 'sub_categories', 'default_profit_percent', 'business_locations', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'product_types', 'common_settings', 'warranties', 'pos_module_data'));
     }
 
     /**
@@ -1341,7 +1356,17 @@ class ProductController extends Controller
             } else {
                 $product->enable_sr_no = 0;
             }
+          //  ->update(['value' => $value]);
+          /*
+            $product_details['image'] = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
 
+            if (!empty($product_details['image'])) {
+                $images=Image::where('product_id',$id);
+                foreach($product_details['image'] as $image){
+                 $image=$images->update(['image'=>$image]);
+                }
+             }
+          */ 
             //upload document
             $file_name = $this->productUtil->uploadFile($request, 'image', config('constants.product_img_path'), 'image');
             if (!empty($file_name)) {
@@ -2094,9 +2119,14 @@ class ProductController extends Controller
             if ($product->type == 'combo') {
                 $combo_variations = $this->productUtil->__getComboProductDetails($product['variations'][0]->combo_variations, $business_id);
             }
-
+            $images = Image::join('products',  'products.id', '=','images.product_id')
+            ->where('products.id',$id)
+            ->select('images.image')->get();//pluck('id','image');
+            //dd($images);
+            //dd($images[0]->image);
             return view('product.view-modal')->with(compact(
                 'product',
+                'images',
                 'rack_details',
                 'allowed_group_prices',
                 'group_price_details',

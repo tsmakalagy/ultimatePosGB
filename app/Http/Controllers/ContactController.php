@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Business;
+use App\Shipper;
 use App\BusinessLocation;
 use App\Contact;
 use App\CustomerGroup;
@@ -524,6 +525,11 @@ class ContactController extends Controller
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
+    
+
+        
+//dd($request);
+   
 
         try {
             $business_id = $request->session()->get('user.business_id');
@@ -588,6 +594,22 @@ class ContactController extends Controller
 
         return $output;
     }
+
+
+    public function check_validate(Request $request)
+    {
+      
+      if (request()->ajax()) {
+            $mobile=$request->get('mobile');
+            $data= Contact::where('mobile',$mobile)->count();
+            if($data > 0){
+                return 'not_uniqu';
+            }
+            if($data == 0){
+            return 'unique';
+            }
+
+        }    }
 
     /**
      * Display the specified resource.

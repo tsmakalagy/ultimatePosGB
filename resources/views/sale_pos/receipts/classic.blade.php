@@ -1,10 +1,8 @@
 <!-- business information here -->
 
 <div class="row">
-	<br>
-		
+	<br>	
 <p>
-
 	<!-- Header text -->
 	@if(!empty($receipt_details->header_text))
 	<div class="col-xs-6 text-left">
@@ -83,7 +81,7 @@
 		<!-- Title of receipt -->
 		@if(!empty($receipt_details->invoice_heading))
 			<h3 class="text-center">
-				{{__('lang_v1.'.$receipt_details->invoice_heading)}}
+				@lang('lang_v1.Invoice')
 			</h3>
 		@endif
 
@@ -91,7 +89,8 @@
 		<p style="width: 100% !important" class="word-wrap">
 			<span class="pull-left text-left word-wrap">
 				@if(!empty($receipt_details->invoice_no_prefix))
-					<b>{{__('lang_v1.'.$receipt_details->invoice_no_prefix) }}</b>
+				
+				<b>@lang('lang_v1.Invoice No.')</b>
 				@endif
 				{{$receipt_details->invoice_no}}
 
@@ -125,7 +124,7 @@
 				<!-- customer info -->
 				@if(!empty($receipt_details->customer_info))
 					<br/>
-					<b>{{ __('lang_v1.'.$receipt_details->customer_label)}}</b> <br> {!! $receipt_details->customer_info !!} <br>
+					<b>@lang('lang_v1.Customer')</b> <br> {!! $receipt_details->customer_info !!} <br>
 				@endif
 				@if(!empty($receipt_details->client_id_label))
 					<br/>
@@ -144,7 +143,7 @@
 				@endif
 				@if(!empty($receipt_details->commission_agent))
 					<br/>
-					<strong>{{ __('lang_v1.'.$receipt_details->commission_agent_label) }}</strong><br> 
+					<strong>@lang('lang_v1.Commission Agent')</strong><br> 
 					{{ $receipt_details->commission_agent }} <br>
 					{{ $receipt_details->commission_agent_mobile }}
 
@@ -273,14 +272,14 @@
 			<thead>
 				<tr>
 						
-					<th width="{{$p_width}}%">{{__('lang_v1.'.$receipt_details->table_product_label)}}</th>
+					<th width="{{$p_width}}%"> @lang('lang_v1.Product')</th>
 					<th width="90px" class="text-center"><div style="margin-left:20px;"> @lang('lang_v1.image')</div></th>
-					<th class="text-right" width="15%">{{__('lang_v1.'.$receipt_details->table_qty_label)}}</th>
-					<th class="text-right" width="15%">{{__('lang_v1.'.$receipt_details->table_unit_price_label)}}</th>
+					<th class="text-right" width="15%"> @lang('lang_v1.Quantity')</th>
+					<th class="text-right" width="15%"> @lang('lang_v1.Unit Price')</th>
 					@if(!empty($receipt_details->item_discount_label))
 						<th class="text-right" width="15%">{{$receipt_details->item_discount_label}}</th>
 					@endif
-					<th class="text-right" width="15%">{{__('lang_v1.'.$receipt_details->table_subtotal_label)}}</th>
+					<th class="text-right" width="15%"> @lang('lang_v1.Subtotal')</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -354,7 +353,7 @@
 			@if(!empty($receipt_details->payments))
 				@foreach($receipt_details->payments as $payment)
 					<tr>
-						<td>{{__('lang_v1.'.$payment['method'])}}</td>
+						<td> @lang('lang_v1.Cash')</td>
 						<td class="text-right" >{{$payment['amount']}}</td>
 						<td class="text-right">{{$payment['date']}}</td>
 					</tr>
@@ -365,7 +364,7 @@
 			@if(!empty($receipt_details->total_paid))
 				<tr>
 					<th>
-						{{ __('lang_v1.'.$receipt_details->total_paid_label)}}
+						@lang('lang_v1.Total Paid')
 					</th>
 					<td class="text-right">
 						{{$receipt_details->total_paid}}
@@ -414,8 +413,7 @@
 					@endif
 					<tr>
 						<th style="width:70%">
-							{{ __('lang_v1.'.$receipt_details->subtotal_label)}}
-							
+							@lang('lang_v1.Subtotal:')
 						</th>
 						<td class="text-right">
 							{{$receipt_details->subtotal}}
@@ -435,7 +433,7 @@
 					@if(!empty($receipt_details->shipping_charges))
 						<tr>
 							<th style="width:70%">
-								{{ __('lang_v1.'.$receipt_details->shipping_charges_label) }}
+								@lang('lang_v1.shipping_charges:')
 							</th>
 							<td class="text-right">
 								{{$receipt_details->shipping_charges}}
@@ -458,7 +456,7 @@
 					@if( !empty($receipt_details->discount) )
 						<tr>
 							<th>
-								{{__('lang_v1.'.$receipt_details->discount_label)}}
+								@lang('lang_v1.Discount:')
 							</th>
 
 							<td class="text-right">
@@ -517,7 +515,7 @@
 					<!-- Total -->
 					<tr>
 						<th>
-							{{__('lang_v1.'.$receipt_details->total_label)}}
+							@lang('lang_v1.Total:')
 						</th>
 						<td class="text-right">
 							{{$receipt_details->total}}							

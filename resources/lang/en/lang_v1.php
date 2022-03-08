@@ -15,6 +15,8 @@ return [
     'Cash' => 'Cash',
     'Total Paid' => 'Total Paid',
     'Discount' => 'Discount',
+
+    'Discount:' => 'Discount:',
     'Total' => 'Total',
     'Total:' => 'Total:',
 
@@ -22,7 +24,7 @@ return [
     'Product' => 'Product',
     'Quantity' => 'Quantity',
     'shipping_charges' => 'Shipping charges',
-    'Shipping Charges' => 'Shipping charges',
+    'Shipping Charges:' => 'Shipping charges:',
 
     'shipper_name' => 'Shipper',
     "delivery_fee" => "Delivery fee",

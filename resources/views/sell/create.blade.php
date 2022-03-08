@@ -801,7 +801,6 @@
 					</div>
 				</div>
 			@endif
-			<input id="phone_number" class="ant-input" type="text" placeholder="(XXX) XXX-XXXX" data-inputmask-mask="(999) 999-9999">
 			@endcomponent
 		@endcan
 	@endif
@@ -843,7 +842,7 @@
 	<script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
 	<script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+	
 
 	<!-- Call restaurant module if defined -->
     @if(in_array('tables' ,$enabled_modules) || in_array('modifiers' ,$enabled_modules) || in_array('service_staff' ,$enabled_modules))
@@ -851,7 +850,7 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function() {
-			$("#phone_number").inputmask({"mask": "(999) 999-9999"});
+		
 
 			$("#test").change(function () {
 				$('.cacher2').focus();		

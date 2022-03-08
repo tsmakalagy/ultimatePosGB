@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Utils\ModuleUtil;
 use App\Utils\BusinessUtil;
-use Mpdf\Tag\Br;
+
 
 class TransactionUtil extends Util
 {
@@ -1848,9 +1848,9 @@ class TransactionUtil extends Util
             if ($il->show_cat_code == 1) {
                 $line_array['cat_code'] = !empty($cat->short_code) ? $cat->short_code : '';
             }
-            if ($il->show_sale_description == 1) {
+           // if ($il->show_sale_description == 1) {
                 $line_array['sell_line_note'] = !empty($line->sell_line_note) ? $line->sell_line_note : '';
-            }
+            //}
             if ($is_lot_number_enabled == 1 && $il->show_lot == 1) {
                 $line_array['lot_number'] = !empty($line->lot_details->lot_number) ? $line->lot_details->lot_number : null;
                 $line_array['lot_number_label'] = __('lang_v1.lot');

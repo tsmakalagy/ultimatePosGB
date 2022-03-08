@@ -1617,9 +1617,9 @@ class SellPosController extends Controller
                                 ->with(['location'])
                                 ->first();
 
-                if (empty($transaction)) {
-                    return $output;
-                }
+                                if (empty($transaction)) {
+                                    return $output;
+                                }
 
                 $printer_type = 'browser';
                 if (!empty(request()->input('check_location')) && request()->input('check_location') == true) {

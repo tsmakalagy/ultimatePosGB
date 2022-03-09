@@ -84,10 +84,12 @@
 				@lang('lang_v1.Invoice')
 			</h3>
 		@endif
-
-		<!-- Invoice  number, Date  -->
-		<p style="width: 100% !important" class="word-wrap">
-			<span class="pull-left text-left word-wrap">
+	</div>
+</div>
+<div class="row">
+	<!-- 	Invoice  number, Date  -->
+		<!-- <p style="width: 100% !important" class="word-wrap">-->
+			<div class="col-xs-4 word-wrap">
 				@if(!empty($receipt_details->invoice_no_prefix))
 				
 				<b>@lang('lang_v1.Invoice No.')</b>
@@ -141,20 +143,21 @@
 					<br/>
 					<b>{{ $receipt_details->sales_person_label }}</b> {{ $receipt_details->sales_person }}
 				@endif
-				@if(!empty($receipt_details->commission_agent))
-					<br/>
-					<strong>@lang('lang_v1.Commission Agent')</strong><br> 
-					{{ $receipt_details->commission_agent }} <br>
-					{{ $receipt_details->commission_agent_mobile }}
-
-				@endif
+				
 				@if(!empty($receipt_details->customer_rp_label))
 					<br/>
 					<strong>{{ $receipt_details->customer_rp_label }}</strong> {{ $receipt_details->customer_total_rp }}
 				@endif
-			</span>
+				</div>
+		<div class="col-xs-4 text-center">
+			@if(!empty($receipt_details->commission_agent))			
+			<strong>@lang('lang_v1.Commission Agent')</strong><br> 
+			{{ $receipt_details->commission_agent }} <br>
+			{{ $receipt_details->commission_agent_mobile }}
 
-			<span class="pull-right text-left">
+			@endif
+		</div>
+			<div class="col-xs-4 text-right">
 				<b>{{$receipt_details->date_label}}</b> {{$receipt_details->invoice_date}}
 
 				@if(!empty($receipt_details->due_date_label))
@@ -248,11 +251,10 @@
 			
 				
 
-			</span>
-		</p>
-	</div>
-</div>
+			</div>
+		
 
+	</div>
 <div class="row">
 	@includeIf('sale_pos.receipts.partial.common_repair_invoice')
 </div>

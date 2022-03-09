@@ -83,6 +83,7 @@
                             <th>@lang('sale.customer_name')</th>
                             <th>@lang('lang_v1.contact_no')</th>
                             <th>@lang('sale.location')</th>
+                            <th>@lang('lang_v1.added_by')</th>
                             <th>@lang('lang_v1.shipping_status')</th>
                             <th>@lang('lang_v1.shipper_name')</th>
                             <th>@lang('lang_v1.shipping_charges')</th>
@@ -91,6 +92,7 @@
                             <th>@lang('lang_v1.shipping_address')</th>
                             <th>@lang('lang_v1.delivered_to')</th>
                             <th>@lang('lang_v1.location')</th>
+                            
                             <th>@lang('sale.total_amount')</th>
                             <th>@lang('sale.total_paid')</th>
                             <th>@lang('lang_v1.sell_due')</th>
@@ -222,6 +224,7 @@ $(document).ready( function(){
             { data: 'conatct_name', name: 'conatct_name'},
             { data: 'mobile', name: 'contacts.mobile'},
             { data: 'business_location', name: 'bl.name'},
+            { data: 'added_by', name: 'u.first_name'},
             { data: 'shipping_status', name: 'shipping_status'},
             { data: 'shipper_name', name: 'shipper_name'},
             { data: 'shipping_charges', name: 'shipping_charges'},

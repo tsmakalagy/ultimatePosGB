@@ -40,6 +40,17 @@
             {!! Form::text('email', null, ['class' => 'form-control', 'required', 'placeholder' => __( 'business.email' ) ]); !!}
         </div>
       </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <div class="checkbox">
+            <br/>
+            <label>
+                 {!! Form::checkbox('is_cmmsn_agnt', 1, false, ['class' => 'commission_agent']); !!} {{ __('lang_v1.commission_agent') }}
+            </label>
+           
+          </div>
+        </div>
+      </div>
 
       <div class="col-md-4">
         <div class="form-group">

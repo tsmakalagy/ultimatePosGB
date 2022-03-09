@@ -4649,7 +4649,7 @@ class TransactionUtil extends Util
                 $join->on('transactions.id', '=', 'tsl.transaction_id')
                     ->whereNull('tsl.parent_sell_line_id');
             })
-            ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
+            ->leftJoin('users as u', 'transactions.commission_agent', '=', 'u.id')
             ->leftJoin('users as ss', 'transactions.res_waiter_id', '=', 'ss.id')
             ->leftJoin('res_tables as tables', 'transactions.res_table_id', '=', 'tables.id')
             ->join(

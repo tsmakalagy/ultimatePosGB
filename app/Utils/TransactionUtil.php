@@ -20,6 +20,8 @@ use App\TaxRate;
 use App\Transaction;
 use App\Shipper;
 use App\Address;
+
+use App\User;
 use App\ShipperType;
 use App\TransactionPayment;
 use App\TransactionSellLine;
@@ -28,6 +30,10 @@ use App\Variation;
 use App\VariationLocationDetails;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\Storage;
+
 use App\Utils\ModuleUtil;
 use App\Utils\BusinessUtil;
 
@@ -836,8 +842,8 @@ class TransactionUtil extends Util
      *
      * @return array
      */
-    public function getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type)
-    {
+    public function getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type,$use)
+    { 
         $il = $invoice_layout;
 
         $transaction = Transaction::find($transaction_id);
@@ -1085,11 +1091,32 @@ class TransactionUtil extends Util
       //  $output['commission_agent'] = '';
         //$output['commission_agent_label'] = '';
       //  if ($il->show_commission_agent == 1) {
-            $output['commission_agent_label'] = 'Commission Agent';
-            $output['commission_agent'] = !empty($transaction->sale_commission_agent->user_full_name) ? $transaction->sale_commission_agent->user_full_name : '';
-            $output['commission_agent_mobile'] = !empty($transaction->sale_commission_agent->contact_no) ? $transaction->sale_commission_agent->contact_no : '';
+      /*  $trans_user=$Transaction::join('users', 'transactions.created_by', '=', 'users.id')
+    
+        ->where('users.id',$use->is )
+        ->where('transactions.id', $transaction_id)
+        $id=request()->session()->get('user.id');
+        ->where('transactions.type', 'purchase')*/
 
-            //}
+        //commission agent info
+       
+
+
+        if($use->is_cmmsn_agnt == 1){
+             $full_name=$use->surname.' '.$use->first_name.' '.$use->last_name;
+           // $full_name=$use->last_name;
+            $output['commission_agent_label'] = 'Commission Agent';
+            $output['commission_agent'] = !empty($full_name) ? $full_name : '';
+            $output['commission_agent_mobile'] = !empty($use->contact_no) ? $use->contact_no : '';
+
+        }
+        else{
+
+        $output['commission_agent_label'] = 'Commission Agent';
+        $output['commission_agent'] = !empty($transaction->sale_commission_agent->user_full_name) ? $transaction->sale_commission_agent->user_full_name : '';
+        $output['commission_agent_mobile'] =!empty($transaction->sale_commission_agent->contact_no) ? $transaction->sale_commission_agent->contact_no : '';
+
+    }
 
         //Invoice info
         $output['invoice_no'] = $transaction->invoice_no;
@@ -4641,6 +4668,7 @@ class TransactionUtil extends Util
      *
      * @return object
      */
+
     public function getListSells($business_id, $sale_type = 'sell')
     {
         $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
@@ -4752,6 +4780,115 @@ class TransactionUtil extends Util
     }
 
     
+    public function getListSellsCmmsnAgnt($business_id, $sale_type = 'sell')
+    {
+    $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
+        // ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
+        ->leftJoin('transaction_sell_lines as tsl', function ($join) {
+            $join->on('transactions.id', '=', 'tsl.transaction_id')
+                ->whereNull('tsl.parent_sell_line_id');
+        })
+        ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
+        ->leftJoin('users as ss', 'transactions.res_waiter_id', '=', 'ss.id')
+        ->leftJoin('res_tables as tables', 'transactions.res_table_id', '=', 'tables.id')
+        ->join(
+            'business_locations AS bl',
+            'transactions.location_id',
+            '=',
+            'bl.id'
+        )
+        ->leftJoin(
+            'shippers',
+            'transactions.shipper_id',
+            '=',
+            'shippers.id'
+        )
+        ->leftJoin(
+            'addresses',
+            'transactions.address_id',
+            '=',
+            'addresses.id'
+        )
+        ->leftJoin(
+            'transactions AS SR',
+            'transactions.id',
+            '=',
+            'SR.return_parent_id'
+        )
+        ->leftJoin(
+            'types_of_services AS tos',
+            'transactions.types_of_service_id',
+            '=',
+            'tos.id'
+        )
+        ->where('transactions.business_id', $business_id)
+        ->where('transactions.type', $sale_type)
+        ->select(
+            'transactions.id',
+            'transactions.shipping_date',
+            'shippers.shipper_name',
+            'addresses.nom',
+            'addresses.lieu',
+            'transactions.transaction_date',
+            'transactions.shipping_charges',
+            'transactions.status_date_updating',
+            'transactions.type',
+            'transactions.is_direct_sale',
+            'transactions.invoice_no',
+            'transactions.invoice_no as invoice_no_text',
+            'contacts.name',
+            'contacts.mobile',
+            'contacts.contact_id',
+            'contacts.supplier_business_name',
+            'transactions.status',
+            'transactions.payment_status',
+            'transactions.final_total',
+            'transactions.tax_amount',
+            'transactions.discount_amount',
+            'transactions.discount_type',
+            'transactions.total_before_tax',
+            'transactions.rp_redeemed',
+            'transactions.rp_redeemed_amount',
+            'transactions.rp_earned',
+            'transactions.types_of_service_id',
+            'transactions.shipping_status',
+            'transactions.pay_term_number',
+            'transactions.pay_term_type',
+            'transactions.additional_notes',
+            'transactions.staff_note',
+            'transactions.shipping_details',
+            'transactions.shipping_address',
+            'transactions.document',
+            'transactions.shipping_custom_field_1',
+            'transactions.shipping_custom_field_2',
+            'transactions.shipping_custom_field_3',
+            'transactions.shipping_custom_field_4',
+            'transactions.shipping_custom_field_5',
+            DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
+            DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+            DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
+                    TP.transaction_id=transactions.id) as total_paid'),
+            'bl.name as business_location',
+            DB::raw('COUNT(SR.id) as return_exists'),
+            DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
+                    TP2.transaction_id=SR.id ) as return_paid'),
+            DB::raw('COALESCE(SR.final_total, 0) as amount_return'),
+            'SR.id as return_transaction_id',
+            'tos.name as types_of_service_name',
+            'transactions.service_custom_field_1',
+            DB::raw('COUNT( DISTINCT tsl.id) as total_items'),
+            DB::raw("CONCAT(COALESCE(ss.surname, ''),' ',COALESCE(ss.first_name, ''),' ',COALESCE(ss.last_name,'')) as waiter"),
+            'tables.name as table_name',
+            DB::raw('SUM(tsl.quantity - tsl.so_quantity_invoiced) as so_qty_remaining'),
+            'transactions.is_export'
+        );
+
+    if ($sale_type == 'sell') {
+        $sells->where('transactions.status', 'final');
+    }
+
+    return $sells;
+}
     /**
      * common function to get
      * list shipper

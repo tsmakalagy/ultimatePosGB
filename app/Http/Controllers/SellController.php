@@ -93,8 +93,19 @@ class SellController extends Controller
 
             $sale_type = !empty(request()->input('sale_type')) ? request()->input('sale_type') : 'sell';
 
-            $sells = $this->transactionUtil->getListSells($business_id, $sale_type);
+     
+            $id=request()->session()->get('user.id');
+           
+             $use=User::where('id',$id)->first();
 
+            //if commission_agent connected
+            if($use->is_cmmsn_agnt ==1){
+            $sells = $this->transactionUtil->getListSellsCmmsnAgnt($business_id, $sale_type);
+            }
+            else{
+            $sells = $this->transactionUtil->getListSells($business_id, $sale_type);
+            }
+            
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
                 $sells->whereIn('transactions.location_id', $permitted_locations);

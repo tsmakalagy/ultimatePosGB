@@ -294,6 +294,7 @@ class SellPosController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+      
         $is_direct_sale = false;
         if (!empty($request->input('is_direct_sale'))) {
             $is_direct_sale = true;
@@ -679,7 +680,14 @@ class SellPosController extends Controller
         //Check if printer setting is provided.
         $receipt_printer_type = is_null($printer_type) ? $location_details->receipt_printer_type : $printer_type;
 
-        $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type);
+
+  
+        $id=request()->session()->get('user.id');
+        $use=User::where('id',$id)->first();
+        $use1=$use->is_cmmsn_agnt;
+
+    
+        $receipt_details = $this->transactionUtil->getReceiptDetails($transaction_id, $location_id, $invoice_layout, $business_details, $location_details, $receipt_printer_type,$use);
 
         //nom utilisateur
         $user=auth()->user();

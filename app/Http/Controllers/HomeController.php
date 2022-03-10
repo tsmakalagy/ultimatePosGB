@@ -58,8 +58,10 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
+$use=User::where('id',$id)->first();
+
 
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
@@ -212,7 +214,7 @@ class HomeController extends Controller
 
         $common_settings = !empty(session('business.common_settings')) ? session('business.common_settings') : [];
 
-        return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin'));
+        return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use'));
     }
 
     /**

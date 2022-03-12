@@ -109,10 +109,10 @@
       <strong>@lang('sale.shipping'):</strong>
       <span class="label @if(!empty($shipping_status_colors[$sell->shipping_status])) {{$shipping_status_colors[$sell->shipping_status]}} @else {{'bg-gray'}} @endif">{{$shipping_statuses[$sell->shipping_status] ?? '' }}</span><br>
       @if(!empty($address->nom))
-      <strong>@lang('lang_v1.shipping_address'): </strong> {{$address->nom}}
+      <strong>@lang('lang_v1.shipping_location'): </strong> {{$address->nom}}
       @endif
       @if(!empty($sell->delivered_to))
-        <br><strong>@lang('lang_v1.delivered_to'): </strong> {{$sell->delivered_to}}
+        <br><strong>@lang('lang_v1.shipping_location'): </strong> {{$sell->delivered_to}}
       @endif
       @if(!empty($sell->shipping_date))
       <br><strong>@lang('lang_v1.shipping_date'): </strong> {{@format_date($sell->shipping_date)}}

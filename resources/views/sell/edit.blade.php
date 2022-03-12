@@ -143,13 +143,23 @@
 		        </div>
 
 				@if(!empty($commission_agent))
+				@if($use->is_cmmsn_agnt == 1)
 				<div class="col-sm-3">
 					<div class="form-group">
 					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
 					{!! Form::select('commission_agent', 
-								$commission_agent, $transaction->commission_agent, ['class' => 'form-control select2']); !!}
+								$commission_agent, $transaction->commission_agent, ['class' => 'form-control commission_agent1']); !!}
 					</div>
 				</div>
+				@else
+				<div class="col-sm-3">
+					<div class="form-group">
+					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
+					{!! Form::select('commission_agent', 
+								$commission_agent, $transaction->commission_agent, ['class' => 'form-control commission_agent2']); !!}
+					</div>
+				</div>
+				@endif
 				@endif
 				<div class="@if(!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
 					<div class="form-group">
@@ -529,8 +539,8 @@
 			<div class="col-md-6">
 					<div class="form-group">
 						
-						{!! Form::label('shipper_type_id', __('lang_v1.delivered_to') . ':') !!}
-						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
+						{!! Form::label('shipper_type_id', __('lang_v1.shipping_zone') . ':') !!}
+						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control ','placeholder' => __('messages.please_select')]); !!}		        
 
 						
 					</div>
@@ -539,7 +549,7 @@
 				<div class="col-md-6">
 					<div class="form-group id_100">
 						
-						{!! Form::label('address_id', __('lang_v1.delivered_to') . ':') !!}
+						{!! Form::label('address_id', __('lang_v1.shipping_location') . ':') !!}
 						<select name="address_id" id="address_id" class="form-control" >
 							
 							@if(isset($address))
@@ -779,8 +789,8 @@
             	@endif
 			</div>
 		@endcomponent
-	@endcan
-	@endif
+		@endcan
+		@endif
 	<div class="row">
 		<div class="col-md-12 text-right">
 	    	{!! Form::hidden('is_save_and_print', 0, ['id' => 'is_save_and_print']); !!}
@@ -823,6 +833,11 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function(){
+
+			$('.commission_agent1').prop('disabled',true);
+			$('form').bind('submit', function () {
+				$('.commission_agent1').prop('disabled', false);
+  });
 
 			var time = '<?php echo $carbon ?>';
     		$('.shipping_change').change(function(){

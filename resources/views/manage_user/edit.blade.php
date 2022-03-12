@@ -42,6 +42,22 @@
             </div>
 
             <div class="col-md-4">
+              <div class="form-group">
+                <div class="checkbox">
+                  <br/>
+                  <label>
+                    @if($user->is_cmmsn_agnt == 1)
+                       {!! Form::checkbox('is_cmmsn_agnt', $user->is_cmmsn_agnt, true, ['class' => 'commission_agent']); !!} {{ __('lang_v1.commission_agent') }}
+                    @else
+                    {!! Form::checkbox('is_cmmsn_agnt', 1, false, ['class' => 'commission_agent']); !!} {{ __('lang_v1.commission_agent') }}
+                    @endif
+                      </label>
+                 
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-4">
                 <div class="form-group">
                   <div class="checkbox">
                     <br>

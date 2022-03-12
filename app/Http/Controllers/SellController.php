@@ -74,6 +74,7 @@ class SellController extends Controller
      */
     public function index()
     {
+       
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
@@ -467,6 +468,18 @@ class SellController extends Controller
                     }
                 )
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
+
+                    //Au cas Où
+                    /* ->editColumn('added_by',function ($row) use ($use) {
+                    if($use->is_cmmsn_agnt ==1){
+                    // $discount = !empty($row->discoun) ? $row->discount_amount : 0;
+                    $added_by= '<span class="added_by" data-orig-value="">@if(!empty($c_added_by)) {{$c_added_by}} @endif {{$u_added_by}} </span>';
+                     return $added_by ; }
+                    else{
+                    '<span class="added_by" data-orig-value="">@if(!empty($added_by)) {{$added_by}} @endif </span>';
+                    }
+                    })*/
+
                 ->editColumn('shipper_name',
                     '<span class="shipper_name" data-orig-value="{{$shipper_name}}">@if(!empty($shipper_name)) {{$shipper_name}} @endif </span>')
                     ->editColumn('delivered_to',
@@ -790,7 +803,9 @@ class SellController extends Controller
             $status = 'ordered';
         }
         
-      
+        $id=request()->session()->get('user.id');
+        $use=User::where('id',$id)->first();
+       // $use1=$use->is_cmmsn_agnt;
 
         $shipper = Shipper::all()->pluck('shipper_name', 'id');
 
@@ -818,7 +833,8 @@ class SellController extends Controller
                 'status',
                 'sale_type',
                 'statuses',
-                'shipper'
+                'shipper',
+                'use'
             ));
     }
 
@@ -955,7 +971,7 @@ class SellController extends Controller
         if (!auth()->user()->can('direct_sell.update') && !auth()->user()->can('so.update')) {
             abort(403, 'Unauthorized action.');
         }
-$type_id=$id;
+        $type_id=$id;
         //Check if the transaction can be edited or not.
         $edit_days = request()->session()->get('business.transaction_edit_days');
         if (!$this->transactionUtil->canBeEdited($id, $edit_days)) {
@@ -1259,9 +1275,13 @@ $type_id=$id;
         }
 
         $change_return = $this->dummyPaymentLine;
+
+        $id=request()->session()->get('user.id');
+        $use=User::where('id',$id)->first();
+
         $carbon = \Carbon::now();
         return view('sell.edit')
-            ->with(compact('business_details', 'taxes', 'shipper', 'shippers', 'carbon', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return','type_id','address','all_address'));
+            ->with(compact('business_details', 'taxes', 'shipper', 'shippers', 'carbon', 'sell_details', 'transaction', 'commission_agent', 'types', 'customer_groups', 'pos_settings', 'waiters', 'invoice_schemes', 'default_invoice_schemes', 'redeem_details', 'edit_discount', 'edit_price', 'shipping_statuses', 'warranties', 'statuses', 'sales_orders', 'payment_types', 'accounts', 'payment_lines', 'change_return','type_id','address','all_address','use'));
     }
 
     /**

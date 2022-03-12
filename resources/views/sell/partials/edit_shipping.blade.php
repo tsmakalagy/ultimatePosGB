@@ -12,9 +12,7 @@
 			            {!! Form::label('shipping_details', __('sale.shipping_details') . ':*' ) !!}
 			            {!! Form::textarea('shipping_details', !empty($transaction->shipping_details) ? $transaction->shipping_details : '', ['class' => 'form-control','placeholder' => __('sale.shipping_details'), 'required' ,'rows' => '4']); !!}
 			        </div>
-			    </div>
-
-		
+			    </div>		
 				<div class="col-md-6">
 					<div class="form-group">
 						{!! Form::label('shipping_address', __('lang_v1.shipping_address') . ':' ) !!}
@@ -46,41 +44,29 @@
 							{!! Form::text('shipping_date', !empty($transaction->shipping_date) ? $transaction->shipping_date : null, ['class' => 'form-control date_shipping', 'readonly', 'required']);!!}
 						</div>
 					</div>
-				</div>
-
-				
+				</div>			
 				<div class="col-md-6">
 				<div class="form-group">
 		            {!! Form::label('shipper_id', __('lang_v1.shipper_name')) !!}
 		            {!! Form::select('shipper_id',$shippers,!empty($shipper->shipper_id) ? $shipper->shipper_id : null,  ['class' => 'form-control']); !!}
 				</div>				
 			</div>
-
+			<div class="clearfix"></div>
+			<div class="col-md-12">
 				<div class="col-md-6">
-					<div class="form-group">
-						
-						{!! Form::label('shipper_type_id', __('lang_v1.delivered_to') . ':') !!}
-						
-						
+					<div class="form-group">						
+						{!! Form::label('shipper_type_id', __('lang_v1.shipping_zone') . ':') !!}
 						<select name="shipper_type_id" id="shipper_type_id" class="form-control" >
-						
-							
-
 							<option value="3">@lang('messages.please_select')</option>
 							<option value="1">TANA-VILLE</option>
 							<option value="2">PROVINCE</option>
-
-							</select> 
-						
+							</select> 						
 					</div>
 				</div>
-
 				<div class="col-md-6">
-					<div class="form-group id_100">
-						
-						{!! Form::label('address_id', __('lang_v1.delivered_to') . ':') !!}
-						<select name="address_id" id="address_id" class="form-control" >
-							
+					<div class="form-group id_100">						
+						{!! Form::label('address_id', __('lang_v1.shipping_location') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control" >							
 							@if(isset($address))
 							@foreach($all_address as $all_addresses)
 							<option value="{{$all_addresses->id}}"  {{($all_addresses->id == $address->address_id) ? ' selected'  : null}}  class="theOption">{{$all_addresses->nom}}</option>
@@ -91,7 +77,7 @@
 							</select> 
 					</div>
 				</div>
-	
+			</div>
 		
 			    @php
 			        $custom_labels = json_decode(session('business.custom_labels'), true);

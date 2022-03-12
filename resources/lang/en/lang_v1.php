@@ -5,12 +5,17 @@ return [
     'sales_commission_agent' => 'Sales Commission Agent',
     'shipping_date' => 'Shipping date',
     'location' => 'Location',
+    'shipping_location' => 'Shipping location',
+    'shipping_zone' => 'Shipping zone',
+
+    'zone' => 'Zone',
     'Invoice No.' => 'Invoice No.',
     'Invoice' => 'Invoice',
     'Unit Price' => 'Unit Price',
     'Subtotal' => 'Subtotal',
     'Subtotal:' => 'Subtotal:',
     'Seller' => 'Seller',
+    'address' => 'Address',
 
     'Cash' => 'Cash',
     'Total Paid' => 'Total Paid',

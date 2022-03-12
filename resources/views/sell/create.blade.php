@@ -185,13 +185,24 @@
 		        </div>
 
 				@if(!empty($commission_agent))
+				@if($use->is_cmmsn_agnt == 1)
 				<div class="col-sm-3">
 					<div class="form-group">
 					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
 					{!! Form::select('commission_agent', 
-								$commission_agent, null, ['class' => 'form-control select2']); !!}
+								$commission_agent, $use->id, ['class' => 'form-control commission_agent1']); !!}
 					</div>
 				</div>
+				@else
+				<div class="col-sm-3">
+					<div class="form-group">
+					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
+					{!! Form::select('commission_agent', 
+								$commission_agent, null, ['class' => 'form-control commission_agent2']); !!}
+					</div>
+				</div>
+				@endif
+
 				@endif
 				<div class="@if(!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
 					<div class="form-group">
@@ -573,7 +584,7 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						
-						{!! Form::label('shipper_type_id', __('lang_v1.delivered_to') . ':') !!}
+						{!! Form::label('shipper_type_id', __('lang_v1.shipping_zone') . ':') !!}
 						{!! Form::select('shipper_type_id',[1=>'CENTRE-VILLES',2=>'PROVINCES'],null,  ['class' => 'form-control','placeholder' => __('messages.please_select')]); !!}		        
 
 						
@@ -583,8 +594,8 @@
 				<div class="col-md-6">
 					<div class="form-group">
 						
-						{!! Form::label('address_id', __('lang_v1.delivered_to') . ':') !!}
-						<select name="address_id" id="address_id" class="form-control" >
+						{!! Form::label('address_id', __('lang_v1.shipping_location') . ':') !!}
+						<select name="address_id" id="address_id" class="form-control select2" >
 							<option value=""selected>@lang('messages.please_select')</option>
 							</select> 
 					</div>
@@ -754,7 +765,7 @@
 		}
 	@endphp
 	@if((empty($status) || (!in_array($status, ['quotation', 'draft'])) || $is_enabled_download_pdf) && $sale_type != 'sales_order')
-		@can('sell.payments')
+	@can('sell.payments')
 			@component('components.widget', ['class' => 'box-solid', 'id' => $payment_body_id, 'title' => __('purchase.add_payment')])
 			@if($is_enabled_download_pdf)
 				<div class="well row">
@@ -802,8 +813,8 @@
 				</div>
 			@endif
 			@endcomponent
-		@endcan
-	@endif
+			@endcan
+			@endif
 	
 	<div class="row">
 		{!! Form::hidden('is_save_and_print', 0, ['id' => 'is_save_and_print']); !!}
@@ -851,7 +862,10 @@
     <script type="text/javascript">
     	$(document).ready( function() {
 		
-
+			$('.commission_agent1').prop('disabled',true);
+			$('form').bind('submit', function () {
+				$('.commission_agent1').prop('disabled', false);
+  });
 			$("#test").change(function () {
 				$('.cacher2').focus();		
        // $('.cacher').prop('disabled',false);
@@ -930,7 +944,7 @@
 			$("#shipper_type_id").change(function() {
        var selectedbrand = $(this).val();
  
-$.ajax({
+		$.ajax({
         type: 'GET',
         url: '/sells/create',
         data: {selectedbrand:selectedbrand},

@@ -4668,9 +4668,10 @@ class TransactionUtil extends Util
      *
      * @return object
      */
+    
 
     public function getListSells($business_id, $sale_type = 'sell')
-    {
+    {  
         $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
             // ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
             ->leftJoin('transaction_sell_lines as tsl', function ($join) {
@@ -4789,6 +4790,8 @@ class TransactionUtil extends Util
                 ->whereNull('tsl.parent_sell_line_id');
         })
         ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
+       // ->leftJoin('users as c', 'transactions.created_by', '=', 'u.id')
+
         ->leftJoin('users as ss', 'transactions.res_waiter_id', '=', 'ss.id')
         ->leftJoin('res_tables as tables', 'transactions.res_table_id', '=', 'tables.id')
         ->join(
@@ -4866,6 +4869,8 @@ class TransactionUtil extends Util
             'transactions.shipping_custom_field_5',
             DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
             DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+            //DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as u_added_by"),
+            //DB::raw("CONCAT(COALESCE(c.surname, ''),' ',COALESCE(c.first_name, ''),' ',COALESCE(c.last_name,'')) as c_added_by"),
             DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
                     TP.transaction_id=transactions.id) as total_paid'),
             'bl.name as business_location',

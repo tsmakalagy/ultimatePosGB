@@ -9,6 +9,11 @@ return [
     "delivery_fee" => "Frais de livraison",
     'shipper_name' => 'Livreur',
     'location' => 'Lieu',
+    'shipping_location' => 'Lieu de livraison',
+    'shipping_zone' => 'Zone de livraison',
+    'zone' => 'Zone',
+    'address' => 'Adresse',
+
     "sales_commission_agents" => "Agents de la Commission",
     "disable" => "Désactiver",
     "logged_in_user" => "Utilisateur connecté",

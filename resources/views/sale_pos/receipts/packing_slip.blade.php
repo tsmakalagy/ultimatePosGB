@@ -65,7 +65,7 @@
 	
 		<p class="text-right font-30">
 			@if(!empty($receipt_details->invoice_no_prefix))
-				<span class="pull-left">{{__('lang_v1.'. $receipt_details->invoice_no_prefix) }}</span>
+				<span class="pull-left">@lang('lang_v1.Invoice No.')</span>
 			@endif
 
 			{{$receipt_details->invoice_no}}
@@ -87,7 +87,7 @@
 	<br/>
 	<div class="col-md-4 invoice-col word-wrap">
 		@if(!empty($receipt_details->customer_label))
-			<b>{{ __('lang_v1.'. $receipt_details->customer_label) }}</b><br/>
+			<b>@lang('lang_v1.Customer')</b><br/>
 		@endif
 
 		<!-- customer info -->
@@ -148,11 +148,11 @@
 					<th class="text-left" style="background-color: #357ca5 !important;  width: 5% !important ">#</th>
 					
 					<th class="text-left" style="background-color: #357ca5 !important; border: 1px solid blac width: 65% !important">
-						{{__('lang_v1.'. $receipt_details->table_product_label)}}
+						@lang('lang_v1.Product')
 					</th>
 					
 					<th class="text-left" style="background-color: #357ca5 !important; border: 1px solid blac width: 30% !important;">
-						{{__('lang_v1.'. $receipt_details->table_qty_label)}}
+						@lang('lang_v1.Quantity')
 					</th>
 				</tr>
 			</thead>

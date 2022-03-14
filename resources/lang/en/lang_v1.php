@@ -29,7 +29,7 @@ return [
     'Product' => 'Product',
     'Quantity' => 'Quantity',
     'shipping_charges' => 'Shipping charges',
-    'Shipping Charges:' => 'Shipping charges:',
+    'shipping_charges:' => 'Shipping charges:',
 
     'shipper_name' => 'Shipper',
     "delivery_fee" => "Delivery fee",

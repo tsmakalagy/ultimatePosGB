@@ -5,7 +5,7 @@ return [
     "sales_commission_agent" => "Agent de la Commission des ventes",
     "shipping_date" => "Date de livraison",
     'shipping_charges' => 'Frais de livraison',
-    'Shipping Charges:' => 'Frais de livraison:',
+    'shipping_charges:' => 'Frais de livraison:',
     "delivery_fee" => "Frais de livraison",
     'shipper_name' => 'Livreur',
     'location' => 'Lieu',

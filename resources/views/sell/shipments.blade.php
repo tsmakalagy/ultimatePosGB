@@ -231,8 +231,8 @@ $(document).ready( function(){
             { data: 'shipping_date', name: 'shipping_date'},
             { data: 'shipping_details', name: 'shipping_details'},
             { data: 'shipping_address', name: 'shipping_address'},
-            { data: 'delivered_to', name: 'shipping_location'},
-            { data: 'location', name: 'shipping_zone'},
+            { data: 'delivered_to', name: 'delivered_to'},
+            { data: 'location', name: 'location'},
             { data: 'final_total', name: 'final_total'},
             { data: 'total_paid', name: 'total_paid', "searchable": false},
             { data: 'total_remaining', name: 'total_remaining'},
@@ -270,4 +270,7 @@ $(document).ready( function(){
 });
 </script>
 <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+
+
+
 @endsection

@@ -225,62 +225,60 @@
 	</div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script>
+
 <script type="text/javascript">
     	$(document).ready( function() {
-//			var d= new Date().toISOString().slice(0, 19).replace('T', ' ');
-var time = '<?php echo $carbon ?>';
-    		$('.shipping_change').change(function(){
-				$('.datetime').val(time);
+		//var d= new Date().toISOString().slice(0, 19).replace('T', ' ');
+		var time = '<?php echo $carbon ?>';
+    	$('.shipping_change').change(function(){
+			$('.datetime').val(time);
 
 	        });
-		/*	$('.calendar').datepicker({
-				changeMonth: true,
-        changeYear: true,
-        yearRange: '1920:2010',
-        dateFormat : 'dd-mm-yy',
-        defaultDate: new Date(1985,01,01)
-            })*/
-			$('.date_shipping').datetimepicker({
-                format: 'YYYY-MM-DD HH:mm:ss',
-                ignoreReadonly: true,
-            });
-
-//addresses
-var val=$("#address_id").val();	
-	$("#shipper_type_id").change(function() {
-	
 		
-   var selectedbrand = $(this).val();
-   var type_id = {{$type_id}};
+		$('.date_shipping').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            ignoreReadonly: true,
+            });
+			
+		//dropdown with search 
+		$('#address_id').select2({ width: '100%'});
+
+		//addresses
+		var val=$("#address_id").val();	
+		$("#shipper_type_id").change(function() {
+
+   		var selectedbrand = $(this).val();
+   		var type_id = {{$type_id}};
   
-   var form = $("form#edit_sell_form");
-   var url = form.attr('action');
-	$.ajax({
-	type: 'GET',
-	url: '/sells/edit-shipping/'+type_id,
-	data: {selectedbrand:selectedbrand},
-	success: function(response) {
+   		var form = $("form#edit_sell_form");
+		var url = form.attr('action');
+		$.ajax({
+		type: 'GET',
+		url: '/sells/edit-shipping/'+type_id,
+		data: {selectedbrand:selectedbrand},
+		success: function(response) {
 	
 
-	//$("option").remove(".theOption");
-	//$(".theOption").hide();
-	$("#address_id option").each(function (index) {
-        if ($(this).is(':selected')) {
-            $(this).prop('disabled', false);
-         }
-         else {
-            $(this).remove();
-         }
-      });
-	var text;
-	var i;
-	for (i = 0; i < response.length; i++) {
-	  
-	   text+='<option value="'+response[i].id+'" class="theOption">'+response[i].nom+'</option>';
-	} 
-	 $("#address_id").append(text);
-	}	
-});
-}); 
-  	});
+		//$("option").remove(".theOption");
+		//$(".theOption").hide();
+		$("#address_id option").each(function (index) {
+			if ($(this).is(':selected')) {
+				$(this).prop('disabled', false);
+			}
+			else {
+				$(this).remove();
+			}
+		});
+		var text;
+		var i;
+		for (i = 0; i < response.length; i++) {
+		
+		text+='<option value="'+response[i].id+'" class="theOption">'+response[i].nom+'</option>';
+		} 
+		$("#address_id").append(text);
+		}	
+		});
+		}); 
+		});
     </script>

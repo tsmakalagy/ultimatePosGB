@@ -190,8 +190,8 @@ $(document).ready( function(){
             { data: 'shipping_status', name: 'shipping_status'},
             { data: 'shipper_name', name: 'shipper_name'},
             { data: 'shipping_address', name: 'shipping_address'},
-            { data: 'delivered_to', name: 'location'},
-            { data: 'location', name: 'zone'},
+            { data: 'delivered_to', name: 'delivered_to'},
+            { data: 'location', name: 'location'},
             { data: 'shipping_charges', name: 'shipping_charges'},
             { data: 'shipping_details', name: 'shipping_details'},
             { data: 'shipping_date', name: 'shipping_date'},
@@ -242,4 +242,5 @@ $(document).ready( function(){
 });
 </script>
 <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
+
 @endsection

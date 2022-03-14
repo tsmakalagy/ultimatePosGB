@@ -550,7 +550,7 @@
 					<div class="form-group id_100">
 						
 						{!! Form::label('address_id', __('lang_v1.shipping_location') . ':') !!}
-						<select name="address_id" id="address_id" class="form-control" >
+						<select name="address_id" id="address_id" class="form-control select2" >
 							
 							@if(isset($address))
 							@foreach($all_address as $all_addresses)
@@ -890,8 +890,16 @@
         success: function(response) {
 			
  
-        $(".theOption").hide();
-        var text = '<option value="" class="theOption">@lang('messages.please_select')</option>';
+        //$(".theOption").hide();
+		$("#address_id option").each(function (index) {
+        if ($(this).is(':selected')) {
+            $(this).prop('disabled', false);
+         }
+         else {
+            $(this).remove();
+         }
+      });
+        var text ;//'<option value="" class="theOption">@lang('messages.please_select')</option>';
         var i;
         for (i = 0; i < response.length; i++) {
           

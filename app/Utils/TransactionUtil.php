@@ -1121,7 +1121,7 @@ class TransactionUtil extends Util
         //Invoice info
         $output['invoice_no'] = $transaction->invoice_no;
         $output['invoice_no_prefix'] = $il->invoice_no_prefix;
-        $output['shipping_address'] = !empty($transaction->shipping_address()) ? $transaction->shipping_address() : $transaction->shipping_address;
+        $output['shipping_address'] = !empty($address->nom) ? $address->nom : '';
 
 
         //Heading & invoice label, when quotation use the quotation heading.
@@ -2227,6 +2227,7 @@ class TransactionUtil extends Util
     public function getSellTotals($business_id, $start_date = null, $end_date = null, $location_id = null, $created_by = null)
     {
         $query = Transaction::where('transactions.business_id', $business_id)
+        ->leftjoin('transaction_payments as tpay', 'transactions.id', '=', 'tpay.transaction_id')
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final')
             ->select(
@@ -2244,12 +2245,12 @@ class TransactionUtil extends Util
         }
 
         if (!empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '>=', $start_date)
-                ->whereDate('transactions.transaction_date', '<=', $end_date);
+            $query->whereDate('tpay.paid_on', '>=', $start_date)
+                ->whereDate('tpay.paid_on', '<=', $end_date);
         }
 
         if (empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '<=', $end_date);
+            $query->whereDate('tpay.paid_on', '<=', $end_date);
         }
 
         //Filter by the location
@@ -2543,11 +2544,11 @@ class TransactionUtil extends Util
         $query = Transaction::leftjoin('transactions as SR', function ($join) {
             $join->on('SR.return_parent_id', '=', 'transactions.id')
                 ->where('SR.type', 'sell_return');
-        })
+        })->leftjoin('transaction_payments as tpay', 'transactions.id', '=', 'tpay.transaction_id')
             ->where('transactions.business_id', $business_id)
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final')
-            ->whereBetween(DB::raw('date(transactions.transaction_date)'), [\Carbon::now()->subDays(30), \Carbon::now()]);
+            ->whereBetween(DB::raw('date(tpay.paid_on)'), [\Carbon::now()->subDays(30), \Carbon::now()]);
 
         //Check for permitted locations of a user
         $permitted_locations = auth()->user()->permitted_locations();
@@ -2556,10 +2557,10 @@ class TransactionUtil extends Util
         }
 
         $query->select(
-            DB::raw("DATE_FORMAT(transactions.transaction_date, '%Y-%m-%d') as date"),
+            DB::raw("DATE_FORMAT(tpay.paid_on, '%Y-%m-%d') as date"),
             DB::raw("SUM( transactions.final_total - COALESCE(SR.final_total, 0) ) as total_sells")
         )
-            ->groupBy(DB::raw('Date(transactions.transaction_date)'));
+            ->groupBy(DB::raw('Date(tpay.paid_on)'));
 
         if ($group_by_location) {
             $query->addSelect('transactions.location_id');
@@ -2588,11 +2589,11 @@ class TransactionUtil extends Util
         $query = Transaction::leftjoin('transactions as SR', function ($join) {
             $join->on('SR.return_parent_id', '=', 'transactions.id')
                 ->where('SR.type', 'sell_return');
-        })
+        })->leftjoin('transaction_payments as tpay', 'transactions.id', '=', 'tpay.transaction_id')
             ->where('transactions.business_id', $business_id)
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final')
-            ->whereBetween(DB::raw('date(transactions.transaction_date)'), [$start, $end]);
+            ->whereBetween(DB::raw('date(tpay.paid_on)'), [$start, $end]);
 
         //Check for permitted locations of a user
         $permitted_locations = auth()->user()->permitted_locations();
@@ -2600,9 +2601,9 @@ class TransactionUtil extends Util
             $query->whereIn('transactions.location_id', $permitted_locations);
         }
 
-        $query->groupBy(DB::raw("DATE_FORMAT(transactions.transaction_date, '%Y-%m')"))
+        $query->groupBy(DB::raw("DATE_FORMAT(tpay.paid_on, '%Y-%m')"))
             ->select(
-                DB::raw("DATE_FORMAT(transactions.transaction_date, '%m-%Y') as yearmonth"),
+                DB::raw("DATE_FORMAT(tpay.paid_on, '%m-%Y') as yearmonth"),
                 DB::raw("SUM( transactions.final_total - COALESCE(SR.final_total, 0)) as total_sells")
             );
         if ($group_by_location) {

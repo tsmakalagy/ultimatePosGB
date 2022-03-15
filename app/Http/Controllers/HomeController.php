@@ -60,7 +60,7 @@ class HomeController extends Controller
     public function index()
     {   $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
-$use=User::where('id',$id)->first();
+        $use=User::where('id',$id)->first();
 
 
         $is_admin = $this->businessUtil->is_admin(auth()->user());

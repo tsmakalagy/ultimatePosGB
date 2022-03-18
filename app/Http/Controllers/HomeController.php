@@ -7,6 +7,9 @@ use App\BusinessLocation;
 use App\Charts\CommonChart;
 use App\Currency;
 use App\Transaction;
+
+use App\TransactionPayment;
+
 use App\Utils\BusinessUtil;
 
 use App\Utils\ModuleUtil;
@@ -58,7 +61,35 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   $id=request()->session()->get('user.id');
+   { /*$max= TransactionPayment::select('transaction_payments.id')
+    ->orderby('transaction_payments.id', 'DESC')
+    ->first();
+    dd($max);*/
+
+  /*  $query = Transaction::leftjoin('transaction_payments as tpay', 'transactions.id', '=', 'tpay.transaction_id')
+    
+    //->where('tpay.id', $max->id)
+
+        ->where('transactions.type', 'sell')
+
+        ->where('transactions.type', 'sell')
+        ->where('transactions.status', 'final')
+        //->where('tpay.id', DB::raw("MAX(tpay.id)"))
+       
+
+        ->select(
+            DB::raw('SUM(tpay.amount) as total_sell'),
+            
+            DB::raw("SUM(final_total - tax_amount) as total_exc_tax"),
+            DB::raw('SUM(tpay.amount - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+            DB::raw('SUM(total_before_tax) as total_before_tax'),
+            DB::raw('SUM(shipping_charges) as total_shipping_charges'),
+          //  DB::raw("(select MAX('id') from tp)")
+        )
+        ->groupBy('transactions.id')->orderby('tpay.id', 'DESC')->get()->first();
+dd($query);
+*/
+       $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
 

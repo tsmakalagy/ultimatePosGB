@@ -2232,7 +2232,6 @@ class TransactionUtil extends Util
         $query = TransactionPayment::join('transactions',function($join){
                   $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
                   ->groupBy('transactions.id')  ;              
-                 
                 })
                 ->where('transactions.business_id', $business_id)  
             ->where('transactions.type', 'sell')
@@ -2241,11 +2240,11 @@ class TransactionUtil extends Util
             ->select(
                 DB::raw('SUM(transaction_payments.amount) as total_sell'),
                 DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
-                DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+                DB::raw('SUM((select final_total from transactions group by id - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
                 DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
-                DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges'),      
+                DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')     
             );
-           // DB::raw('SUM((SELECT final_total from transactions join transaction_payments as tpay on tpay.transaction_id=transactions.id where tpay.id =(select max(id) from transaction_payments ) group by transactions.id) - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+         
 
         //Check for permitted locations of a user
         $permitted_locations = auth()->user()->permitted_locations();

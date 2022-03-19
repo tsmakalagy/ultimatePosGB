@@ -2224,19 +2224,28 @@ class TransactionUtil extends Util
      *
      * @return array
      */
+    // ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
+    
+    
     public function getSellTotals($business_id, $start_date = null, $end_date = null, $location_id = null, $created_by = null)
     {  
-        $query = Transaction::where('transactions.business_id', $business_id)  
+        $query = TransactionPayment::join('transactions',function($join){
+                  $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
+                  ->groupBy('transactions.id')  ;              
+                 
+                })
+                ->where('transactions.business_id', $business_id)  
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final')
 
             ->select(
-                DB::raw('SUM(final_total) as total_sell'),
-                DB::raw("SUM(final_total - tax_amount) as total_exc_tax"),
-                DB::raw('SUM(final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
-                DB::raw('SUM(total_before_tax) as total_before_tax'),
-                DB::raw('SUM(shipping_charges) as total_shipping_charges'),      
+                DB::raw('SUM(transaction_payments.amount) as total_sell'),
+                DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
+                DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+                DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
+                DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges'),      
             );
+           // DB::raw('SUM((SELECT final_total from transactions join transaction_payments as tpay on tpay.transaction_id=transactions.id where tpay.id =(select max(id) from transaction_payments ) group by transactions.id) - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
 
         //Check for permitted locations of a user
         $permitted_locations = auth()->user()->permitted_locations();
@@ -2246,18 +2255,13 @@ class TransactionUtil extends Util
 
         if (!empty($start_date) && !empty($end_date)) {
 
-            $query->join('transaction_payments as tpay',function($join){
-                  $join->on('transactions.id', '=', 'tpay.transaction_id')
-                  ->groupBy('transactions.id')                
-                  ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
-                })
-                  ->whereDate(DB::raw('tpay.paid_on'), '>=', $start_date)
-            ->whereDate(DB::raw('tpay.paid_on'), '<=', $end_date);
+            $query->whereDate(DB::raw('transaction_payments.paid_on'), '>=', $start_date)
+            ->whereDate(DB::raw('transaction_payments.paid_on'), '<=', $end_date);
    
         }
 
         if (empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '<=', $end_date);
+            $query->whereDate('transaction_payments.paid_on', '<=', $end_date);
         }
 
         //Filter by the location
@@ -2554,9 +2558,9 @@ class TransactionUtil extends Util
                 ->where('SR.type', 'sell_return');
         })->join('transaction_payments as tpay',function($join){
             $join->on('transactions.id', '=', 'tpay.transaction_id')
-            ->groupBy('transactions.id')
+            ->groupBy('transactions.id');
           
-            ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
+          //  ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
           })
             ->where('transactions.business_id', $business_id)
             ->where('transactions.type', 'sell')
@@ -2571,7 +2575,7 @@ class TransactionUtil extends Util
 
         $query->select(
             DB::raw("DATE_FORMAT(tpay.paid_on, '%Y-%m-%d') as date"),
-            DB::raw("SUM( transactions.final_total - COALESCE(SR.final_total, 0) ) as total_sells")
+            DB::raw("SUM( tpay.amount) as total_sells")
         )
             ->groupBy(DB::raw('Date(tpay.paid_on)'));
 
@@ -2604,9 +2608,9 @@ class TransactionUtil extends Util
                 ->where('SR.type', 'sell_return');
       })->join('transaction_payments as tpay',function($join){
         $join->on('transactions.id', '=', 'tpay.transaction_id')
-        ->groupBy('transactions.id')
+        ->groupBy('transactions.id');
       
-        ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
+   // ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
       })
             ->where('transactions.business_id', $business_id)
             ->where('transactions.type', 'sell')
@@ -2622,7 +2626,7 @@ class TransactionUtil extends Util
         $query->groupBy(DB::raw("DATE_FORMAT(tpay.paid_on, '%Y-%m')"))
             ->select(
                 DB::raw("DATE_FORMAT(tpay.paid_on, '%m-%Y') as yearmonth"),
-                DB::raw("SUM( transactions.final_total - COALESCE(SR.final_total, 0)) as total_sells")
+                DB::raw("SUM( tpay.amount) as total_sells")
             );
         if ($group_by_location) {
             $query->addSelect('transactions.location_id');

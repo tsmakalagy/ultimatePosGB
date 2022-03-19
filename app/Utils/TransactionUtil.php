@@ -2240,11 +2240,11 @@ class TransactionUtil extends Util
             ->select(
                 DB::raw('SUM(transaction_payments.amount) as total_sell'),
                 DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
-                DB::raw('SUM((select final_total from transactions group by id - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+                DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
                 DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
                 DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')     
             );
-         
+           
 
         //Check for permitted locations of a user
         $permitted_locations = auth()->user()->permitted_locations();

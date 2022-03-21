@@ -391,7 +391,7 @@ return [
 "transaction_no" => "N ° de transaction",
 "file" => "Fichier",
 "size" => "Taille",
-"date" => "Rendez-vous amoureux",
+"date" => "Date",
 "age" => "Âge",
 "create_new_backup" => "Créer une nouvelle sauvegarde",
 "all_sales" => "Toutes les ventes",

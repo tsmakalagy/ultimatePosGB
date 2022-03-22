@@ -7,6 +7,9 @@ use App\BusinessLocation;
 use App\Charts\CommonChart;
 use App\Currency;
 use App\Transaction;
+
+use App\TransactionPayment;
+
 use App\Utils\BusinessUtil;
 
 use App\Utils\ModuleUtil;
@@ -58,7 +61,8 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   $id=request()->session()->get('user.id');
+   { 
+       $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
 

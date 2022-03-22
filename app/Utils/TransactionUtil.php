@@ -1102,7 +1102,7 @@ class TransactionUtil extends Util
        
 
 
-        if($use->is_cmmsn_agnt == 1){
+        if(!empty($use) && $use->is_cmmsn_agnt == 1){
              $full_name=$use->surname.' '.$use->first_name.' '.$use->last_name;
            // $full_name=$use->last_name;
             $output['commission_agent_label'] = 'Commission Agent';

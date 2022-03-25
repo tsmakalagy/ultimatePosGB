@@ -24,8 +24,8 @@ return [
     'Discount:' => 'Discount:',
     'Total' => 'Total',
     'Total:' => 'Total:',
-
-    'Customer' => 'Customer',
+    'Total:' => 'Total:',
+    'paid_on' => 'Paid on',
     'Product' => 'Product',
     'Quantity' => 'Quantity',
     'shipping_charges' => 'Shipping charges',

@@ -12,6 +12,7 @@ return [
     'shipping_location' => 'Lieu de livraison',
     'shipping_zone' => 'Zone de livraison',
     'zone' => 'Zone',
+    'paid_on' => 'Payé le',
     'address' => 'Adresse',
 
     "sales_commission_agents" => "Agents de la Commission",

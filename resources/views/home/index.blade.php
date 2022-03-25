@@ -11,8 +11,8 @@
 <!-- Main content -->
 <section class="content content-custom no-print">
     <br>
-    @if(auth()->user()->can('dashboard.data'))
-        @if($is_admin)
+   
+        
         	<div class="row">
                 <div class="col-md-4 col-xs-12">
                     @if(count($all_locations) > 1)
@@ -120,7 +120,13 @@
                     {!! $widget !!}
                 @endforeach
             @endif
-        @endif 
+         
+
+
+    
+
+
+
         <!-- end is_admin check -->
          @if(auth()->user()->can('sell.view') || auth()->user()->can('direct_sell.view'))
             @if(!empty($all_locations))
@@ -369,14 +375,23 @@
           @endforeach
         @endif
 
-    @endif
+    
    <!-- can('dashboard.data') end -->
 </section>
+
+
 <!-- /.content -->
 <div class="modal fade payment_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
 <div class="modal fade edit_pso_status_modal" tabindex="-1" role="dialog"></div>
+<div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+<div class="modal fade payment_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+
 <div class="modal fade edit_payment_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
@@ -451,6 +466,8 @@
           });
         })
         @endif
+
     </script>
+    <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 @endsection
 

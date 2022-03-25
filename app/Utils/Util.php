@@ -85,6 +85,46 @@ class Util
         return $formatted;
     }
 
+
+
+    public function getPaidOn($transaction_payments)
+    {
+       
+        foreach ($transaction_payments as $transaction_payment) {
+            $paid_on=$transaction_payment->id;
+        }
+
+        //return $paid_on;
+    }
+
+/*
+[{"id":218,"transaction_id":212,"business_id":2,"is_return":0,"amount":"50000.0000","method":"cash","transaction_no":null,
+    "card_transaction_number":null,"card_number":null,"card_type":"credit","card_holder_name":null,"card_month":null,
+    "card_year":null,"card_security":null,"cheque_number":null,"bank_account_number":null,"paid_on":"2022-03-22 18:28:00"
+    ,"created_by":5,"paid_through_link":0,"gateway":null,"is_advance":0,"payment_for":84,"parent_id":null,"note":null,
+    "document":null,"payment_ref_no":"SP2022\/0187","account_id":null,"created_at":"2022-03-22 18:29:34","updated_at":"2022-03-22 18:29:34"}
+    ,{"id":219,"transaction_id":212,"business_id":2,"is_return":0,"amount":"50000.0000","method":"cash","transaction_no":null,"card_transaction_number":null
+        ,"card_number":null,"card_type":"credit","card_holder_name":null,"card_month":null,"card_year":null,"card_security":null,
+        "cheque_number":null,"bank_account_number":null,"paid_on":"2022-03-22 18:30:00","created_by":5,"paid_through_link":0,
+        "gateway":null,"is_advance":0,"payment_for":84,"parent_id":null,"note":null,"document":null,"payment_ref_no":"SP2022\/0188",
+        "account_id":null,"created_at":"2022-03-22 18:30:45","updated_at":"2022-03-22 18:30:45"},{"id":220,"transaction_id":212,
+            "business_id":2,"is_return":0,"amount":"10000.0000","method":"cash","transaction_no":null,"card_transaction_number":null,
+            "card_number":null,"card_type":"credit","card_holder_name":null,"card_month":null,"card_year":null,"card_security":null,
+            "cheque_number":null,"bank_account_number":null,"paid_on":"2022-03-24 18:38:00","created_by":5,"paid_through_link":0,
+            "gateway":null,"is_advance":0,"payment_for":84,"parent_id":null,"note":null,"document":null,"payment_ref_no":"SP2022\/0189",
+            "account_id":null,"created_at":"2022-03-22 18:38:51","updated_at":"2022-03-22 18:38:51"},{"id":221,"transaction_id":212,
+                "business_id":2,"is_return":0,"amount":"10000.0000","method":"cash","transaction_no":null,"card_transaction_number":null,
+                "card_number":null,"card_type":"credit","card_holder_name":null,"card_month":null,"card_year":null,"card_security":null,
+                "cheque_number":null,"bank_account_number":null,"paid_on":"2022-03-23 01:58:00","created_by":5,"paid_through_link":0,
+                "gateway":null,"is_advance":0,"payment_for":84,"parent_id":null,"note":null,"document":null
+    ,"payment_ref_no":"SP2022\/0190","account_id":null,"created_at":"2022-03-23 02:00:44",
+    "updated_at":"2022-03-23 02:00:44"}]
+
+
+*/
+
+
+
     /**
     * Calculates percentage for a given number
     *

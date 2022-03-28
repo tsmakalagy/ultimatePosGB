@@ -296,23 +296,34 @@ if (request()->ajax()) {
     }
 
     //Add condition for created_by,used in sales representative sales report
-    if (request()->has('created_by')) {
+   /* if (request()->has('created_by')) {
         $created_by = request()->get('created_by');
         if (!empty($created_by)) {
             $sells->where('transactions.created_by', $created_by);
         }
+    }
+*/
+if ($is_admin){
+    $created_by=null;
+}
+else{
+    $created_by=$id;
+}
+    if (!empty($created_by)) {
+        $sells->where('transactions.created_by', $created_by);
+        
     }
 
     $partial_permissions = ['view_own_sell_only', 'view_commission_agent_sell', 'access_own_shipping', 'access_commission_agent_shipping'];
     if (!auth()->user()->can('direct_sell.view')) {
         $sells->where(function ($q) {
             if (auth()->user()->hasAnyPermission(['view_own_sell_only', 'access_own_shipping'])) {
-                $q->where('transactions.created_by', request()->session()->get('user.id'));
+               // $q->where('transactions.created_by', request()->session()->get('user.id'));
             }
 
             //if user is commission agent display only assigned sells
             if (auth()->user()->hasAnyPermission(['view_commission_agent_sell', 'access_commission_agent_shipping'])) {
-                $q->orWhere('transactions.commission_agent', request()->session()->get('user.id'));
+                //$q->orWhere('transactions.commission_agent', request()->session()->get('user.id'));
             }
         });
     }

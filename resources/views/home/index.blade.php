@@ -443,7 +443,7 @@
           @endforeach
         @endif
 
-        @endif
+    @endif
    <!-- can('dashboard.data') end -->
 </section>
 
@@ -469,160 +469,9 @@
         {!! $sells_chart_2->script() !!}
     @endif
     <script type="text/javascript">
-        sales_order_table = $('#sales_order_table').DataTable({
-          processing: true,
-          serverSide: true,
-          scrollY: "75vh",
-          scrollX:        true,
-          scrollCollapse: true,
-          aaSorting: [[1, 'desc']],
-          "ajax": {
-              "url": '/sells?sale_type=sales_order',
-              "data": function ( d ) {
-                  d.for_dashboard_sales_order = true;
-              }
-          },
-          columnDefs: [ {
-              "targets": 7,
-              "orderable": false,
-              "searchable": false
-          } ],
-          columns: [
-              { data: 'action', name: 'action'},
-              { data: 'transaction_date', name: 'transaction_date'  },
-              { data: 'invoice_no', name: 'invoice_no'},
-              { data: 'conatct_name', name: 'conatct_name'},
-              { data: 'mobile', name: 'contacts.mobile'},
-              { data: 'business_location', name: 'bl.name'},
-              { data: 'status', name: 'status'},
-              { data: 'shipping_status', name: 'shipping_status'},
-              { data: 'so_qty_remaining', name: 'so_qty_remaining', "searchable": false},
-              { data: 'added_by', name: 'u.first_name'},
-          ]
-      });
-        @if(!empty($common_settings['enable_purchase_order']))
-        $(document).ready( function(){
-          //Purchase table
-          purchase_order_table = $('#purchase_order_table').DataTable({
-              processing: true,
-              serverSide: true,
-              aaSorting: [[1, 'desc']],
-              scrollY: "75vh",
-              scrollX:        true,
-              scrollCollapse: true,
-              ajax: {
-                  url: '{{action("PurchaseOrderController@index")}}',
-                  data: function(d) {
-                      d.from_dashboard = true;
-                  },
-              },
-              columns: [
-                  { data: 'action', name: 'action', orderable: false, searchable: false },
-                  { data: 'transaction_date', name: 'transaction_date' },
-                  { data: 'ref_no', name: 'ref_no' },
-                  { data: 'location_name', name: 'BS.name' },
-                  { data: 'name', name: 'contacts.name' },
-                  { data: 'status', name: 'transactions.status' },
-                  { data: 'po_qty_remaining', name: 'po_qty_remaining', "searchable": false},
-                  { data: 'added_by', name: 'u.first_name' }
-              ]
-          });
-        })
-        @endif
-
-    $(document).ready( function(){
-        var sell_table=$('#sell_table').DataTable({
-            processing: true,
-            serverSide: true,
-            aaSorting: [[1, 'desc']],
-            "ajax": {
-                "url": "/home",
-                "data": function ( d ) {
-                   
-                        var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                        var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                        d.start_date = start;
-                        d.end_date = end;  
-                    
-                    d.is_direct_sale = 1;
-    
-                    if($('#only_subscriptions').is(':checked')) {
-                        d.only_subscriptions = 1;
-                    }
-    
-                    d = __datatable_ajax_callback(d);
-                }
-            },
-            scrollY:        "75vh",
-            scrollX:        true,
-            scrollCollapse: true,
-            columns: [
-                { data: 'action', name: 'action', orderable: false, "searchable": false},
-                { data: 'transaction_date', name: 'transaction_date'  },
-                { data: 'invoice_no', name: 'invoice_no'},
-                { data: 'conatct_name', name: 'conatct_name'},
-                { data: 'mobile', name: 'contacts.mobile'},
-                { data: 'business_location', name: 'bl.name'},
-                { data: 'payment_status', name: 'payment_status'},
-                { data: 'payment_methods', orderable: false, "searchable": false},
-                { data: 'date_paid_on', name: 'date_paid_on'},
-                { data: 'final_total', name: 'final_total'},
-                { data: 'total_paid', name: 'total_paid', "searchable": false},
-                { data: 'total_remaining', name: 'total_remaining'},
-                { data: 'return_due', orderable: false, "searchable": false},
-                
-                { data: 'total_items', name: 'total_items', "searchable": false},
-                { data: 'types_of_service_name', name: 'tos.name' ,@if(empty($is_types_service_enabled)) visible: false @endif},
-                { data: 'service_custom_field_1', name: 'service_custom_field_1',  @if(empty($is_types_service_enabled)) visible: false @endif},
-                { data: 'added_by', name: 'u.first_name'},
-                { data: 'additional_notes', name: 'additional_notes'},
-                { data: 'staff_note', name: 'staff_note'},
-                { data: 'shipping_status', name: 'shipping_status'},
-                { data: 'shipper_name', name: 'shipper_name'},
-                { data: 'shipping_address', name: 'shipping_address'},
-                { data: 'delivered_to', name: 'delivered_to'},
-                { data: 'location', name: 'location'},
-                { data: 'shipping_charges', name: 'shipping_charges'},
-                { data: 'shipping_details', name: 'shipping_details'},
-                { data: 'shipping_date', name: 'shipping_date'},
-                { data: 'table_name', name: 'tables.name', @if(empty($is_tables_enabled)) visible: false @endif },
-                { data: 'waiter', name: 'ss.first_name', @if(empty($is_service_staff_enabled)) visible: false @endif},
-            ],
-            "fnDrawCallback": function (oSettings) {
-                __currency_convert_recursively($('#sell_table'));
-            },
-            "footerCallback": function ( row, data, start, end, display ) {
-                var footer_sale_total = 0;
-                var footer_total_paid = 0;
-                var footer_total_remaining = 0;
-                var footer_total_sell_return_due = 0;
-                for (var r in data){
-                    footer_sale_total += $(data[r].final_total).data('orig-value') ? parseFloat($(data[r].final_total).data('orig-value')) : 0;
-                    footer_total_paid += $(data[r].total_paid).data('orig-value') ? parseFloat($(data[r].total_paid).data('orig-value')) : 0;
-                    footer_total_remaining += $(data[r].total_remaining).data('orig-value') ? parseFloat($(data[r].total_remaining).data('orig-value')) : 0;
-                    footer_total_sell_return_due += $(data[r].return_due).find('.sell_return_due').data('orig-value') ? parseFloat($(data[r].return_due).find('.sell_return_due').data('orig-value')) : 0;
-                }
-    
-                $('.footer_total_sell_return_due').html(__currency_trans_from_en(footer_total_sell_return_due));
-                $('.footer_total_remaining').html(__currency_trans_from_en(footer_total_remaining));
-                $('.footer_total_paid').html(__currency_trans_from_en(footer_total_paid));
-                $('.footer_sale_total').html(__currency_trans_from_en(footer_sale_total));
-    
-                $('.footer_payment_status_count').html(__count_status(data, 'payment_status'));
-                $('.service_type_count').html(__count_status(data, 'types_of_service_name'));
-                $('.payment_method_count').html(__count_status(data, 'payment_methods'));
-            },
-            createdRow: function( row, data, dataIndex ) {
-                $( row ).find('td:eq(6)').attr('class', 'clickable_td');
-            }
-        });
-    
-
-        $('#only_subscriptions').on('ifChanged', function(event){
-            sell_table.ajax.reload();
-        });
+     
   
-});
+
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 @endsection

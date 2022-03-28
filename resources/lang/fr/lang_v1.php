@@ -13,6 +13,7 @@ return [
     'shipping_zone' => 'Zone de livraison',
     'zone' => 'Zone',
     'paid_on' => 'Payé le',
+    'paid' => 'Payé',
     'address' => 'Adresse',
 
     "sales_commission_agents" => "Agents de la Commission",
@@ -793,6 +794,7 @@ return [
 'Unit Price' => 'Prix unitaire',
 'Subtotal' => 'Sous total',
 'Subtotal:' => 'Sous total:',
+'total_paid' => 'Total payé',
 'Seller' => 'Vendeur',
 
 'Cash' => 'En espèces',

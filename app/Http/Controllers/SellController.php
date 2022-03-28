@@ -596,16 +596,16 @@ class SellController extends Controller
                         
                     });
                 })
-                ->filterColumn('shipping_charges', function ($query, $keyword) {
+              /*  ->filterColumn('shipping_charges', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('transactions.shipping_charges', 'like', "%{$keyword}%");
                     });
-                })
-                ->filterColumn('shipping_date', function ($query, $keyword) {
+                })*/
+              /*  ->filterColumn('shipping_date', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('transactions.shipping_date', 'like', "%{$keyword}%");
                     });
-                })
+                })*/
                 
                 ->filterColumn('shipping_details', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {

@@ -4695,10 +4695,10 @@ class TransactionUtil extends Util
     public function getListSells($business_id, $sale_type = 'sell')
     {  
         $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-        //->leftJoin('transaction_payments as tp', function ($join) {
-          //  $join->on('transactions.id', '=', 'tp.transaction_id');
+        ->leftJoin('transaction_payments as tp', function ($join) {
+            $join->on('transactions.id', '=', 'tp.transaction_id');
                 
-        //})//->groupBy('transactions.id') 
+        })//->groupBy('transactions.id') 
              
             ->leftJoin('transaction_sell_lines as tsl', function ($join) {
                 $join->on('transactions.id', '=', 'tsl.transaction_id')
@@ -4744,7 +4744,7 @@ class TransactionUtil extends Util
                 'transactions.shipping_date',
                 'shippers.shipper_name',
                 'addresses.nom',
-                //'tp.paid_on',
+               // 'tp.paid_on',
                 'addresses.lieu',
                 'transactions.transaction_date',
                 'transactions.shipping_charges',
@@ -4782,6 +4782,10 @@ class TransactionUtil extends Util
                 'transactions.shipping_custom_field_4',
                 'transactions.shipping_custom_field_5',
                 //DB::raw('(select paid_on from transaction_payments as tp join transactions on tp.transaction_id=transactions.id) as paid_on'),
+               
+                DB::raw("DATE_FORMAT(tp.paid_on, '%Y/%m/%d') as paid_on"),
+                //DB::raw('DATE_FORMAT(transactions.shipping_date, "%Y/%m/%d") as shipping_date'),
+                //DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as transaction_date'),
 
                 DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
                 DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
@@ -4805,6 +4809,16 @@ class TransactionUtil extends Util
         if ($sale_type == 'sell') {
             $sells->where('transactions.status', 'final');
         }
+      /*  if (!empty($start_date) && !empty($end_date)) {
+
+            $sells->whereDate(DB::raw('tp.paid_on'), '>=', $start_date)
+            ->whereDate(DB::raw('tp.paid_on'), '<=', $end_date);
+   
+        }
+
+        if (empty($start_date) && !empty($end_date)) {
+            $sells->whereDate('tp.paid_on', '<=', $end_date);
+        }*/
 
         return $sells;
     }
@@ -4861,7 +4875,7 @@ class TransactionUtil extends Util
             ->where('transactions.type', $sale_type)
             ->select(
                 'transactions.id',
-                'transaction_payments.paid_on',
+                
                 'transactions.shipping_date',
                 'shippers.shipper_name',
                 'addresses.nom',
@@ -4902,6 +4916,7 @@ class TransactionUtil extends Util
                 'transactions.shipping_custom_field_4',
                 'transactions.shipping_custom_field_5',
                 DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
+                DB::raw('DATE_FORMAT(tp.paid_on, "%Y-%m-%d") as paid_on'),
                 DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
                 DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
                         TP.transaction_id=transactions.id) as total_paid'),
@@ -4930,7 +4945,7 @@ class TransactionUtil extends Util
     public function getListSellsCmmsnAgnt($business_id, $sale_type = 'sell')
     {
     $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-        // ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
+         ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
         ->leftJoin('transaction_sell_lines as tsl', function ($join) {
             $join->on('transactions.id', '=', 'tsl.transaction_id')
                 ->whereNull('tsl.parent_sell_line_id');
@@ -5013,6 +5028,7 @@ class TransactionUtil extends Util
             'transactions.shipping_custom_field_3',
             'transactions.shipping_custom_field_4',
             'transactions.shipping_custom_field_5',
+             DB::raw('DATE_FORMAT(tp.paid_on, "%Y/%m/%d") as paid_on'),
             DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
             DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
             //DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as u_added_by"),

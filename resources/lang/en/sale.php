@@ -46,6 +46,7 @@ return [
     'customer_name' => 'Customer name',
     'payment_status' => 'Payment status',
     'status' => 'Status',
+    'paid' => 'Paid',
     'total_amount' => 'Total amount',
     'total_paid' => 'Total paid',
     'total_remaining' => 'Total remaining',

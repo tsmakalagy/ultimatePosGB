@@ -764,8 +764,7 @@
 			$payment_body_id = '';
 		}
 	@endphp
-	@if((empty($status) || (!in_array($status, ['quotation', 'draft'])) || $is_enabled_download_pdf) && $sale_type != 'sales_order')
-	@can('sell.payments')
+	
 			@component('components.widget', ['class' => 'box-solid', 'id' => $payment_body_id, 'title' => __('purchase.add_payment')])
 			@if($is_enabled_download_pdf)
 				<div class="well row">
@@ -813,8 +812,7 @@
 				</div>
 			@endif
 			@endcomponent
-			@endcan
-			@endif
+		
 	
 	<div class="row">
 		{!! Form::hidden('is_save_and_print', 0, ['id' => 'is_save_and_print']); !!}

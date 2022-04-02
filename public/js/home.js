@@ -1,12 +1,16 @@
 $(document).ready(function() {
     if ($('#dashboard_date_filter').length == 1) {
+        
+
         dateRangeSettings.startDate = moment();
         dateRangeSettings.endDate = moment();
         $('#dashboard_date_filter').daterangepicker(dateRangeSettings, function(start, end) {
             $('#dashboard_date_filter span').html(
                 start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format)
             );
-            update_statistics(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
+            var user= $('#user').val();
+            alert(user);
+            update_statistics(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'),user);
            // sell_table(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
            sell_table.ajax.reload();
 
@@ -14,10 +18,33 @@ $(document).ready(function() {
                 quotation_datatable.ajax.reload();
             }
         }); 
-            update_statistics(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'));
+            update_statistics(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'),null);
         
     }
+    $('#user').change(function(){
+        //var user= $('#user').val();
+       // alert(user);
+        var user= $(this).val();
+        sell_table.ajax.reload();
+      //  alert("hel");
+   //   if($('#dashboard_date_filter').val()) {
+        //var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        //var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        //update_statistics(start, end,user);
+        //if ($('#quotation_table').length && $('#dashboard_location').length) {
+       //     quotation_datatable.ajax.reload();
+     //   }
+     update_statistics(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'),user);
+    /*}
+    else{
+        
 
+    }
+    */
+    });
+    update_statistics(moment().format('YYYY-MM-DD'), moment().format('YYYY-MM-DD'),null);
+
+  
         //Date range as a button
       var sell_table=$('#sell_table').DataTable({
             processing: true,
@@ -26,20 +53,20 @@ $(document).ready(function() {
             "ajax": {
                 "url": "/home",
                 "data": function ( d ) {
-                   
-                        var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
-                        var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
-                        d.start_date = start;
-                        d.end_date = end;  
                     
-                    d.is_direct_sale = 1;
+        var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        d.start_date = start;
+        d.end_date = end;                     
+        d.is_direct_sale = 1;
+        d.user = $('#user').val(); 
     
-                    if($('#only_subscriptions').is(':checked')) {
-                        d.only_subscriptions = 1;
-                    }
+         if($('#only_subscriptions').is(':checked')) {
+            d.only_subscriptions = 1;
+            }
     
-                    d = __datatable_ajax_callback(d);
-                }
+            d = __datatable_ajax_callback(d);
+            }
             },
             scrollY:        "75vh",
             scrollX:        true,
@@ -231,12 +258,12 @@ $(document).ready(function() {
     }
 });
 
-function update_statistics(start, end) {
+function update_statistics(start, end,user) {
     var location_id = '';
     if ($('#dashboard_location').length > 0) {
         location_id = $('#dashboard_location').val();
     }
-    var data = { start: start, end: end, location_id: location_id };
+    var data = { start: start, end: end, location_id: location_id,user: user };
     //get purchase details
     var loader = '<i class="fas fa-sync fa-spin fa-fw margin-bottom"></i>';
     $('.total_purchase').html(loader);
@@ -263,3 +290,9 @@ function update_statistics(start, end) {
     });
    
 }
+/*$(document).on('ready',function() {
+$('#user').on('change',function(){
+    //sell_table.ajax.reload();
+    alert("hello");
+});
+});*/

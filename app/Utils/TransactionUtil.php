@@ -2224,26 +2224,47 @@ class TransactionUtil extends Util
      *
      * @return array
      */
-    // ->where('tpay.id',DB::raw("(select max(`id`) from transaction_payments where transaction_id = transactions.id )"));
     
     
-    public function getSellTotals($business_id, $start_date = null, $end_date = null, $location_id = null, $created_by)
+    public function getSellTotals($business_id, $start_date = null, $end_date = null, $location_id = null, $created_by,$shipp,$cmmsn_agnt)
     {  
+      /*  $shipping_charge=Transaction::leftJoin('transaction_payments',function($join){
+            $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
+              ;              
+          //})//->groupBy('transactions.id')
+          select(DB::raw('SUM(transactions.shipping_charges) as shipping_charge'));
+        if (!empty($start_date) && !empty($end_date)) {
+
+            $shipping_charge->whereDate(DB::raw('transaction_payments.paid_on'), '>=', $start_date)
+            ->whereDate(DB::raw('transaction_payments.paid_on'), '<=', $end_date);
+   
+        }
+
+        if (empty($start_date) && !empty($end_date)) {
+            $shipping_charge->whereDate('transaction_payments.paid_on', '<=', $end_date);
+        }
+        $shipp = $shipping_charge->first();
+        $shipp=$shipp->shipping_charge;
+*/
         $query = TransactionPayment::join('transactions',function($join){
                   $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
-                  ->groupBy('transactions.id')  ;              
+            ->leftJoin('users as u', 'transactions.commission_agent', '=', 'u.id')
+
+                   ->groupBy('transactions.id') ;              
                 })
                 ->where('transactions.business_id', $business_id)  
             ->where('transactions.type', 'sell')
             ->where('transactions.status', 'final')
-
+            
+                        
             ->select(
-                DB::raw('SUM(transaction_payments.amount) as total_sell'),
+                DB::raw("SUM(transaction_payments.amount ) as total_sell"),
                 DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
                 DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
                 DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
-                DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')     
-            );
+                DB::raw('SUM(transactions.shipping_charges) total_shipping_charges')     
+            )
+            ;
            
 
         //Check for permitted locations of a user
@@ -2270,6 +2291,12 @@ class TransactionUtil extends Util
 
         if (!empty($created_by)) {
             $query->where('transactions.created_by', $created_by);
+            
+        }
+
+        //filter by commission_agent
+        if (!empty($cmmsn_agnt)) {
+            $query->where('u.is_cmmsn_agnt', $cmmsn_agnt);
             
         }
    

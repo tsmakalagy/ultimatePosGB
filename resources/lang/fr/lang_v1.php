@@ -796,6 +796,8 @@ return [
 'Subtotal:' => 'Sous total:',
 'total_paid' => 'Total payé',
 'Seller' => 'Vendeur',
+"type_user" => "Type d'utilisateurs",
+
 
 'Cash' => 'En espèces',
 'Total Paid' => 'Total payé',

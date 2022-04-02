@@ -101,7 +101,6 @@ class HomeController extends Controller
      */
     public function index()
    { 
-    
        $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
@@ -281,6 +280,7 @@ if (request()->ajax()) {
     $id=request()->session()->get('user.id');
    
      $use=User::where('id',$id)->first();
+     $user = request()->user;
 
     //if commission_agent connected
     if($use->is_cmmsn_agnt ==1){
@@ -303,14 +303,28 @@ if (request()->ajax()) {
         }
     }
 */
-if ($is_admin){
+
+//condition for  commission_agent
+    if ($is_admin){
     $created_by=null;
-}
-else{
-    $created_by=$id;
-}
+        if(empty($user)){
+            $cmmsn_agnt=null;
+        }
+        else{
+            $cmmsn_agnt=$user;
+        
+        }
+    }
+    else{
+        $created_by=$id;
+        $cmmsn_agnt=null;
+    }
     if (!empty($created_by)) {
         $sells->where('transactions.created_by', $created_by);
+        
+    }
+    if (!empty($cmmsn_agnt)) {
+        $sells->where('u.is_cmmsn_agnt', $cmmsn_agnt);
         
     }
 
@@ -915,11 +929,11 @@ if ($this->productUtil->isModuleEnabled('service_staff')) {
 $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
 
-    return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use','business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
+return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use','business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
 
-    //return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use'));
+//return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use'));
    
-    }
+}
 
   /**
      * Display a listing of the resource.
@@ -938,27 +952,43 @@ $shipping_statuses = $this->transactionUtil->shipping_statuses();
      * @return \Illuminate\Http\Response
      */
     public function getTotals()
-    { $id=request()->session()->get('user.id');
+    { 
+        $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
         $is_admin = $this->businessUtil->is_admin(auth()->user());
+
+        //Somme shipping_charges
+        $shipping_charges=Transaction::select(DB::raw('SUM(transactions.shipping_charges) as shipping_charge'))->first();
+        $shipp=$shipping_charges->shipping_charge;
 
         if (request()->ajax()) {
             $start = request()->start;
             $end = request()->end;
             $location_id = request()->location_id;
+            $user = request()->user;
+
             $business_id = request()->session()->get('user.business_id');
 
             $purchase_details = $this->transactionUtil->getPurchaseTotals($business_id, $start, $end, $location_id);
 
             if($is_admin){
                 $created_by=null;
-            }
+                if(empty($user)){
+                    $cmmsn_agnt=null;
+                    }
+                 else{
+                    $cmmsn_agnt=$user;
+                    
+                    }
+                }
+            
             else{
                 $created_by=$id;
+                $cmmsn_agnt=null;
 
             }
-            $sell_details = $this->transactionUtil->getSellTotals($business_id, $start, $end, $location_id,$created_by);
+            $sell_details = $this->transactionUtil->getSellTotals($business_id, $start, $end, $location_id,$created_by,$shipp,$cmmsn_agnt);
 
             $transaction_types = [
                 'purchase_return', 'sell_return', 'expense'

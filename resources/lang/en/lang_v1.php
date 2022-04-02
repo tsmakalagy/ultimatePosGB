@@ -16,6 +16,12 @@ return [
     'Subtotal:' => 'Subtotal:',
     'Seller' => 'Seller',
     'address' => 'Address',
+    'customers' => 'Customers',
+    'Customer' => 'Customer',
+    'customer' => 'Customer',
+    'type_user' => 'Type user',
+
+
 
     'Cash' => 'Cash',
     'Total Paid' => 'Total Paid',

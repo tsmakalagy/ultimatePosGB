@@ -28,8 +28,8 @@
                 @if($is_admin)
         		<div class="col-md-4 col-xs-6">
                     <div class="form-group "><p>
-                      {!! Form::label('user',  __('lang_v1.type_user') . ':',['style' => 'color:white']) !!}
-                      {!! Form::select('user', array(1 => 'commission_agent'),null, ['class' => 'form-control select2', 'style' => 'width:40%', 'placeholder' => __('lang_v1.all')]); !!}  
+                      {!! Form::label('user',  __('lang_v1.commission_agent') . ':',['style' => 'color:white']) !!}
+                      {!! Form::select('user', $agent,null, ['class' => 'form-control select2', 'style' => 'width:40%', 'placeholder' => __('lang_v1.all')]); !!}  
                     </p></div>
         		</div>
            
@@ -179,9 +179,10 @@
                         <th>@lang('sale.location')</th>
                         <th>@lang('sale.payment_status')</th>
                         <th>@lang('lang_v1.payment_method')</th>
-                        <th>@lang('lang_v1.paid_on')</th>
+                        
                         <th>@lang('sale.total_amount')</th>
                         <th>@lang('sale.paid')</th>
+                        <th>@lang('lang_v1.paid_on')</th>
                         <th>@lang('lang_v1.sell_due')</th>
                         <th>@lang('lang_v1.sell_return_due')</th>
                         
@@ -566,9 +567,10 @@
                 { data: 'business_location', name: 'bl.name'},
                 { data: 'payment_status', name: 'payment_status'},
                 { data: 'payment_methods', orderable: false, "searchable": false},
-                { data: 'date_paid_on', name: 'date_paid_on'},
+               
                 { data: 'final_total', name: 'final_total'},
                 { data: 'total_paid', name: 'total_paid', "searchable": false},
+                 { data: 'date_paid_on', name: 'date_paid_on'},
                 { data: 'total_remaining', name: 'total_remaining'},
                 { data: 'return_due', orderable: false, "searchable": false},
                 

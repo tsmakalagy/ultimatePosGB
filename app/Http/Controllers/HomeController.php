@@ -104,8 +104,10 @@ class HomeController extends Controller
        $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
-      //  $sell_details = $this->transactionUtil->getListSells($business_id, null,null,null,null);
-        //dd($sell_details->get());
+        $agent=User::select(
+            DB::raw("CONCAT(surname,' ',first_name,' ',last_name) AS name"),'id')
+            ->where('is_cmmsn_agnt',1)->pluck('name', 'id');;
+      
 
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
@@ -305,26 +307,28 @@ if (request()->ajax()) {
 */
 
 //condition for  commission_agent
-    if ($is_admin){
+if($is_admin){
     $created_by=null;
-        if(empty($user)){
-            $cmmsn_agnt=null;
+    if(empty($user)){
+        $cmmsn_agnt=null;
         }
-        else{
-            $cmmsn_agnt=$user;
+     else{
+        $cmmsn_agnt=$user;
         
         }
     }
-    else{
-        $created_by=$id;
-        $cmmsn_agnt=null;
-    }
+
+else{
+    $created_by=$id;
+    $cmmsn_agnt=null;
+
+}
     if (!empty($created_by)) {
         $sells->where('transactions.created_by', $created_by);
         
     }
     if (!empty($cmmsn_agnt)) {
-        $sells->where('u.is_cmmsn_agnt', $cmmsn_agnt);
+        $sells->where('transactions.commission_agent', $cmmsn_agnt);
         
     }
 
@@ -929,7 +933,7 @@ if ($this->productUtil->isModuleEnabled('service_staff')) {
 $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
 
-return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use','business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
+return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use','business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses','agent'));
 
 //return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_2', 'widgets', 'all_locations', 'common_settings', 'is_admin','use'));
    

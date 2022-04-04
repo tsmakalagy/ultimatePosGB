@@ -2296,7 +2296,7 @@ class TransactionUtil extends Util
 
         //filter by commission_agent
         if (!empty($cmmsn_agnt)) {
-            $query->where('u.is_cmmsn_agnt', $cmmsn_agnt);
+            $query->where('transactions.commission_agent', $cmmsn_agnt);
             
         }
    

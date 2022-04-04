@@ -26,14 +26,14 @@
                     @endif
                 </div>
                 @if($is_admin)
-        		<div class="col-md-4 col-xs-6">
+        		<div class="col-md-5 col-xs-8 text-right">
                     <div class="form-group "><p>
                       {!! Form::label('user',  __('lang_v1.commission_agent') . ':',['style' => 'color:white']) !!}
-                      {!! Form::select('user', $agent,null, ['class' => 'form-control select2', 'style' => 'width:40%', 'placeholder' => __('lang_v1.all')]); !!}  
+                      {!! Form::select('user', $agent,null, ['class' => 'form-control select2', 'style' => 'width:30%', 'placeholder' => __('lang_v1.all')]); !!}  
                     </p></div>
         		</div>
            
-            <div class="col-md-4 col-xs-6">
+            <div class="col-md-3 col-xs-4">
               <div class="form-group pull-right">
                     <div class="input-group">
                       <button type="button" class="btn btn-primary" id="dashboard_date_filter">

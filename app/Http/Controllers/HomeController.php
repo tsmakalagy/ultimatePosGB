@@ -105,7 +105,7 @@ class HomeController extends Controller
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
         $agent=User::select(
-            DB::raw("CONCAT(surname,' ',first_name,' ',last_name) AS name"),'id')
+            DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) AS name"),'id')
             ->where('is_cmmsn_agnt',1)->pluck('name', 'id');;
       
 

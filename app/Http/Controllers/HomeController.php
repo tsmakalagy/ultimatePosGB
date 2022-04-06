@@ -1003,7 +1003,9 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
                 $transaction_types,
                 $start,
                 $end,
-                $location_id
+                $location_id,
+                $created_by,
+                $cmmsn_agnt
             );
 
             $total_purchase_inc_tax = !empty($purchase_details['total_purchase_inc_tax']) ? $purchase_details['total_purchase_inc_tax'] : 0;
@@ -1014,9 +1016,10 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
             $output['total_purchase'] = $total_purchase;
 
             $total_sell_inc_tax = !empty($sell_details['total_sell_inc_tax']) ? $sell_details['total_sell_inc_tax'] : 0;
-            $total_sell_return_inc_tax = !empty($transaction_totals['total_sell_return_inc_tax']) ? $transaction_totals['total_sell_return_inc_tax'] : 0;
-
-            $output['total_sell'] = $total_sell_inc_tax - $total_sell_return_inc_tax;
+            $total_amount_return = !empty($transaction_totals['total_amount_return']) ? $transaction_totals['total_amount_return'] : 0;
+            $total_return_paid = !empty($transaction_totals['total_return_paid']) ? $transaction_totals['total_return_paid'] : 0;
+            $total_sell_return_inc_tax=$total_amount_return;
+            $output['total_sell'] =    $total_sell_inc_tax - $total_sell_return_inc_tax;
 
             $output['invoice_due'] = $sell_details['invoice_due'];
             $output['total_expense'] = $transaction_totals['total_expense'];

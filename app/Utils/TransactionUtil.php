@@ -2248,7 +2248,7 @@ class TransactionUtil extends Util
 */
         $query = TransactionPayment::join('transactions',function($join){
                   $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
-            ->leftJoin('users as u', 'transactions.commission_agent', '=', 'u.id')
+            //->leftJoin('users as u', 'transactions.commission_agent', '=', 'u.id')
 
                    ->groupBy('transactions.id') ;              
                 })
@@ -4184,9 +4184,26 @@ class TransactionUtil extends Util
         $start_date = null,
         $end_date = null,
         $location_id = null,
-        $created_by = null
+        $created_by,
+        $cmmsn_agnt
     ) {
-        $query = Transaction::where('business_id', $business_id);
+      /*  $query =Transaction::leftJoin('transaction_payments as tp', function ($join) {
+            $join->on('transactions.id', '=', 'tp.transaction_id');
+      })->groupBy('transactions.id')
+     */ //  $query=Transaction::join('transaction_payments as tp','transactions.id', '=', 'tp.transaction_id')
+     // $query =TransactionPayment::join('transactions', function ($join) {
+       //     $join->on('transactions.id', '=', 'transaction_payments.transaction_id')->groupBy('transactions.id')->distinct('transactions.id');
+        //})
+
+
+        $query =Transaction::where('transactions.business_id', $business_id)
+        ->leftJoin(
+            'transactions AS SR',
+            'transactions.id',
+            '=',
+            'SR.return_parent_id'
+        ) ->where('transactions.business_id', $business_id);
+                
 
         //Check for permitted locations of a user
         $permitted_locations = auth()->user()->permitted_locations();
@@ -4203,6 +4220,13 @@ class TransactionUtil extends Util
             $query->whereDate('transactions.transaction_date', '<=', $end_date);
         }
 
+          //filter by commission_agent
+          if (!empty($cmmsn_agnt)) {
+            $query->where('transactions.commission_agent',$cmmsn_agnt);
+            
+        }
+
+
         //Filter by the location
         if (!empty($location_id)) {
             $query->where('transactions.location_id', $location_id);
@@ -4215,62 +4239,65 @@ class TransactionUtil extends Util
 
         if (in_array('purchase_return', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='purchase_return', final_total, 0)) as total_purchase_return_inc_tax"),
-                DB::raw("SUM(IF(transactions.type='purchase_return', total_before_tax, 0)) as total_purchase_return_exc_tax")
+                DB::raw("SUM(IF(transactions.type='purchase_return', transactions.final_total, 0)) as total_purchase_return_inc_tax"),
+                DB::raw("SUM(IF(transactions.type='purchase_return', transactions.total_before_tax, 0)) as total_purchase_return_exc_tax")
             );
         }
-
+    
         if (in_array('sell_return', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='sell_return', final_total, 0)) as total_sell_return_inc_tax"),
-                DB::raw("SUM(IF(transactions.type='sell_return', total_before_tax, 0)) as total_sell_return_exc_tax")
+                DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
+                        TP2.transaction_id=SR.id ) as return_paid'),
+                //DB::raw("SUM(IF(SR.type='sell_return', tp.amount, 0)) as return_paid"),
+                DB::raw("SUM(IF(SR.type='sell_return', SR.final_total, 0)) as amount_return"),
+                DB::raw("SUM(IF(SR.type='sell_return', transactions.total_before_tax, 0)) as total_sell_return_exc_tax")
             );
         }
 
         if (in_array('sell_transfer', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='sell_transfer', shipping_charges, 0)) as total_transfer_shipping_charges")
+                DB::raw("SUM(IF(SR.type='sell_transfer', transactions.shipping_charges, 0)) as total_transfer_shipping_charges")
 
             );
         }
 
         if (in_array('expense', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='expense', final_total, 0)) as total_expense")
+                DB::raw("SUM(IF(SR.type='expense', transactions.final_total, 0)) as total_expense")
             );
 
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='expense_refund', final_total, 0)) as total_expense_refund")
+                DB::raw("SUM(IF(transactions.type='expense_refund', transactions.final_total, 0)) as total_expense_refund")
             );
         }
 
         if (in_array('payroll', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='payroll', final_total, 0)) as total_payroll")
+                DB::raw("SUM(IF(SR.type='payroll', transactions.final_total, 0)) as total_payroll")
             );
         }
 
         if (in_array('stock_adjustment', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='stock_adjustment', final_total, 0)) as total_adjustment"),
-                DB::raw("SUM(IF(transactions.type='stock_adjustment', total_amount_recovered, 0)) as total_recovered")
+                DB::raw("SUM(IF(SR.type='stock_adjustment', transactions.final_total, 0)) as total_adjustment"),
+                DB::raw("SUM(IF(SR.type='stock_adjustment', transactions.total_amount_recovered, 0)) as total_recovered")
             );
         }
 
         if (in_array('purchase', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='purchase', IF(discount_type = 'percentage', COALESCE(discount_amount, 0)*total_before_tax/100, COALESCE(discount_amount, 0)), 0)) as total_purchase_discount")
+                DB::raw("SUM(IF(SR.type='purchase', IF(discount_type = 'percentage', COALESCE(transactions.discount_amount, 0)*transactions.total_before_tax/100, COALESCE(transactions.discount_amount, 0)), 0)) as total_purchase_discount")
             );
         }
 
         if (in_array('sell', $transaction_types)) {
             $query->addSelect(
-                DB::raw("SUM(IF(transactions.type='sell' AND transactions.status='final', IF(discount_type = 'percentage', COALESCE(discount_amount, 0)*total_before_tax/100, COALESCE(discount_amount, 0)), 0)) as total_sell_discount"),
-                DB::raw("SUM(IF(transactions.type='sell' AND transactions.status='final', rp_redeemed_amount, 0)) as total_reward_amount"),
-                DB::raw("SUM(IF(transactions.type='sell' AND transactions.status='final', round_off_amount, 0)) as total_sell_round_off")
+                DB::raw("SUM(IF(SR.type='sell' AND transactions.status='final', IF(discount_type = 'percentage', COALESCE(transactions.discount_amount, 0)*transactions.total_before_tax/100, COALESCE(transactions.discount_amount, 0)), 0)) as total_sell_discount"),
+                DB::raw("SUM(IF(SR.type='sell' AND transactions.status='final', transactions.rp_redeemed_amount, 0)) as total_reward_amount"),
+                DB::raw("SUM(IF(SR.type='sell' AND transactions.status='final', transactions.round_off_amount, 0)) as total_sell_round_off")
             );
         }
-
+      
         $transaction_totals = $query->first();
         $output = [];
 
@@ -4284,9 +4311,12 @@ class TransactionUtil extends Util
         }
 
         if (in_array('sell_return', $transaction_types)) {
-            $output['total_sell_return_inc_tax'] =
-                !empty($transaction_totals->total_sell_return_inc_tax) ?
-                $transaction_totals->total_sell_return_inc_tax : 0;
+            $output['total_amount_return'] =
+                !empty($transaction_totals->amount_return) ?
+                $transaction_totals->amount_return : 0;
+            $output['total_return_paid'] =
+                !empty($transaction_totals->return_paid) ?
+                $transaction_totals->return_paid : 0;
 
             $output['total_sell_return_exc_tax'] =
                 !empty($transaction_totals->total_sell_return_exc_tax) ?
@@ -6127,6 +6157,7 @@ class TransactionUtil extends Util
             $sell_return_data['status'] = 'final';
             $sell_return_data['created_by'] = $user_id;
             $sell_return_data['return_parent_id'] = $sell->id;
+  
             $sell_return = Transaction::create($sell_return_data);
 
             $this->activityLog($sell_return, 'added');

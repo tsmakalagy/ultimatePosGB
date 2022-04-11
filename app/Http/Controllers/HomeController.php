@@ -400,12 +400,13 @@ else{
 
 
     //Add condition for location,used in sales representative expense report
-    if (request()->has('location_id')) {
-        $location_id = request()->get('location_id');
+   // if (request()->has('location_id')) {
+ 
+        $location_id = request()->location_id;
         if (!empty($location_id)) {
             $sells->where('transactions.location_id', $location_id);
         }
-    }
+    //}
 
     if (!empty(request()->input('rewards_only')) && request()->input('rewards_only') == true) {
         $sells->where(function ($q) {

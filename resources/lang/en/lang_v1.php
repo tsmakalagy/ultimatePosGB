@@ -37,6 +37,45 @@ return [
     'shipping_charges' => 'Shipping charges',
     'shipping_charges:' => 'Shipping charges:',
 
+    //price products
+    'cours_usd' => 'Usd course',
+    'cours_rmb' => 'Rmb course',
+    'frais_taxe_usd_bateau' => 'Costs and tax in usb boat',
+    'frais_taxe_usd_avion' => 'Costs and tax in usb plane',
+    'frais_usd_bateau' => 'Costs in usb boat',
+    'frais_compagnie_usd_bateau' => 'Company costs in usb boat',
+    'constante_taxe' => 'Constant tax',
+    'price_product' => 'Product price',
+    'price_products' => 'Price products',
+    'price_product.edit' => 'Edit price product',
+
+    'price_product.add' => 'Add price product',
+
+      //product price setting
+      'product_name' => 'Product name',
+      'product_spec' => 'Product spec',
+      'china_price' => 'China price',
+      'kuaidi' => 'Kuaidi',
+      'size' => 'Size',
+      'volume' => 'Volume',
+      'weight' => 'Weight',
+      'link' => 'Link',
+      'other_field1' => 'Other field1',
+      'other_field2' => 'Other field2',
+      'byship_price' => 'Price byship',
+      'byplane_price' => 'Price byplane',
+      
+      'product_price_setting.edit' => 'Edit product price setting',
+      'product_price_setting.add' => 'Add product price setting',
+      'product_price_setting' => 'product price setting',
+
+
+      
+
+
+
+
+
     'shipper_name' => 'Shipper',
     "delivery_fee" => "Delivery fee",
     'sales_commission_agents' => 'Sales Commission Agents',

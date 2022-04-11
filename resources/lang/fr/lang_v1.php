@@ -16,6 +16,41 @@ return [
     'paid' => 'Payé',
     'address' => 'Adresse',
 
+    //price products
+    'cours_usd' => 'Cours de usd',
+    'cours_rmb' => 'Cours de rmb',
+    'frais_taxe_usd_bateau' => 'Frais et taxe en usb bateau',
+    'frais_taxe_usd_avion' => 'Frais et tax en usd avion',
+    'frais_usd_bateau' => 'Frais en usd bateau',
+    'frais_compagnie_usd_bateau' => 'Frais compagnie en usd bateau',
+    'constante_taxe' => 'Constante tax',
+    'price_product' => 'Prix du produit',
+    'price_products' => 'Prix des produits',
+    'price_product.edit' => 'Editer prix des produits',
+
+    'price_product.add' => 'Ajouter prix des produits',
+
+
+     //product price setting
+     'product_name' => 'Nom du produit',
+     'product_spec' => 'Spec du produit',
+     'china_price' => 'Prix de chine',
+     'kuaidi' => 'Kuaidi',
+     'size' => 'Taille',
+     'volume' => 'Volume',
+     'weight' => 'Poids',
+     'link' => 'Lien',
+     'other_field1' => 'Autre champ1',
+     'other_field2' => 'Autre champ2',
+     'byship_price' => 'Prix par bateau',
+     'byplane_price' => 'Prix par avion',
+     
+     'product_price_setting.edit' => 'Editer le parametre du prix des produits',
+     'product_price_setting.add' => 'Ajouter le parametre du prix des produits',
+     'product_price_setting' => 'Parametre du produit des produits',
+
+
+
     "sales_commission_agents" => "Agents de la Commission",
     "disable" => "Désactiver",
     "logged_in_user" => "Utilisateur connecté",

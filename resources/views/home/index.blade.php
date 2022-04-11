@@ -21,8 +21,10 @@
         
         	<div class="row">
                 <div class="col-md-4 col-xs-12">
+                    @if($is_admin)
                     @if(count($all_locations) > 1)
                         {!! Form::select('dashboard_location', $all_locations, null, ['class' => 'form-control select2', 'placeholder' => __('lang_v1.select_location'), 'id' => 'dashboard_location']); !!}
+                    @endif
                     @endif
                 </div>
                 @if($is_admin)
@@ -530,6 +532,7 @@
         update_statistics(start, end,user);
   
     });
+    
    
   
         //Date range as a button
@@ -543,9 +546,14 @@
                     
         var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
         var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var location_id = '';
+    if ($('#dashboard_location').length > 0) {
+      location_id = $('#dashboard_location').val();
+    }
         d.start_date = start;
         d.end_date = end;                     
         d.is_direct_sale = 1;
+        d.location_id=location_id
         d.user = $('#user').val(); 
     
          if($('#only_subscriptions').is(':checked')) {
@@ -627,15 +635,12 @@
 
 
     $('#dashboard_location').change( function(e) {
-        var start = $('#dashboard_date_filter')
-                    .data('daterangepicker')
-                    .startDate.format('YYYY-MM-DD');
-
-        var end = $('#dashboard_date_filter')
-                    .data('daterangepicker')
-                    .endDate.format('YYYY-MM-DD');
-
-        update_statistics(start, end);
+        var user= $('#user').val();
+        sell_table.ajax.reload();
+ 
+        var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        update_statistics(start, end,user);
     });
 
     //atock alert datatables

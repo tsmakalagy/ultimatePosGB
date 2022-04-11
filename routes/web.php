@@ -412,6 +412,24 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('test_shipping_address','ShipperController@testAddress');
     Route::post('details','ShipperController@imageStore');
 
+    //route for product price setting
+    Route::get('setting-product-price', 'ProductPriceSettingController@index')->name('ProductPriceSetting.index');
+    Route::get('setting-product-price/create', 'ProductPriceSettingController@create')->name('ProductPriceSetting.create');
+    Route::post('setting-product-price/store', 'ProductPriceSettingController@store')->name('ProductPriceSetting.store');
+    Route::get('setting-product-price/edit/{id}', 'ProductPriceSettingController@edit')->name('ProductPriceSetting.edit');
+    Route::post('setting-product-price/update/{id}', 'ProductPriceSettingController@update')->name('ProductPriceSetting.update');
+    Route::get('setting-product-price/delete/{id}', 'ProductPriceSettingController@delete')->name('ProductPriceSetting.delete');
+    Route::get('setting-product-price/show/{id}', 'ProductPriceSettingController@show')->name('ProductPriceSetting.show');
+
+    //route for product price
+    Route::get('product-price', 'ProductPriceController@index')->name('ProductPrice.index');
+    Route::get('product-price/create', 'ProductPriceController@create')->name('ProductPrice.create');
+    Route::post('product-price/store', 'ProductPriceController@store')->name('ProductPrice.store');
+    Route::get('product-price/edit/{id}', 'ProductPriceController@edit')->name('ProductPrice.edit');
+    Route::post('product-price/update/{id}', 'ProductPriceController@update')->name('ProductPrice.update');
+    Route::get('product-price/delete/{id}', 'ProductPriceController@delete')->name('ProductPrice.delete');
+    Route::get('product-price/show/{id}', 'ProductPriceController@show')->name('ProductPrice.show');
+
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');
     Route::get('test/{id}','ProductSellController@test');

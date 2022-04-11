@@ -17,10 +17,12 @@ use App\Product;
 use App\PurchaseLine;
 use App\Restaurant\ResTable;
 use App\TaxRate;
+use App\PriceProduct;
 use App\Transaction;
 use App\Shipper;
 use App\Address;
-
+use App\ProductPriceSetting;
+use App\ProductPrice;
 use App\User;
 use App\ShipperType;
 use App\TransactionPayment;
@@ -2247,24 +2249,20 @@ class TransactionUtil extends Util
         $shipp=$shipp->shipping_charge;
 */
         $query = TransactionPayment::join('transactions',function($join){
-                  $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
-            //->leftJoin('users as u', 'transactions.commission_agent', '=', 'u.id')
+            $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
+            ->groupBy('transactions.id')  ;              
+        })
+        ->where('transactions.business_id', $business_id)  
+        ->where('transactions.type', 'sell')
+        ->where('transactions.status', 'final')
 
-                   ->groupBy('transactions.id') ;              
-                })
-                ->where('transactions.business_id', $business_id)  
-            ->where('transactions.type', 'sell')
-            ->where('transactions.status', 'final')
-            
-                        
-            ->select(
-                DB::raw("SUM(transaction_payments.amount ) as total_sell"),
-                DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
-                DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
-                DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
-                DB::raw('SUM(transactions.shipping_charges) total_shipping_charges')     
-            )
-            ;
+        ->select(
+        DB::raw('SUM(transaction_payments.amount) as total_sell'),
+        DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
+        DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+        DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
+        DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')     
+        );
            
 
         //Check for permitted locations of a user
@@ -5164,7 +5162,54 @@ class TransactionUtil extends Util
     }
 
 
-   
+    
+    /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getProductPriceSettings()
+    {   $price_product= ProductPriceSetting::select(
+        'product_price_settings.id',
+        'product_price_settings.cours_usd',
+        'product_price_settings.cours_rmb',
+        'product_price_settings.frais_taxe_usd_bateau',
+        'product_price_settings.frais_taxe_usd_avion',
+        'product_price_settings.frais_usd_bateau',
+        'product_price_settings.frais_compagnie_usd_bateau',
+        'product_price_settings.constante_taxe'
+    );
+        return $price_product;
+    }
+
+
+    /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getProductPrice()
+    {   $price_product= ProductPrice::select(
+        'product_prices.id',
+        'product_prices.product_name',
+        'product_prices.product_spec',
+        'product_prices.china_price',
+        'product_prices.kuaidi',
+        'product_prices.size',
+        'product_prices.volume',
+        'product_prices.weight',
+        'product_prices.link',
+        'product_prices.other_field1',
+        'product_prices.other_field2',
+        'product_prices.byship_price',
+        'product_prices.byplane_price'
+        
+    );
+        return $price_product;
+    }
+
 
     /**
      * common function to get

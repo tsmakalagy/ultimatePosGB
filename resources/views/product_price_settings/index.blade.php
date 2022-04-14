@@ -17,8 +17,11 @@
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 @slot('tool')
                     <div class="box-tools">
-                        <a class="btn btn-block btn-primary" href="{{action('ProductPriceSettingController@create')}}">
-                            <i class="fa fa-plus"></i> @lang('messages.add')</a>
+                        <button type="button" class="btn btn-block btn-primary btn-modal"
+                        data-href="{{action('ProductPriceSettingController@create')}}"
+                        data-container=".product_price_setting_modal">
+
+                    <i class="fa fa-plus"></i> @lang('messages.add')</button>
                     </div>
                 @endslot
             @endif

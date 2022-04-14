@@ -183,7 +183,7 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-gem', 'active' => request()->segment(1) == 'brands']
                             );
                         }
-                      /*  if (auth()->user()->can('product.view')) {
+                        if (auth()->user()->can('product.view')) {
                             $sub->url(
                                 action('ProductPriceSettingController@index'),
                                 __('lang_v1.product_price_setting'),
@@ -197,7 +197,7 @@ class AdminSidebarMenu
                                 __('lang_v1.price_product'),
                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
                             );
-                        }*/
+                        }
 
                         $sub->url(
                             action('WarrantyController@index'),

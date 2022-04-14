@@ -14,12 +14,13 @@
         @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.price_product') ])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 @slot('tool')
-                    <div class="box-tools">
-                        <button type="button" class="btn btn-block btn-primary btn-modal"
-                        data-href="{{action('ProductPriceController@create')}}"
-                        data-container=".product_price_modal">
-                    <i class="fa fa-plus"></i> @lang('messages.add')</button>
-                    </div>
+                <div class="box-tools">
+                    <button type="button" class="btn btn-block btn-primary btn-modal"
+                    data-href="{{action('ProductPriceController@create')}}"
+                    data-container=".product_price_modal">
+
+                <i class="fa fa-plus"></i> @lang('messages.add')</button>
+                </div>
                 @endslot
             @endif
             @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
@@ -32,14 +33,13 @@
                         <th>@lang('messages.action')</th>
                         <th>@lang('lang_v1.product_name')</th>
                         <th>@lang('lang_v1.product_spec')</th>
+                        <th>@lang('lang_v1.volume')</th>
                         <th>@lang('lang_v1.china_price')</th>
                         <th>@lang('lang_v1.kuaidi')</th>
-                        <th>@lang('lang_v1.size')</th>
-                        <th>@lang('lang_v1.volume')</th>
-                        <th>@lang('lang_v1.weight')</th>
+                        <th>@lang('lang_v1.size')</th>                 
+                        <th>@lang('lang_v1.weight')</th>     
+                        <th>@lang('lang_v1.price')</th>
                         <th>@lang('lang_v1.link')</th>
-                        <th>@lang('lang_v1.other_field1')</th>
-                        <th>@lang('lang_v1.other_field2')</th>
                         <th>@lang('lang_v1.byship_price')</th>
                         <th>@lang('lang_v1.byplane_price')</th>
                     </tr>
@@ -101,16 +101,15 @@
                     
 
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
-                    {data: 'product_name', name: 'product_name'},
+                    {data: 'product_name', name: 'product_name'},         
                     {data: 'product_spec', name: 'product_spec'},
+                    {data: 'volume', name: 'volume'},
                     {data: 'china_price', name: 'china_price'},
                     {data: 'kuaidi', name: 'kuaidi'},
                     {data: 'size', name: 'size'},
-                    {data: 'volume', name: 'volume'},
-                    {data: 'weight', name: 'weight'},
+                    {data: 'weight', name: 'weight'},                  
+                    {data: 'suggested_price', name: 'suggested_price'},
                     {data: 'link', name: 'link'},
-                    {data: 'other_field1', name: 'other_field1'},
-                    {data: 'other_field2', name: 'other_field2'},
                     {data: 'byship_price', name: 'byship_price'},
                     {data: 'byplane_price', name: 'byplane_price'},
                    
@@ -137,5 +136,6 @@
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+
 
 @endsection

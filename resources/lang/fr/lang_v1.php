@@ -14,8 +14,13 @@ return [
     'zone' => 'Zone',
     'paid_on' => 'Payé le',
     'paid' => 'Payé',
+    'price' => 'Prix',
     'address' => 'Adresse',
-
+    'reviens2' => 'Reviens2',
+    'reviens1' => 'Reviens1',
+    'reviens' => 'Reviens',
+    'reviens_max' => 'Max reviens',
+    'suggested_price_round' => 'Prix suggerer arrondi',
     //price products
     'cours_usd' => 'Cours de usd',
     'cours_rmb' => 'Cours de rmb',
@@ -26,9 +31,13 @@ return [
     'constante_taxe' => 'Constante tax',
     'price_product' => 'Prix du produit',
     'price_products' => 'Prix des produits',
+      'taxe' => 'Taxe',
+    'fret' => 'Frette',
     'price_product.edit' => 'Editer prix des produits',
 
     'price_product.add' => 'Ajouter prix des produits',
+    'suggested_price' => 'prix suggerer',
+
 
 
      //product price setting

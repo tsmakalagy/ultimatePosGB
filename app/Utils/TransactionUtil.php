@@ -5202,7 +5202,7 @@ class TransactionUtil extends Util
         'product_prices.weight',
         'product_prices.link',
         'product_prices.other_field1',
-        'product_prices.other_field2',
+        'product_prices.suggested_price',
         'product_prices.byship_price',
         'product_prices.byplane_price'
         

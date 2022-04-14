@@ -422,8 +422,8 @@ class ProductPriceController extends Controller
                         '<span class="weight" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
                         ->editColumn('other_field1',
                         '<span class="other_field1" data-orig-value="{{$other_field1}}">@if(!empty($other_field1)) {{$other_field1}} @endif   </span>')
-                        ->editColumn('other_field2',
-                        '<span class="other_field2" data-orig-value="{{$other_field2}}">@if(!empty($other_field2)) {{$other_field2}} @endif   </span>')
+                        ->editColumn('suggested_price',
+                        '<span class="suggested_price" data-orig-value="{{$suggested_price}}">@if(!empty($suggested_price)) {{$suggested_price}} @endif   </span>')
                         ->editColumn('byship_price',
                         '<span class="byship_price" data-orig-value="{{$byship_price}}">@if(!empty($byship_price)) {{$byship_price}} @endif   </span>')
                         ->editColumn('byplane_price',
@@ -515,7 +515,7 @@ class ProductPriceController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->addColumn('other_field2', function ($row) {
+                ->addColumn('suggested_price', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -553,7 +553,7 @@ class ProductPriceController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','product_name','product_spec','china_price','kuaidi','size','volume','weight','link','other_field1','other_field2','byship_price','byplane_price', 'action', 'tel', 'type', 'name', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
+            $rawColumns = ['final_total','product_name','product_spec','china_price','kuaidi','size','volume','weight','link','other_field1','suggested_price','byship_price','byplane_price', 'action', 'tel', 'type', 'name', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'status'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -597,9 +597,10 @@ class ProductPriceController extends Controller
             abort(403, 'Unauthorized action.');
         }
         //$shipper_types = ShipperType::pluck('type', 'id');
+         $product_price_setting = ProductPriceSetting::first();
          
 
-        return view('product_price.create');
+        return view('product_price.create', compact('product_price_setting'));
     }
 
     /**
@@ -612,7 +613,7 @@ class ProductPriceController extends Controller
     {
         
    
-        if($request->filled('product_name','product_spec')){
+        if($request->filled('product_name')){
             $product_name=$request->input('product_name');
             $product_spec=$request->input('product_spec');
             $china_price=$request->input('china_price');
@@ -621,11 +622,10 @@ class ProductPriceController extends Controller
             $volume=$request->input('volume');
             $weight=$request->input('weight');
             $link=$request->input('link');
-            $other_field1=$request->input('other_field1');
-            $other_field2=$request->input('other_field2');
+            $suggested_price=$request->input('reviens');
             $byship_price=$request->input('byship_price');
             $byplane_price=$request->input('byplane_price');
-            $price_product= ProductPrice::firstOrCreate(['product_name'=> $product_name,'product_spec'=>$product_spec,'china_price'=>$china_price,'kuaidi'=>$kuaidi,'size'=>$size,'volume'=>  $volume,'weight'=> $weight,'link'=> $link,'other_field1'=> $other_field1,'other_field2'=> $other_field2,'byship_price'=> $byship_price,'byplane_price'=> $byplane_price]);
+            $price_product= ProductPrice::firstOrCreate(['product_name'=> $product_name,'product_spec'=>$product_spec,'china_price'=>$china_price,'kuaidi'=>$kuaidi,'size'=>$size,'volume'=>  $volume,'weight'=> $weight,'link'=> $link,'suggested_price'=> $suggested_price,'byship_price'=> $byship_price,'byplane_price'=> $byplane_price]);
            
             return redirect()->route('ProductPrice.index');
             
@@ -643,11 +643,12 @@ class ProductPriceController extends Controller
      */
     public function edit($id)
     {
+        $product_price_setting = ProductPriceSetting::first();
         $price_product =  ProductPrice::findOrFail($id);
        // $shipper_types = ShipperType::pluck('type', 'id');
 
 
-        return view('product_price.edit', compact('price_product'));
+        return view('product_price.edit', compact('price_product','product_price_setting'));
 
     }
 
@@ -662,7 +663,20 @@ class ProductPriceController extends Controller
     {
 
         $price_product =  ProductPrice::findOrFail($id);
-        $price_product->update($request->all());
+
+        $product_name=$request->input('product_name');
+        $product_spec=$request->input('product_spec');
+        $china_price=$request->input('china_price');
+        $kuaidi=$request->input('kuaidi');
+        $size=$request->input('size');
+        $volume=$request->input('volume');
+        $weight=$request->input('weight');
+        $link=$request->input('link');
+        $suggested_price=$request->input('reviens');
+        $byship_price=$request->input('byship_price');
+        $byplane_price=$request->input('byplane_price');
+
+        $price_product->update(['product_name'=> $product_name,'product_spec'=>$product_spec,'china_price'=>$china_price,'kuaidi'=>$kuaidi,'size'=>$size,'volume'=>  $volume,'weight'=> $weight,'link'=> $link,'suggested_price'=> $suggested_price,'byship_price'=> $byship_price,'byplane_price'=> $byplane_price]);
         return redirect()->route('ProductPrice.index');
     }
 

@@ -24,7 +24,7 @@ class CreateProductPricesTable extends Migration
             $table->decimal('weight',20,2)->nullable();
             $table->string('link')->nullable();
             $table->string('other_field1',20,2)->nullable();
-            $table->string('other_field2',20,2)->nullable();
+            $table->string('suggested_price',20,2)->nullable();
             $table->decimal('byship_price',20,2)->nullable();
             $table->decimal('byplane_price',20,2)->nullable();
 

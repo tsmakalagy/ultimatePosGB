@@ -47,10 +47,12 @@ return [
     'constante_taxe' => 'Constant tax',
     'price_product' => 'Product price',
     'price_products' => 'Price products',
+    'taxe' => 'Tax',
+    'fret' => 'Fret',
     'price_product.edit' => 'Edit price product',
 
     'price_product.add' => 'Add price product',
-
+    'suggested_price' => 'Suggested price',
       //product price setting
       'product_name' => 'Product name',
       'product_spec' => 'Product spec',
@@ -724,6 +726,11 @@ return [
     'select_same_for_all_rows' => 'Select same value for all products',
     'edited' => 'Edited',
     'by' => 'By',
+    'reviens2' => 'Income2',
+    'reviens1' => 'Income1',
+    'reviens' => 'Income',
+    'reviens_max' => 'Max income',
+    'suggested_price_round' => 'Suggested price round',
     'upload_documents' => 'Upload Documents',
     'documents' => 'Documents',
     'click_to_print' => 'Click to print',

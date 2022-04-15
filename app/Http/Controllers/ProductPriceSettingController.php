@@ -565,8 +565,8 @@ class ProductPriceSettingController extends Controller
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
-       // $product_price_setting = ProductPriceSetting::first();
-       // dd($product_price_setting);
+        //$product_price_setting = ProductPriceSetting::first();
+        //dd($product_price_setting);
          
 
         return view('product_price_settings.create');

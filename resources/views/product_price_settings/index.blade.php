@@ -66,7 +66,7 @@
                 serverSide: true,
                 aaSorting: [[1, 'desc']],
                 "ajax": {
-                    "url": "/setting-product-price",
+                    "url": "/product-price-setting",
                     "data": function (d) {
                         if ($('#sell_list_filter_date_range').val()) {
                             var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');

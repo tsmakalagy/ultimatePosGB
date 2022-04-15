@@ -540,7 +540,11 @@ class ProductPriceController extends Controller
                     $status = '';
                     return $status;
                 })
- 
+                ->filterColumn('product_name', function ($query, $keyword) {
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where('product_prices.product_name', 'like', "%{$keyword}%");
+                    });
+                })
                           
                 ->editColumn('so_qty_remaining', '')
            

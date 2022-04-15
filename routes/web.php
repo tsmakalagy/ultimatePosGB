@@ -413,13 +413,13 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::post('details','ShipperController@imageStore');
 
     //route for product price setting
-    Route::get('setting-product-price', 'ProductPriceSettingController@index')->name('ProductPriceSetting.index');
-    Route::get('setting-product-price/create', 'ProductPriceSettingController@create')->name('ProductPriceSetting.create');
-    Route::post('setting-product-price/store', 'ProductPriceSettingController@store')->name('ProductPriceSetting.store');
-    Route::get('setting-product-price/edit/{id}', 'ProductPriceSettingController@edit')->name('ProductPriceSetting.edit');
-    Route::post('setting-product-price/update/{id}', 'ProductPriceSettingController@update')->name('ProductPriceSetting.update');
-    Route::get('setting-product-price/delete/{id}', 'ProductPriceSettingController@delete')->name('ProductPriceSetting.delete');
-    Route::get('setting-product-price/show/{id}', 'ProductPriceSettingController@show')->name('ProductPriceSetting.show');
+    Route::get('product-price-setting', 'ProductPriceSettingController@index')->name('ProductPriceSetting.index');
+    Route::get('product-price-setting/create', 'ProductPriceSettingController@create')->name('ProductPriceSetting.create');
+    Route::post('product-price-setting/store', 'ProductPriceSettingController@store')->name('ProductPriceSetting.store');
+    Route::get('product-price-setting/edit/{id}', 'ProductPriceSettingController@edit')->name('ProductPriceSetting.edit');
+    Route::post('product-price-setting/update/{id}', 'ProductPriceSettingController@update')->name('ProductPriceSetting.update');
+    Route::get('product-price-setting/delete/{id}', 'ProductPriceSettingController@delete')->name('ProductPriceSetting.delete');
+    Route::get('product-price-setting/show/{id}', 'ProductPriceSettingController@show')->name('ProductPriceSetting.show');
 
     //route for product price
     Route::get('product-price', 'ProductPriceController@index')->name('ProductPrice.index');

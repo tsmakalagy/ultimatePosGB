@@ -20,7 +20,7 @@
             <div class="col-md-12">
                 @component('components.widget', ['class' => 'box-solid'])
                     <div class="container-fluid">
-                        {!! Form::open(['action' =>['ProductPriceController@update', 'id' => 'price_product_edit_form']]) !!}
+                        {!! Form::open(['action' =>['ProductPriceController@update', $price_product->id]]) !!}
                         <input id="hide_price_product_id" name="invisible" type="number" value="{{$price_product->id}}" style="display: none">
                         <input id="hide_id" name="invisible" type="number" value="{{$product_price_setting->id}}" style="display: none">
                         <input id="hide_cu" name="invisible" type="number" value="{{$product_price_setting->cours_usd}}" style="display: none">
@@ -445,34 +445,6 @@ $('#reviens').val('0.00');
 }); 
     //Fret = volume*cours_usd*fret_usd_bateau
     //taxe=(prix_chine*cours_rmb*constante_taxe+volume*cours_usd*fret_company_usd_bateau)*0.5
-
-    //onsubmit
-    $("form#price_product_edit_form").validate({
-    
-    submitHandler: function (form) {
-      
-      var form = $("form#price_product_add_form");
-      var url = form.attr('action');
-      
-      form.find('button[type="submit"]').attr('disabled', true);
-      $.ajax({
-          method: "POST",
-          url: url,
-          dataType: 'json',
-          data: $(form).serialize(),
-          success: function(data){
-              $('.product_price_modal').modal('hide');
-              if( data.success){
-                  toastr.success(data.msg);
-                 
-              } else {
-                  toastr.error(data.msg);
-              }
-          }
-      });
-      return true;
-    }
-  });
     
     });
     

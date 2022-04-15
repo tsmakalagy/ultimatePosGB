@@ -6,14 +6,7 @@
     @endphp
                         {!! Form::open(['url' => action('ProductPriceSettingController@store'), 'method' => 'post', 'id' => 'price_product_add_form']) !!}
 
-                        <input id="hide_id" name="invisible" type="hidden" value="{{$product_price_setting->id}}">
-                        <input id="hide_cu" name="invisible" type="hidden" value="{{$product_price_setting->cours_usd}}">
-                        <input id="hide_fub" name="invisible" type="hidden" value="{{$product_price_setting->frais_usd_bateau}}">
-                        <input id="hide_cr" name="invisible" type="hidden" value="{{$product_price_setting->cours_rmb}}">
-                        <input id="hide_ct" name="invisible" type="hidden" value="{{$product_price_setting->constante_taxe}}">
-                        <input id="hide_fcub" name="invisible" type="hidden" value="{{$product_price_setting->frais_compagnie_usd_bateau}}">
-                        <input id="fret" name="invisible" type="hidden" value="">
-                        <input id="taxe" name="invisible" type="hidden" value="">
+                    
    
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

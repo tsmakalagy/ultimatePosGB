@@ -23,20 +23,20 @@
                         {!! Form::open(['action' =>['ProductPriceSettingController@update',$price_product->id]]) !!}
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('cours_usd', __('lang_v1.cours_usd') . '*:') !!}
+                                {!! Form::label('cours_usd', __('lang_v1.cours_usd') . ':') !!}
                                 {!! Form::text('cours_usd', $price_product->cours_usd, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('cours_rmb', __('lang_v1.cours_rmb') . '*:') !!}
+                                {!! Form::label('cours_rmb', __('lang_v1.cours_rmb') . ':') !!}
                                 {!! Form::text('cours_rmb',$price_product->cours_rmb, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('frais_taxe_usd_bateau', __('lang_v1.frais_taxe_usd_bateau') . '*:') !!}
+                                {!! Form::label('frais_taxe_usd_bateau', __('lang_v1.frais_taxe_usd_bateau') . ':') !!}
                                 {!! Form::text('frais_taxe_usd_bateau', $price_product->frais_taxe_usd_bateau, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>

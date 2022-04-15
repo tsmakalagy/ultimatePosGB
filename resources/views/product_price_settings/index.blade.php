@@ -19,7 +19,7 @@
                     <div class="box-tools">
                         <button type="button" class="btn btn-block btn-primary btn-modal"
                         data-href="{{action('ProductPriceSettingController@create')}}"
-                        data-container=".product_price_setting_modal">
+                        data-container=".product_price_setting_modal" id="button_add">
 
                     <i class="fa fa-plus"></i> @lang('messages.add')</button>
                     </div>
@@ -47,6 +47,7 @@
         @endcomponent
             <div class="modal fade product_price_setting_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
             </div>
+            <input id="count" name="invisible" type="number" value="{{$count}}" style="display: none">
     </section>
     <!-- /.content -->
 
@@ -59,7 +60,10 @@
 @section('javascript')
     <script type="text/javascript">
         $(document).ready(function () {
-
+var count= $('#count').val();
+if(count>=1){
+    $('#button_add').attr("disabled",true);
+}
 
             shipper_table = $('#shipper_table').DataTable({
                 processing: true,

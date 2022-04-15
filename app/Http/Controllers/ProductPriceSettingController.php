@@ -545,9 +545,11 @@ class ProductPriceSettingController extends Controller
         }
 
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
+        $product_price_setting = ProductPriceSetting::get();
+        $count=count($product_price_setting);
 
         return view('product_price_settings.index')
-            ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
+            ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses','count'));
 
        
             }
@@ -565,9 +567,8 @@ class ProductPriceSettingController extends Controller
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
-        //$product_price_setting = ProductPriceSetting::first();
-        //dd($product_price_setting);
-         
+        $product_price_setting = ProductPriceSetting::get();
+        //dd($product_price_setting);  
 
         return view('product_price_settings.create');
     }
@@ -607,7 +608,7 @@ class ProductPriceSettingController extends Controller
      * @return view
      */
     public function edit($id)
-    {
+    { 
         $price_product =  ProductPriceSetting::findOrFail($id);
        // $shipper_types = ShipperType::pluck('type', 'id');
 

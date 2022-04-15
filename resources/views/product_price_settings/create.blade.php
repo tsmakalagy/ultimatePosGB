@@ -5,8 +5,6 @@
       $url = 'ShipperController@store';
     @endphp
                         {!! Form::open(['url' => action('ProductPriceSettingController@store'), 'method' => 'post', 'id' => 'price_product_add_form']) !!}
-
-                    
    
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>

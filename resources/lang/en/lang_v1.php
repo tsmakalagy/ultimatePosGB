@@ -729,6 +729,17 @@ return [
     'reviens2' => 'Income2',
     'reviens1' => 'Income1',
     'reviens' => 'Income',
+    'catalogue_pdf' => 'Catalog pdf',
+    'catalogue' => 'Catalog',
+    'select_all' => 'Select all',
+    'grid_product' => 'Grid product',
+    'sell_price:' => 'Sell price:',
+    'purchasse_price:' => 'Purchasse price:',
+    'stock:' => 'Stock:',
+
+
+    'product_catalogue' => 'Product catalog',
+
     'reviens_max' => 'Max income',
     'suggested_price_round' => 'Suggested price round',
     'upload_documents' => 'Upload Documents',

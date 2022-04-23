@@ -433,6 +433,19 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');
     Route::get('test/{id}','ProductSellController@test');
+
+    //view catalogue
+    Route::get('products/get/catalogue', 'ProductController@viewCatalogue')->name('Product.catalogue');
+    Route::post('products/post/catalogue', 'ProductController@viewCatalogue')->name('Product.PostCatalogue');
+
+    //catalogue pdf
+    Route::get('products/pdf/catalogue', 'ProductController@cataloguePdf')->name('Product.catalogue_pdf');
+    Route::post('products/postPdf/catalogue', 'ProductController@cataloguePdf')->name('Product.PostCatalogue_pdf');
+
+     //product grid
+    Route::get('products/get/grid', 'ProductController@productGrid')->name('Product.grid');
+    //Route::post('products/post/grid', 'ProductController@productGrid')->name('Product.post.grid');
+    
 });
 
 

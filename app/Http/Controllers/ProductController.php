@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 
 
+use \Mpdf\Mpdf as PDF; 
+
 
 use App\Account;
 use App\Contact;
@@ -2882,5 +2884,94 @@ class ProductController extends Controller
         }
 
         return $output;
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function viewCatalogue(Request $request)
+    {
+        if (!auth()->user()->can('product.create')) {
+           abort(403, 'Unauthorized action.');
+        }
+        $selected_catalogue =$request->input('selected_catalogue');
+
+        $explode= explode( ',', $selected_catalogue );
+    
+        $product_catalogue = Product::join('variations as v', 'v.product_id', '=', 'products.id')->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')->select('products.id','products.image','products.name as p_name','v.dpp_inc_tax','v.sell_price_inc_tax','vld.qty_available as current_stock')->find($explode);
+  
+
+        return view('product.catalogue')->with(compact('product_catalogue'));
+            //->with(compact('categories', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'barcode_default', 'business_locations', 'duplicate_product', 'sub_categories', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'product_types', 'common_settings', 'warranties', 'pos_module_data'));
+    }
+
+     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cataloguePdf(Request $request){
+        $All_input=$request->input();
+//dd($request->input());
+    $selected_catalogue =$request->input('selected_catalogue');
+    if (!empty( $selected_catalogue)) {
+        $input= explode( ',', $selected_catalogue );
+    }
+    else{
+        $input=$All_input;
+    } 
+   
+       $product_catalogue = Product::join('variations as v', 'v.product_id', '=', 'products.id')->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')->select('products.id','products.image','products.name as p_name','v.dpp_inc_tax','v.sell_price_inc_tax','vld.qty_available as current_stock')->find($input);
+// dd($product_catalogue);
+         // Setup a filename 
+         $documentFileName = "catalogue_product";
+ 
+         // Create the mPDF document
+         $document = new PDF( [
+             'mode' => 'utf-8',
+             'format' => 'A4',
+             'margin_header' => '1',
+             'margin_top' => '1',
+             'margin_bottom' => '1',
+             'margin_footer' => '1',
+         ]);     
+  
+         // Set some header informations for output
+         $header = [
+             'Content-Type' => 'application/pdf',
+             'Content-Disposition' => 'inline; filename="'.$documentFileName.'"'
+         ];
+  
+         // Write some simple Content
+  
+         $document->WriteHTML(view('product.catalogue_pdf')
+                     ->with(compact('product_catalogue')));
+          
+         // Save PDF on your public storage 
+         Storage::disk('public')->put($documentFileName, $document->Output($documentFileName, "I"));
+          
+         // Get file back from storage with the give header informations
+         return Storage::disk('public')->download($documentFileName, 'Request', $header); //
+    }
+
+     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function productGrid(Request $request)
+    {
+        if (!auth()->user()->can('product.create')) {
+           abort(403, 'Unauthorized action.');
+        }
+      
+
+    $product = Product::join('variations as v', 'v.product_id', '=', 'products.id')->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')->select('products.id','products.image','products.name as p_name','v.dpp_inc_tax','v.sell_price_inc_tax','vld.qty_available as current_stock')->get();
+//    dd($product->current_stock);
+
+        return view('product.product_grid')->with(compact('product'));
+            //->with(compact('categories', 'brands', 'units', 'taxes', 'barcode_types', 'default_profit_percent', 'tax_attributes', 'barcode_default', 'business_locations', 'duplicate_product', 'sub_categories', 'rack_details', 'selling_price_group_count', 'module_form_parts', 'product_types', 'common_settings', 'warranties', 'pos_module_data'));
     }
 }

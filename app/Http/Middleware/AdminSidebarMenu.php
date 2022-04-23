@@ -198,6 +198,13 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
                             );
                         }
+                        if (auth()->user()->can('product.view')) {
+                            $sub->url(
+                                action('ProductController@productGrid'),
+                                __('lang_v1.grid_product'),
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
+                            );
+                        }
 
                         $sub->url(
                             action('WarrantyController@index'),

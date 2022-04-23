@@ -154,6 +154,10 @@
 @endsection
 
 @section('javascript')
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
     <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
@@ -590,6 +594,39 @@
                 swal('@lang("lang_v1.no_row_selected")');
             }    
         });
+
+
+        $("#catalogue").click(function() {
+          //  alert('hello');
+             var selected_rows = getSelectedRows();
+          
+         if(selected_rows.length > 0){
+                
+         $('input#selected_catalogue').val(selected_rows);
+          var select= $('input#selected_catalogue').val();
+      // alert(select);
+         
+         } else{
+                $('input#selected_catalogue').val('');
+           swal('@lang("lang_v1.no_row_selected")');
+             }    
+        });
+
+        // //add to catalogue
+        // $(document).on('click', '#catalogue', function(e){
+        //     e.preventDefault();
+           
+        //     // var selected_rows = getSelectedRows();
+            
+        //     // if(selected_rows.length > 0){
+                
+        //     //   //  $('#selected_catalogue').val(selected_rows);
+         
+        //     // } else{
+        //     //     $('input#selected_products').val('');
+        //     //     swal('@lang("lang_v1.no_row_selected")');
+        //     // }    
+        // });
 
     $(document).on('submit', 'form#edit_product_location_form', function(e) {
         e.preventDefault();

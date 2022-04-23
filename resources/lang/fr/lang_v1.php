@@ -19,6 +19,15 @@ return [
     'reviens2' => 'Reviens2',
     'reviens1' => 'Reviens1',
     'reviens' => 'Reviens',
+    'catalogue_pdf' => 'Pdf catalogue',
+    'catalogue' => 'Catalogue',
+    'select_all' => 'Selectionner tout',
+    'grid_product' => 'Produit en grille',
+    'sell_price:' => 'Prix de vente:',
+    'purchasse_price:' => "Prix d'achat:",
+    'stock:' => 'Stock:',
+    'product_catalogue' => 'Catalogue des produits',
+
     'reviens_max' => 'Max reviens',
     'suggested_price_round' => 'Prix suggerer arrondi',
     //price products

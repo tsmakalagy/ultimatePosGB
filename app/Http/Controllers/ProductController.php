@@ -2933,8 +2933,8 @@ class ProductController extends Controller
              'mode' => 'utf-8',
              'format' => 'A4',
              'margin_header' => '1',
-             'margin_top' => '1',
-             'margin_bottom' => '1',
+             'margin_top' => '4',
+             'margin_bottom' => '2',
              'margin_footer' => '1',
          ]);     
   

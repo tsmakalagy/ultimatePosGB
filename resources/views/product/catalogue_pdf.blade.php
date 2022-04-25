@@ -25,7 +25,7 @@
         
         
 
-                       <div style="width: 100%;height:100%;">
+                       <div style="width: 100%;">
                         <!-- Masonry grid -->
                                          
                         <div class="header" style="text-align:center;">

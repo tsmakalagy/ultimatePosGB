@@ -38,7 +38,7 @@
                             <!-- Masonry grid -->
                             <div class="row">
                                 <!-- Grid sizer -->
-                               <h1>@lang( 'lang_v1.catalogue')</h1>
+                               <h1>@lang( 'lang_v1.product_catalogue')</h1>
                                {{-- {!! Form::hidden('selected_rows', null, ['id' => 'selected_rows']); !!} --}}
                               
                                 <!-- Grid item -->
@@ -56,7 +56,7 @@
                                 <p>{!!str_limit($products->p_name,30)!!}</p>
                                 <p>@lang( 'lang_v1.sell_price:'){{!empty($products->sell_price_inc_tax) ? $products->sell_price_inc_tax: "0.0000"}}</p>
                                 <p>@lang( 'lang_v1.purchasse_price:'){{!empty($products->dpp_inc_tax) ? $products->dpp_inc_tax: "0.0000"}}</p>
-                                <p>@lang( 'lang_v1.stock:'){{!empty($products->current_stock) ? $products->current_stock: "0.0000"}}</p>
+                                <p>@lang( 'lang_v1.stock:'){{!empty($products->current_stock) ? $products->current_stock: "0.0000"}} pcs</p>
                                 
                             </div>
                                 @endforeach

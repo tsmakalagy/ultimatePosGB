@@ -729,6 +729,7 @@ return [
     'reviens2' => 'Income2',
     'reviens1' => 'Income1',
     'reviens' => 'Income',
+    'price:' => 'Price:',
     'catalogue_pdf' => 'Catalog pdf',
     'catalogue' => 'Catalog',
     'select_all' => 'Select all',

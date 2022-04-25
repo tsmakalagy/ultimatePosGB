@@ -27,6 +27,7 @@ return [
     'purchasse_price:' => "Prix d'achat:",
     'stock:' => 'Stock:',
     'product_catalogue' => 'Catalogue des produits',
+    'price:' => 'Prix:',
 
     'reviens_max' => 'Max reviens',
     'suggested_price_round' => 'Prix suggerer arrondi',

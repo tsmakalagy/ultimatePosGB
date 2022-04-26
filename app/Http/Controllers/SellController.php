@@ -504,7 +504,7 @@ class SellController extends Controller
                     '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
                 )
                 ->addColumn('total_remaining', function ($row) {
-                    $total_remaining = $row->final_total - $row->total_paid;
+                    $total_remaining = $row->final_total - $row->total_paid - $row->shipping_charges;
                     $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
 
 

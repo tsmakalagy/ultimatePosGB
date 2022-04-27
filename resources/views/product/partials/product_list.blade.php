@@ -44,7 +44,7 @@
                     {!! Form::submit(__('lang_v1.delete_selected'), array('class' => 'btn btn-xs btn-danger', 'id' => 'delete-selected')) !!}
                     {!! Form::close() !!}
                 @endcan
-
+         
                 
                     @can('product.update')
                     

@@ -15,6 +15,7 @@ use App\TaxRate;
 use App\Transaction;
 use App\TransactionSellLine;
 use App\TypesOfService;
+use App\TransactionPayment;
 use App\User;
 use App\Utils\BusinessUtil;
 use App\Utils\ContactUtil;
@@ -86,6 +87,29 @@ class SellController extends Controller
         $is_tables_enabled = $this->transactionUtil->isModuleEnabled('tables');
         $is_service_staff_enabled = $this->transactionUtil->isModuleEnabled('service_staff');
         $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
+        
+        ////test
+        //$query2 = Transaction::
+    //       $query2 = TransactionPayment::join('transactions',function($join){
+    //           $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
+    //       ->groupBy('transactions.id')  ;              
+    //       })
+    //     // ->where('transactions.business_id', $business_id)  
+    //     ->
+    //     where('transactions.type', 'sell')
+    //     ->where('transactions.status', 'final')
+
+    //     ->select(
+    //    // DB::raw('SUM(select tp.amount FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id)as total_sell'),
+    //     //DB::raw('SUM(transaction_payments.amount) as total_sell'),
+    //     DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
+    //     DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+    //     DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
+    //     DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')     
+    //     );
+    //     $sell_details2 = $query2->first();
+      
+    //     dd($sell_details2);
 
         if (request()->ajax()) {
             $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);

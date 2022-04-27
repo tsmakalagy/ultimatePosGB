@@ -44,7 +44,13 @@
                     {!! Form::submit(__('lang_v1.delete_selected'), array('class' => 'btn btn-xs btn-danger', 'id' => 'delete-selected')) !!}
                     {!! Form::close() !!}
                 @endcan
-               
+                @can('product.delete')
+                {!! Form::open(['url' => action('ProductController@cataloguePdf'), 'method' => 'post', 'id' => 'add_to_catalogue' ]) !!}
+                 {{-- <input id="selected_catalogue"  name="selected_catalogue" type="number" value="" style="display: none">  --}}
+              {!! Form::hidden('selected_catalogue', null, ['id' => 'selected_catalogue']); !!}
+                {!! Form::submit(__('lang_v1.catalogue_pdf'), array('class' => 'btn btn-xs btn-primary', 'id' => 'catalogue')) !!}
+                {!! Form::close() !!}
+            @endcan
 
                 
                     @can('product.update')

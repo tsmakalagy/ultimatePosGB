@@ -2299,8 +2299,65 @@ class TransactionUtil extends Util
         }
    
         $sell_details = $query->first();
+
+        $query2 = Transaction::
+        //  $query2 = Transaction::join('transaction_payments',function($join){
+        //      $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
+        //       ;              
+        //  })->groupBy('transaction_payments.transaction_id') 
+        //->
+        where('transactions.business_id', $business_id)  
+        
+        ->where('transactions.type', 'sell')
+        ->where('transactions.status', 'final')
+
+        ->select(
+       // DB::raw('SUM(transaction_payments.amount) as total_sell'),
+        DB::raw("SUM(transactions.final_total - transactions.tax_amount) as total_exc_tax"),
+        DB::raw('SUM(transactions.final_total - (SELECT COALESCE(SUM(IF(tp.is_return = 1, -1*tp.amount, tp.amount)), 0) FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  as total_due'),
+        DB::raw('SUM(transactions.total_before_tax) as total_before_tax'),
+        DB::raw('SUM(transactions.shipping_charges) as total_shipping_charges')     
+        );
+           
+
+        //Check for permitted locations of a user
+         $permitted_locations = auth()->user()->permitted_locations();
+         if ($permitted_locations != 'all') {
+             $query2->whereIn('transactions.location_id', $permitted_locations);
+         }
+
+          if (!empty($start_date) && !empty($end_date)) {
+
+              $query2->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)'), '>=', $start_date)
+              ->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id  ORDER BY tp.id LIMIT 1)'), '<=', $end_date);
+              //(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  
+          }
+
+          if (empty($start_date) && !empty($end_date)) {
+              $query2->whereDate('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)', '<=', $end_date);
+         }
+
+         //Filter by the location
+         if (!empty($location_id)) {
+             $query2->where('transactions.location_id', $location_id);
+         }
+
+         if (!empty($created_by)) {
+             $query2->where('transactions.created_by', $created_by);
+            
+         }
+
+         //filter by commission_agent
+         if (!empty($cmmsn_agnt)) {
+             $query2->where('transactions.commission_agent', $cmmsn_agnt);
+            
+         }
    
-        $output['total_sell_inc_tax'] = $sell_details->total_sell;
+        $sell_details2 = $query2->first();
+
+
+        //resultat
+        $output['total_sell_inc_tax'] =$sell_details->total_sell - $sell_details2->total_shipping_charges;
         //$output['total_sell_exc_tax'] = $sell_details->sum('total_exc_tax');
         $output['total_sell_exc_tax'] = $sell_details->total_before_tax;
         $output['invoice_due'] = $sell_details->total_due;
@@ -4973,8 +5030,8 @@ class TransactionUtil extends Util
                 DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
                 DB::raw('DATE_FORMAT(tp.paid_on, "%Y-%m-%d") as paid_on'),
                 DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
-                DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
-                        TP.transaction_id=transactions.id) as total_paid'),
+                DB::raw('((SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
+                        TP.transaction_id=transactions.id)-transactions.shipping_charges) as total_paid'),
                 'bl.name as business_location',
                 DB::raw('COUNT(SR.id) as return_exists'),
                 DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
@@ -5088,8 +5145,8 @@ class TransactionUtil extends Util
             DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
             //DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as u_added_by"),
             //DB::raw("CONCAT(COALESCE(c.surname, ''),' ',COALESCE(c.first_name, ''),' ',COALESCE(c.last_name,'')) as c_added_by"),
-            DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
-                    TP.transaction_id=transactions.id) as total_paid'),
+            DB::raw('((SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
+                    TP.transaction_id=transactions.id)-transactions.shipping_charges) as total_paid'),
             'bl.name as business_location',
             DB::raw('COUNT(SR.id) as return_exists'),
             DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE

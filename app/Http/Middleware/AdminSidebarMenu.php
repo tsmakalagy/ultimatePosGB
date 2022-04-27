@@ -183,28 +183,28 @@ class AdminSidebarMenu
                                 ['icon' => 'fa fas fa-gem', 'active' => request()->segment(1) == 'brands']
                             );
                         }
-                        // if (auth()->user()->can('product.view')) {
-                        //     $sub->url(
-                        //         action('ProductPriceSettingController@index'),
-                        //         __('lang_v1.product_price_setting'),
-                        //         ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
-                        //     );
-                        // }
+                        if (auth()->user()->can('product.view')) {
+                            $sub->url(
+                                action('ProductPriceSettingController@index'),
+                                __('lang_v1.product_price_setting'),
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
+                            );
+                        }
 
-                        // if (auth()->user()->can('product.view')) {
-                        //     $sub->url(
-                        //         action('ProductPriceController@index'),
-                        //         __('lang_v1.price_product'),
-                        //         ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
-                        //     );
-                        // }
-                        // if (auth()->user()->can('product.view')) {
-                        //     $sub->url(
-                        //         action('ProductController@productGrid'),
-                        //         __('lang_v1.grid_product'),
-                        //         ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
-                        //     );
-                        // }
+                        if (auth()->user()->can('product.view')) {
+                            $sub->url(
+                                action('ProductPriceController@index'),
+                                __('lang_v1.price_product'),
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
+                            );
+                        }
+                        if (auth()->user()->can('product.view')) {
+                            $sub->url(
+                                action('ProductController@productGrid'),
+                                __('lang_v1.grid_product'),
+                                ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'sells' && request()->segment(2) == null]
+                            );
+                        }
 
                         $sub->url(
                             action('WarrantyController@index'),

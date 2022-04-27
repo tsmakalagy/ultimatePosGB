@@ -674,22 +674,35 @@ else{
             'tax_amount',
             '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
         )
+        //  ->editColumn(
+        //             'total_paid',
+        //             '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
+        //         )
         ->editColumn(
-            'total_paid',
-          //  '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
-       // )
-       function ($row) {
-        $transaction_payments =TransactionPayment::where('transaction_id',$row->id)->get();
-      //  $date_format=date_format($transaction_payments'Y-m-d',);
-     //   $number=number_format($transaction_payments);
-      $test='';
-        foreach($transaction_payments as $transaction_payment){
-            $test.='<span class="date_paid_on">'.number_format($transaction_payment->amount,2).'</span><br>';
-        }
-        return $test;
+             'total_paid',
+           //  '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
+        // )
+        function ($row) {
+         $transaction_payments =TransactionPayment::where('transaction_id',$row->id)->get();
+       //  $date_format=date_format($transaction_payments'Y-m-d',);
+      //   $number=number_format($transaction_payments);
+       $test='';
+         foreach($transaction_payments as $index => $transaction_payment){
+             if($index==0){
+             $amount=$transaction_payment->amount-$row->shipping_charges;
+             }
+             else{
+             $amount=$transaction_payment->amount;
+
+             }
+             $test.='<span class="date_paid_on">'.number_format($amount,2).'</span><br>';
+             //  $test.='<span class="date_paid_on">'.number_format($transaction_payment->amount- $row->shipping_charges,2).'</span><br>';
+         }
+      
+         return $test;
 
 
-    })
+     })
         ->addColumn('date_paid_on',
         function ($row) {
             $transaction_payments =TransactionPayment::where('transaction_id',$row->id)->select( DB::raw("DATE_FORMAT(paid_on, '%Y/%m/%d') as paid_on"))->get();
@@ -757,7 +770,7 @@ else{
             '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
         )
         ->addColumn('total_remaining', function ($row) {
-            $total_remaining = $row->final_total - $row->total_paid;
+            $total_remaining = $row->final_total - $row->total_paid - $row->shipping_charges;
             $total_remaining_html = '<span class="payment_due" data-orig-value="' . $total_remaining . '">' . $this->transactionUtil->num_f($total_remaining, true) . '</span>';
 
 

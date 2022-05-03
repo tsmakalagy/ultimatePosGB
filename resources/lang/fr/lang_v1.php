@@ -9,6 +9,8 @@ return [
     "delivery_fee" => "Frais de livraison",
     'shipper_name' => 'Livreur',
     'location' => 'Lieu',
+    'commission' => 'Commission',
+
     'shipping_location' => 'Lieu de livraison',
     'shipping_zone' => 'Zone de livraison',
     'zone' => 'Zone',

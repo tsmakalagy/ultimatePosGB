@@ -38,17 +38,17 @@ return [
     'shipping_charges:' => 'Shipping charges:',
 
     //price products
-    'cours_usd' => 'Usd course',
-    'cours_rmb' => 'Rmb course',
-    'frais_taxe_usd_bateau' => 'Costs and tax in usb boat',
-    'frais_taxe_usd_avion' => 'Costs and tax in usb plane',
-    'frais_usd_bateau' => 'Costs in usb boat',
-    'frais_compagnie_usd_bateau' => 'Company costs in usb boat',
+    'cours_usd' => 'Usd-Ar Rate',
+    'cours_rmb' => 'Rmb-Ar Rate',
+    'frais_taxe_usd_bateau' => 'Tax and shipping by ship (USD)',
+    'frais_taxe_usd_avion' => 'Tax and shipping by plane (USD)',
+    'frais_usd_bateau' => 'Container cost (USD)',
+    'frais_compagnie_usd_bateau' => 'Company\'s container cost (USD)',
     'constante_taxe' => 'Constant tax',
     'price_product' => 'Product price',
     'price_products' => 'Price products',
     'taxe' => 'Tax',
-    'fret' => 'Fret',
+    'fret' => 'Shipping',
     'price_product.edit' => 'Edit price product',
 
     'price_product.add' => 'Add price product',
@@ -64,12 +64,12 @@ return [
       'link' => 'Link',
       'other_field1' => 'Other field1',
       'other_field2' => 'Other field2',
-      'byship_price' => 'Price byship',
-      'byplane_price' => 'Price byplane',
+      'byship_price' => 'By ship price',
+      'byplane_price' => 'By plane price',
       
-      'product_price_setting.edit' => 'Edit product price setting',
-      'product_price_setting.add' => 'Add product price setting',
-      'product_price_setting' => 'product price setting',
+      'product_price_setting.edit' => 'Edit Product Price Setting',
+      'product_price_setting.add' => 'Add Product Price Setting',
+      'product_price_setting' => 'Product Price Setting',
 
 
       

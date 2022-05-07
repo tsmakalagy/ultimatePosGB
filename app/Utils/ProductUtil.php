@@ -1962,7 +1962,7 @@ class ProductUtil extends Util
                                     'transactions.status',
                                     'transactions.invoice_no',
                                     'transactions.ref_no',
-                                    DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+                                    DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by")
                                 )
                                 ->orderBy('transactions.transaction_date', 'asc')
                                 ->get();

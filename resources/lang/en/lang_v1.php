@@ -21,7 +21,7 @@ return [
     'customer' => 'Customer',
     'type_user' => 'Type user',
 
-
+    'transaction_date' => 'Date',
 
     'Cash' => 'Cash',
     'Total Paid' => 'Total Paid',

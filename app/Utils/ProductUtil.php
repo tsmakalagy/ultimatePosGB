@@ -1853,6 +1853,7 @@ class ProductUtil extends Util
                     ->leftjoin('product_variations as pv', 'variations.product_variation_id', '=', 'pv.id')
                     ->leftjoin('purchase_lines as pl', 'pl.variation_id', '=', 'variations.id')
                     ->leftjoin('transactions as t', 'pl.transaction_id', '=', 't.id')
+                    ->leftjoin('users as u', 't.created_by', '=', 'u.id')
                     ->where('t.location_id', $location_id)
                     //->where('t.status', 'received')
                     ->where('p.business_id', $business_id)
@@ -1863,10 +1864,14 @@ class ProductUtil extends Util
                         DB::raw("SUM(pl.quantity_adjusted) as total_adjusted"),
                         DB::raw("SUM(IF(t.type='opening_stock', pl.quantity, 0)) as total_opening_stock"),
                         DB::raw("SUM(IF(t.type='purchase_transfer', pl.quantity, 0)) as total_purchase_transfer"),
-                        'variations.sub_sku as sub_sku',
+                    DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+                    'variations.sub_sku as sub_sku',
                         'p.name as product',
                         'p.type',
                         'p.sku',
+                        't.created_by',
+                    
+                        't.transaction_date',
                         'p.id as product_id',
                         'units.short_name as unit',
                         'pv.name as product_variation',
@@ -1904,6 +1909,9 @@ class ProductUtil extends Util
             'variation' => $product_name,
             'unit' => $purchase_details->unit,
             'total_purchase' => $purchase_details->total_purchase,
+            'transaction_date' => $purchase_details->transaction_date,
+            'created_by' => $purchase_details->created_by,
+            'added_by' => $purchase_details->added_by,
             'total_purchase_return' => $purchase_details->total_purchase_return,
             'total_adjusted' => $purchase_details->total_adjusted,
             'total_opening_stock' => $purchase_details->total_opening_stock,
@@ -1925,6 +1933,7 @@ class ProductUtil extends Util
                                     'pl.transaction_id', '=', 'transactions.id')
                                 ->leftjoin('stock_adjustment_lines as al', 
                                     'al.transaction_id', '=', 'transactions.id')
+                                    ->leftjoin('users as u', 'transactions.created_by', '=', 'u.id')
                                 ->leftjoin('transactions as return', 'transactions.return_parent_id', '=', 'return.id')
                                 ->leftjoin('purchase_lines as rpl', 
                                     'rpl.transaction_id', '=', 'return.id')
@@ -1952,7 +1961,8 @@ class ProductUtil extends Util
                                     'transactions.transaction_date',
                                     'transactions.status',
                                     'transactions.invoice_no',
-                                    'transactions.ref_no'
+                                    'transactions.ref_no',
+                                    DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
                                 )
                                 ->orderBy('transactions.transaction_date', 'asc')
                                 ->get();
@@ -1973,7 +1983,9 @@ class ProductUtil extends Util
                     'type' => 'sell',
                     'type_label' => __('sale.sale'),
                     'ref_no' => $stock_line->invoice_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
+
                 ];
             } elseif ($stock_line->transaction_type == 'purchase') {
                 if ($stock_line->status != 'received') {
@@ -1988,7 +2000,9 @@ class ProductUtil extends Util
                     'type' => 'purchase',
                     'type_label' => __('lang_v1.purchase'),
                     'ref_no' => $stock_line->ref_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
+
                 ];
             } elseif ($stock_line->transaction_type == 'stock_adjustment') {
                 $quantity_change = -1 * $stock_line->stock_adjusted;
@@ -2000,7 +2014,8 @@ class ProductUtil extends Util
                     'type' => 'stock_adjustment',
                     'type_label' => __('stock_adjustment.stock_adjustment'),
                     'ref_no' => $stock_line->ref_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                     'added_by' => $stock_line->added_by
                 ];
             } elseif ($stock_line->transaction_type == 'opening_stock') {
                 $quantity_change = $stock_line->purchase_line_quantity;
@@ -2012,7 +2027,8 @@ class ProductUtil extends Util
                     'type' => 'opening_stock',
                     'type_label' => __('report.opening_stock'),
                     'ref_no' => $stock_line->ref_no ?? '',
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
                 ];
             } elseif ($stock_line->transaction_type == 'sell_transfer') {
                 $quantity_change = -1 * $stock_line->sell_line_quantity;
@@ -2024,7 +2040,8 @@ class ProductUtil extends Util
                     'type' => 'sell_transfer',
                     'type_label' => __('lang_v1.stock_transfers') . ' (' . __('lang_v1.out') . ')',
                     'ref_no' => $stock_line->ref_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
                 ];
             } elseif ($stock_line->transaction_type == 'purchase_transfer') {
                 $quantity_change = $stock_line->purchase_line_quantity;
@@ -2036,7 +2053,8 @@ class ProductUtil extends Util
                     'type' => 'purchase_transfer',
                     'type_label' => __('lang_v1.stock_transfers') . ' (' . __('lang_v1.in') . ')',
                     'ref_no' => $stock_line->ref_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
                 ];
             } elseif ($stock_line->transaction_type == 'production_purchase') {
                 $quantity_change = $stock_line->purchase_line_quantity;
@@ -2048,7 +2066,8 @@ class ProductUtil extends Util
                     'type' => 'production_purchase',
                     'type_label' => __('manufacturing::lang.manufactured'),
                     'ref_no' => $stock_line->ref_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
                 ];
             } elseif ($stock_line->transaction_type == 'purchase_return') {
                 $quantity_change =  -1 * ($stock_line->combined_purchase_return + $stock_line->purchase_return);
@@ -2060,7 +2079,8 @@ class ProductUtil extends Util
                     'type' => 'purchase_return',
                     'type_label' => __('lang_v1.purchase_return'),
                     'ref_no' => $stock_line->ref_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
                 ];
             } elseif ($stock_line->transaction_type == 'sell_return') {
                 $quantity_change = $stock_line->sell_return;
@@ -2072,7 +2092,8 @@ class ProductUtil extends Util
                     'type' => 'purchase_transfer',
                     'type_label' => __('lang_v1.sell_return'),
                     'ref_no' => $stock_line->invoice_no,
-                    'transaction_id' => $stock_line->transaction_id
+                    'transaction_id' => $stock_line->transaction_id,
+                    'added_by' => $stock_line->added_by
                 ];
             } 
         }

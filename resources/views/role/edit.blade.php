@@ -10,6 +10,10 @@
 
 <!-- Main content -->
 <section class="content">
+
+<!-- note : changer la class input icheck pour afficher les checkbox -->
+
+
     @php
       $pos_settings = !empty(session('business.pos_settings')) ? json_decode(session('business.pos_settings'), true) : [];
     @endphp

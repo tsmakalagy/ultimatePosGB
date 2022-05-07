@@ -120,6 +120,9 @@ class ProductController extends Controller
                // ->leftJoin('images as im', 'im.product_id', '=', 'products.id')
                 ->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')
                 ->where('products.business_id', $business_id)
+               // ->where('vld.location_id', $business_id)
+
+                ->where('products.business_id', $business_id)
                 ->where('products.type', '!=', 'modifier');
 
             //Filter by location
@@ -131,6 +134,8 @@ class ProductController extends Controller
                     $query->whereHas('product_locations', function ($query) use ($location_id) {
                         $query->where('product_locations.location_id', '=', $location_id);
                     });
+                    //modified
+                   $query->where('vld.location_id', $location_id);
                 }
             } elseif ($location_id == 'none') {
                 $query->doesntHave('product_locations');
@@ -165,6 +170,8 @@ class ProductController extends Controller
                 'products.product_custom_field3',
                 'products.product_custom_field4',
                 DB::raw('SUM(vld.qty_available) as current_stock'),
+               // 'vld.qty_available as current_stock',
+
                 DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
                 DB::raw('MIN(v.sell_price_inc_tax) as min_price'),
                 DB::raw('MAX(v.dpp_inc_tax) as max_purchase_price'),

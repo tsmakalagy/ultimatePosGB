@@ -938,7 +938,7 @@ class SellController extends Controller
         }
         $status_color_in_activity = Transaction::sales_order_statuses();
         $sales_orders = $sell->salesOrders();
-
+//dd($activities);
         return view('sale_pos.show')
             ->with(compact(
                 'taxes',

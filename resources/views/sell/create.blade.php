@@ -133,9 +133,9 @@
 								<i class="fa fa-user"></i>
 							</span>
 							<input type="hidden" id="default_customer_id" 
-							value="{{ $walk_in_customer['id']}}" >
+							value="{{ $walk_in_customer['id'] ?? ''}}" >
 							<input type="hidden" id="default_customer_name" 
-							value="{{ $walk_in_customer['name']}}" >
+							value="{{ $walk_in_customer['name'] ?? ''}}" >
 							<input type="hidden" id="default_customer_balance" value="{{ $walk_in_customer['balance'] ?? ''}}" >
 							<input type="hidden" id="default_customer_address" value="{{ $walk_in_customer['shipping_address'] ?? ''}}" >
 							@if(!empty($walk_in_customer['price_calculation_type']) && $walk_in_customer['price_calculation_type'] == 'selling_price_group')
@@ -173,12 +173,12 @@
 		            <div class="multi-input">
 		              {!! Form::label('pay_term_number', __('contact.pay_term') . ':') !!} @show_tooltip(__('tooltip.pay_term'))
 		              <br/>
-		              {!! Form::number('pay_term_number', $walk_in_customer['pay_term_number'], ['class' => 'form-control width-40 pull-left', 'placeholder' => __('contact.pay_term')]); !!}
+		              {!! Form::number('pay_term_number', $walk_in_customer['pay_term_number'] ?? '', ['class' => 'form-control width-40 pull-left', 'placeholder' => __('contact.pay_term')]); !!}
 
 		              {!! Form::select('pay_term_type', 
 		              	['months' => __('lang_v1.months'), 
 		              		'days' => __('lang_v1.days')], 
-		              		$walk_in_customer['pay_term_type'], 
+		              		$walk_in_customer['pay_term_type'] ?? '', 
 		              	['class' => 'form-control width-60 pull-left','placeholder' => __('messages.please_select')]); !!}
 		            </div>
 		          </div>
@@ -532,7 +532,7 @@
 			<div class="col-md-4">
 				<div class="form-group">
 		            {!! Form::label('shipping_details', __('sale.shipping_details')) !!}
-		            {!! Form::textarea('shipping_details',null, ['class' => 'form-control','placeholder' => __('sale.shipping_details') ,'rows' => '3', 'cols'=>'30']); !!}
+		            {!! Form::textarea('shipping_details',null, ['class' => 'form-control details','placeholder' => __('sale.shipping_details') ,'rows' => '3', 'cols'=>'30']); !!}
 		        </div>
 			</div>
 			<div class="col-md-4">
@@ -861,7 +861,11 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function() {
-		
+		// $('pos_unit_price').click(function(){
+		// 	alert('hello');
+		// });
+		// 	$('.details').prop('readonly', true);
+
 			$('.commission_agent1').prop('disabled',true);
 			$('form').bind('submit', function () {
 				$('.commission_agent1').prop('disabled', false);
@@ -961,6 +965,7 @@
     });
  
     }); 
+
     	});
     </script>
 @endsection

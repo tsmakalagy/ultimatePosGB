@@ -1,4 +1,5 @@
 <div class="row">
+	{{-- {{dd($id )}} --}}
 	<div class="col-sm-12">
 		@forelse($locations as $key => $value)
 		<div class="box box-solid">

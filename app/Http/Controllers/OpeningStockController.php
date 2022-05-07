@@ -7,6 +7,7 @@ use App\BusinessLocation;
 use App\Product;
 use App\PurchaseLine;
 use App\Transaction;
+use App\User;
 use App\Utils\ProductUtil;
 
 use App\Utils\TransactionUtil;
@@ -47,7 +48,10 @@ class OpeningStockController extends Controller
         if (!auth()->user()->can('product.opening_stock')) {
             abort(403, 'Unauthorized action.');
         }
-
+        $id=request()->session()->get('user.id');
+   
+        $use=User::where('id',$id)->first();
+       // dd($use);
         $business_id = request()->session()->get('user.business_id');
 
         //Get the product
@@ -120,7 +124,8 @@ class OpeningStockController extends Controller
                         'locations',
                         'purchases',
                         'enable_expiry',
-                        'enable_lot'
+                        'enable_lot',
+                        'id'
                     ));
         }
     }
@@ -160,7 +165,7 @@ class OpeningStockController extends Controller
                 //Get start date for financial year.
                 $transaction_date = request()->session()->get("financial_year.start");
                 $transaction_date = \Carbon::createFromFormat('Y-m-d', $transaction_date)->toDateTimeString();
-
+                $transaction_date2 = \Carbon::now();
                 DB::beginTransaction();
                 //$key is the location_id
                 foreach ($opening_stocks as $key_os => $value) {
@@ -248,6 +253,8 @@ class OpeningStockController extends Controller
                             if (!empty($transaction)) {
                                 $transaction->total_before_tax = $purchase_total;
                                 $transaction->final_total = $purchase_total;
+                                $transaction->created_by = $user_id;
+                                $transaction->transaction_date =  $transaction_date2;
                                 $transaction->update();
                             } else {
                                 $is_new_transaction = true;
@@ -258,7 +265,7 @@ class OpeningStockController extends Controller
                                         'opening_stock_product_id' => $product->id,
                                         'status' => 'received',
                                         'business_id' => $business_id,
-                                        'transaction_date' => $transaction_date,
+                                        'transaction_date' => $transaction_date2,
                                         'total_before_tax' => $purchase_total,
                                         'location_id' => $location_id,
                                         'final_total' => $purchase_total,

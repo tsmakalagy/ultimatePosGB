@@ -38,6 +38,7 @@ return [
     'price_product.add' => 'Ajouter prix des produits',
     'suggested_price' => 'prix suggerer',
 
+    'transaction_date' => 'Date',
 
 
      //product price setting

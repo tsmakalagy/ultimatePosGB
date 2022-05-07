@@ -833,6 +833,7 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function(){
+			$('.pos_unit_price').prop('readonly', true)
 
 			$('.commission_agent1').prop('disabled',true);
 			$('form').bind('submit', function () {

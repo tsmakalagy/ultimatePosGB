@@ -71,6 +71,7 @@
 					<span class="display_currency" data-is_quantity="true">{{$stock_details['current_stock']}}</span> {{$stock_details['unit']}}
 				</td>
 			</tr>
+			
 		</table>
 	</div>
 </div>
@@ -85,6 +86,7 @@
 				<th>@lang('lang_v1.new_quantity')</th>
 				<th>@lang('lang_v1.date')</th>
 				<th>@lang('purchase.ref_no')</th>
+				<th>@lang('lang_v1.added_by')</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -95,6 +97,7 @@
 					<td><span class="display_currency" data-is_quantity="true">{{$history['stock']}}</span></td>
 					<td>{{@format_datetime($history['date'])}}</td>
 					<td>{{$history['ref_no']}}</td>
+					<td>{{$history['added_by']}}</td>
 				</tr>
 			@empty
 				<tr><td colspan="5" class="text-center">

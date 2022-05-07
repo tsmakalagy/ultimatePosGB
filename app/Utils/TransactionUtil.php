@@ -2230,24 +2230,7 @@ class TransactionUtil extends Util
     
     public function getSellTotals($business_id, $start_date = null, $end_date = null, $location_id = null, $created_by,$shipp,$cmmsn_agnt)
     {  
-      /*  $shipping_charge=Transaction::leftJoin('transaction_payments',function($join){
-            $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
-              ;              
-          //})//->groupBy('transactions.id')
-          select(DB::raw('SUM(transactions.shipping_charges) as shipping_charge'));
-        if (!empty($start_date) && !empty($end_date)) {
-
-            $shipping_charge->whereDate(DB::raw('transaction_payments.paid_on'), '>=', $start_date)
-            ->whereDate(DB::raw('transaction_payments.paid_on'), '<=', $end_date);
-   
-        }
-
-        if (empty($start_date) && !empty($end_date)) {
-            $shipping_charge->whereDate('transaction_payments.paid_on', '<=', $end_date);
-        }
-        $shipp = $shipping_charge->first();
-        $shipp=$shipp->shipping_charge;
-*/
+    
         $query = TransactionPayment::join('transactions',function($join){
             $join->on('transactions.id', '=', 'transaction_payments.transaction_id')
             ->groupBy('transactions.id')  ;              
@@ -4209,14 +4192,25 @@ class TransactionUtil extends Util
             $query->whereIn('transactions.location_id', $permitted_locations);
         }
 
-        if (!empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '>=', $start_date)
-                ->whereDate('transactions.transaction_date', '<=', $end_date);
+         if (!empty($start_date) && !empty($end_date)) {
+
+             $query->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)'), '>=', $start_date)
+             ->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id  ORDER BY tp.id LIMIT 1)'), '<=', $end_date);
+             //(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  
+         }
+
+         if (empty($start_date) && !empty($end_date)) {
+             $query->whereDate('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)', '<=', $end_date);
         }
 
-        if (empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '<=', $end_date);
-        }
+        // if (!empty($start_date) && !empty($end_date)) {
+        //     $query->whereDate('transactions.transaction_date', '>=', $start_date)
+        //         ->whereDate('transactions.transaction_date', '<=', $end_date);
+        // }
+
+        // if (empty($start_date) && !empty($end_date)) {
+        //     $query->whereDate('transactions.transaction_date', '<=', $end_date);
+        // }
 
           //filter by commission_agent
           if (!empty($cmmsn_agnt)) {
@@ -4999,8 +4993,11 @@ class TransactionUtil extends Util
     
     public function getListSellsCmmsnAgnt($business_id, $sale_type = 'sell')
     {
-    $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-         ->leftJoin('transaction_payments as tp', 'transactions.id', '=', 'tp.transaction_id')
+        $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
+        ->leftJoin('transaction_payments as tp', function ($join) {
+            $join->on('transactions.id', '=', 'tp.transaction_id');
+                
+        })
         ->leftJoin('transaction_sell_lines as tsl', function ($join) {
             $join->on('transactions.id', '=', 'tsl.transaction_id')
                 ->whereNull('tsl.parent_sell_line_id');

@@ -18,6 +18,7 @@ return [
     'customer' => 'Customer',
     'purchase' => 'Purchase & Stock Adjustment',
     'report' =>'Report',
+    "see_more_dashboard" => "See more dashboard",
 
     'user.view' => 'View user',
     'user.create' => 'Add user',

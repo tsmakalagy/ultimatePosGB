@@ -5,6 +5,8 @@
 "user" => "Utilisateur",
 "supplier" => "Fournisseur",
 "customer" => "Client",
+"see_more_dashboard" => "Voir plus tableau dashboard",
+
 "purchase" => "Achat et ajustement des stocks",
 "report" => "Rapport",
 "user.view" => "Voir l'utilisateur",

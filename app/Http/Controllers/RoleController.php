@@ -98,7 +98,7 @@ class RoleController extends Controller
         $module_permissions = $this->moduleUtil->getModuleData('user_permissions');
 
         $common_settings = !empty(session('business.common_settings')) ? session('business.common_settings') : [];
-
+        
         return view('role.create')
                 ->with(compact('selling_price_groups', 'module_permissions', 'common_settings'));
     }
@@ -115,6 +115,7 @@ class RoleController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+        //dd($request);
         try {
             $role_name = $request->input('name');
             $permissions = $request->input('permissions');

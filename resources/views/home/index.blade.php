@@ -21,13 +21,13 @@
         
         	<div class="row">
                 <div class="col-md-4 col-xs-12">
-                    @if($is_admin)
+                    @if($is_admin || auth()->user()->can('can_see_more_dashboard'))
                     @if(count($all_locations) > 1)
                         {!! Form::select('dashboard_location', $all_locations, null, ['class' => 'form-control select2', 'placeholder' => __('lang_v1.select_location'), 'id' => 'dashboard_location']); !!}
                     @endif
                     @endif
                 </div>
-                @if($is_admin)
+                @if($is_admin|| auth()->user()->can('can_see_more_dashboard'))
         		<div class="col-md-5 col-xs-8 text-right">
                     <div class="form-group "><p>
                       {!! Form::label('user',  __('lang_v1.commission_agent') . ':',['style' => 'color:white']) !!}

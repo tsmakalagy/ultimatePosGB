@@ -109,6 +109,16 @@ class ProductController extends Controller
         $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
         $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
 
+        $products2 = Product::join('variations as v', 'v.product_id', '=', 'products.id')
+        ->where('products.business_id', $business_id)
+        ->select( DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
+                  DB::raw('MIN(v.sell_price_inc_tax) as min_price')
+        )->first();
+
+        $max_price=$products2->max_price;
+        $min_price=$products2->min_price;
+        //dd($min_price);
+        //dd($products2->max_price);
         if (request()->ajax()) {
             $query = Product::with(['media'])
                 ->leftJoin('brands', 'products.brand_id', '=', 'brands.id')
@@ -148,7 +158,9 @@ class ProductController extends Controller
                     $query->with('product_locations');
                 }
             }
-
+            $products2 = Product::join('variations as v', 'v.product_id', '=', 'products.id')
+            ->select( DB::raw('MAX(v.sell_price_inc_tax) as max_price')
+        );
             $products = $query->select(
                 'products.id',
                 'products.name as product',
@@ -209,6 +221,15 @@ class ProductController extends Controller
             if (!empty($tax_id)) {
                 $products->where('products.tax', $tax_id);
             }
+
+            $prix_max = request()->get('prix_max');
+            $prix_min = request()->get('prix_min');
+            if ($prix_max!=null && $prix_min!=null) {
+              
+                $products->whereBetween('v.sell_price_inc_tax',[$prix_min,$prix_max]);
+         
+            }
+
 
             $active_state = request()->get('active_state', null);
             if ($active_state == 'active') {

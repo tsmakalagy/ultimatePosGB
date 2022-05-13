@@ -63,14 +63,9 @@
             </div>
         </div>
 
-        <!-- include module filter -->
-        @if(!empty($pos_module_data))
-            @foreach($pos_module_data as $key => $value)
-                @if(!empty($value['view_path']))
-                    @includeIf($value['view_path'], ['view_data' => $value['view_data']])
-                @endif
-            @endforeach
-        @endif
+       
+
+ 
 
         <div class="col-md-3">
           <div class="form-group">
@@ -80,6 +75,36 @@
             </label>
           </div>
         </div>
+
+        <div class="clearfix"></div>
+         
+         <div class="col-md-4">
+            <div class="form-group">
+                {!! Form::label('price_id',  __('lang_v1.filter_price') . ':') !!}
+                <div class="row" id='price_id'>
+
+                <div class="col-md-6">
+                
+                {!! Form::text('price_min',null, ['class' => 'form-control filter_price', 'style' => 'width:100%', 'id' => 'prix_min', 'placeholder' => __('lang_v1.min')]); !!}
+            </div>
+            <div class="col-md-6">
+                {!! Form::text('price_max',  null, ['class' => 'form-control filter_price', 'style' => 'width:100%', 'id' => 'prix_max', 'placeholder' => __('lang_v1.max')]); !!}
+                {{-- {!! Form::text('product_spec',$price_product->product_spec, ['class' => 'form-control', 'rows' => 3]); !!} --}}
+
+            </div>
+        </div>
+        </div>
+        </div>
+
+               <!-- include module filter -->
+               @if(!empty($pos_module_data))
+               @foreach($pos_module_data as $key => $value)
+                   @if(!empty($value['view_path']))
+                       @includeIf($value['view_path'], ['view_data' => $value['view_data']])
+                   @endif
+               @endforeach
+           @endif
+
         @if($is_woocommerce)
             <div class="col-md-3">
                 <div class="form-group">
@@ -91,6 +116,7 @@
                 </div>
             </div>
         @endif
+       
     @endcomponent
     </div>
 </div>
@@ -158,6 +184,7 @@
     <script src="{{ asset('js/opening_stock.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(document).ready( function(){
+
             product_table = $('#product_table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -173,7 +200,22 @@
                         d.brand_id = $('#product_list_filter_brand_id').val();
                         d.unit_id = $('#product_list_filter_unit_id').val();
                         d.tax_id = $('#product_list_filter_tax_id').val();
+
+                        //filter price
+                        var pmin=  $("#prix_min").val();
+                        var prix_min = parseFloat(pmin);
+                        var pmax=  $("#prix_max").val();
+                        var prix_max = parseFloat(pmax);
+                            if(!isNaN(prix_min) && !isNaN(prix_max)){
+                                if (prix_min<=prix_max){   
+                                    d.prix_max = prix_max;
+                                    d.prix_min = prix_min;
+                    
+                                }
+                            }
+
                         d.active_state = $('#active_state').val();
+                        d.price_id = $('#price_id').val();
                         d.not_for_selling = $('#not_for_selling').is(':checked');
                         d.location_id = $('#location_id').val();
                         if ($('#repair_model_id').length == 1) {
@@ -230,6 +272,60 @@
                         __currency_convert_recursively($('#product_table'));
                     },
             });
+
+             //filter prix on blur price maximum
+            $("#prix_max").blur(function() {
+                // alert("helloo");
+            var pmin=  $("#prix_min").val();
+            var prix_min = parseFloat(pmin);
+            var pmax=  $(this).val();
+            var prix_max = parseFloat(pmax);
+            //    if(!isNaN(prix_min) && !isNaN(prix_max)){
+                   
+
+                    product_table.ajax.reload();
+                 
+             //   }
+               
+             });
+
+             //filter prix on blur price minimum
+             $("#prix_min").blur(function() {
+                // alert("helloo");
+            var pmax=  $("#prix_max").val();
+            var prix_max = parseFloat(pmax);
+            var pmin=  $(this).val();
+            var prix_min = parseFloat(pmin);
+              //  if(!isNaN(prix_max) && !isNaN(prix_min)){
+                    
+                       
+                    product_table.ajax.reload();
+                    
+            //    }
+               
+             });
+
+        
+    /*        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+    var min = parseInt($('#price_min').val(), 10);
+    var max = parseInt($('#price_max').val(), 10);
+    var age = parseFloat(data[5]) || 0; // use data for the age column
+ console.log(age);
+    if (
+        (isNaN(min) && isNaN(max)) ||
+        (isNaN(min) && age <= max) ||
+        (min <= age && isNaN(max)) ||
+        (min <= age && age <= max)
+    ) {
+        return true;
+    }
+    return false;
+});
+$('#price_min, #price_max').keyup(function () {
+     product_table.draw();
+    });
+*/
+
             // Array to track the ids of the details displayed rows
             var detailRows = [];
 
@@ -497,6 +593,8 @@
                                 d.brand_id = $('#product_list_filter_brand_id').val();
                                 d.unit_id = $('#product_list_filter_unit_id').val();
                                 d.type = $('#product_list_filter_type').val();
+                                d.price_id = $('#price_id').val();
+
                                 d.active_state = $('#active_state').val();
                                 d.not_for_selling = $('#not_for_selling').is(':checked');
                                 if ($('#repair_model_id').length == 1) {

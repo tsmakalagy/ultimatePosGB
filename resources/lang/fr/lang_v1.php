@@ -37,6 +37,14 @@ return [
 
     'price_product.add' => 'Ajouter prix des produits',
     'suggested_price' => 'prix suggerer',
+    'price_maximum' => 'Prix maximum',
+    'price_minimum' => 'Prix minimum',
+    'filter_price' => 'Filtrage du prix',
+    'max' => 'Max',
+    'min' => 'Min',
+    'maximum' => 'Maximum',
+    'minimum' => 'Minimum',
+
 
     'transaction_date' => 'Date',
 

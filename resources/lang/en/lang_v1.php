@@ -20,8 +20,15 @@ return [
     'Customer' => 'Customer',
     'customer' => 'Customer',
     'type_user' => 'Type user',
-
+    'price_maximum' => 'Maximum price',
+    'price_minimum' => 'Minimum price',
+    'filter_price' => 'Filter price',
     'transaction_date' => 'Date',
+
+    'max' => 'Max',
+    'min' => 'Min',
+    'maximum' => 'Maximum',
+    'minimum' => 'Minimum',
 
     'Cash' => 'Cash',
     'Total Paid' => 'Total Paid',

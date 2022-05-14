@@ -212,6 +212,10 @@
                                     d.prix_min = prix_min;
                     
                                 }
+                                else{
+                                    d.prix_max = -2;
+                                    d.prix_min = -2;   
+                                }
                             }
 
                         d.active_state = $('#active_state').val();

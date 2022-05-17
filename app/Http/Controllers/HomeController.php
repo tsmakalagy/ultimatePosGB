@@ -106,7 +106,7 @@ class HomeController extends Controller
         $use=User::where('id',$id)->first();
         $agent=User::select(
             DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) AS name"),'id')
-            ->where('is_cmmsn_agnt',1)->pluck('name', 'id');;
+            ->where('is_cmmsn_agnt',1)->pluck('name', 'id');
       
 
         $is_admin = $this->businessUtil->is_admin(auth()->user());

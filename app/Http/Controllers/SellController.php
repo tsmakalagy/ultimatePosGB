@@ -746,13 +746,16 @@ class SellController extends Controller
         }
 
         $commsn_agnt_setting = $business_details->sales_cmsn_agnt;
-        $commission_agent = [];
-        if ($commsn_agnt_setting == 'user') {
-            $commission_agent = User::forDropdown($business_id);
-        } elseif ($commsn_agnt_setting == 'cmsn_agnt') {
+        // $commission_agent = [];
+        // if ($commsn_agnt_setting == 'user') {
+        //     $commission_agent = User::forDropdown($business_id);
+        //     dd('user');
+        // } elseif ($commsn_agnt_setting == 'cmsn_agnt') {
             $commission_agent = User::saleCommissionAgentsDropdown($business_id);
-        }
+            //dd($commission_agent);
 
+        // }
+        //  dd($commsn_agnt_setting);
         $types = [];
         if (auth()->user()->can('supplier.create')) {
             $types['supplier'] = __('report.supplier');
@@ -805,6 +808,7 @@ class SellController extends Controller
         
         $id=request()->session()->get('user.id');
         $use=User::where('id',$id)->first();
+        //dd($use);
        // $use1=$use->is_cmmsn_agnt;
 
         $shipper = Shipper::all()->pluck('shipper_name', 'id');

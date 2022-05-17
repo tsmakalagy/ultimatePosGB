@@ -23,6 +23,7 @@
 </section>
 <!-- Main content -->
 <section class="content no-print">
+	{{-- {{dd($commission_agent)}} --}}
 <input type="hidden" id="amount_rounding_method" value="{{$pos_settings['amount_rounding_method'] ?? ''}}">
 @if(!empty($pos_settings['allow_overselling']))
 	<input type="hidden" id="is_overselling_allowed">

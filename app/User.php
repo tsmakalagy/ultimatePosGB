@@ -202,8 +202,8 @@ class User extends Authenticatable
     */
     public static function saleCommissionAgentsDropdown($business_id, $prepend_none = true)
     {
-        $all_cmmsn_agnts = User::where('business_id', $business_id)
-                        ->where('is_cmmsn_agnt', 1)
+        $all_cmmsn_agnts = User:://where('business_id', $business_id)->                        
+                        where('is_cmmsn_agnt', 1)
                         ->select('id', DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) as full_name"));
 
         $users = $all_cmmsn_agnts->pluck('full_name', 'id');

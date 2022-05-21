@@ -100,7 +100,9 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-   { 
+   {  
+
+
        $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
@@ -1026,6 +1028,159 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
             $output['total_expense'] = $transaction_totals['total_expense'];
             
             return $output;
+        }
+    }
+
+    /**
+     * Retrieves sell products whose available quntity is less than alert quntity.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function ProductSales()
+    {
+       
+        if (request()->ajax()) {
+            $business_id = request()->session()->get('user.business_id');
+            
+            $start_date = request()->start_date;
+            $end_date = request()->end_date;
+            $location_id = request()->location_id;
+            $user = request()->user;
+            
+            $query2=TransactionSellLine::join('transactions as tr',
+            'transaction_sell_lines.transaction_id',
+            '=',
+            'tr.id')
+            ->join('products as pr',
+            'transaction_sell_lines.product_id',
+            '=',
+            'pr.id')
+            ->leftjoin(
+                'business_locations as l',
+                'tr.location_id',
+                '=',
+                'l.id'
+            )
+            ->select(
+                'pr.name as product',
+                'pr.type',
+                'pr.sku',
+                'transaction_sell_lines.id',
+                DB::raw('SUM(transaction_sell_lines.quantity) as quantity'),
+                'l.name as location'
+            )
+            ->groupBy('pr.id')
+            ->orderBy('quantity', 'desc');
+
+            if (!empty($start_date) && !empty($end_date)) {
+
+                $query2->whereDate(DB::raw('tr.transaction_date'), '>=', $start_date)
+                ->whereDate(DB::raw('tr.transaction_date'), '<=', $end_date);
+       
+            }
+    
+            if (empty($start_date) && !empty($end_date)) {
+                $query2->whereDate('tr.transaction_date', '<=', $end_date);
+            }
+    
+            //Filter by the location
+            if (!empty($location_id)) {
+                $query2->where('tr.location_id', $location_id);
+            }
+    
+            // $query = VariationLocationDetails::join(
+            //     'product_variations as pv',
+            //     'variation_location_details.product_variation_id',
+            //     '=',
+            //     'pv.id'
+            // )
+            //         ->join(
+            //             'variations as v',
+            //             'variation_location_details.variation_id',
+            //             '=',
+            //             'v.id'
+            //         )
+            //         ->join(
+            //             'products as p',
+            //             'variation_location_details.product_id',
+            //             '=',
+            //             'p.id'
+            //         )
+            //         ->leftjoin(
+            //             'business_locations as l',
+            //             'variation_location_details.location_id',
+            //             '=',
+            //             'l.id'
+            //         )
+            //         ->leftjoin('units as u', 'p.unit_id', '=', 'u.id')
+            //         ->where('p.business_id', $business_id)
+            //         // ->where('p.enable_stock', 1)
+            //         // ->where('p.is_inactive', 0)
+            //         // ->whereNull('v.deleted_at')
+            //         // ->whereRaw('variation_location_details.qty_available <= p.alert_quantity');
+            //             ;
+            // //Check for permitted locations of a user
+            // $permitted_locations = auth()->user()->permitted_locations();
+            // if ($permitted_locations != 'all') {
+            //     $query->whereIn('variation_location_details.location_id', $permitted_locations);
+            // }
+
+            // $products = $query->select(
+            //     'p.name as product',
+            //     'p.type',
+            //     'p.sku',
+            //     'pv.name as product_variation',
+            //     'v.name as variation',
+            //     'v.sub_sku',
+            //     'l.name as location',
+            //     'variation_location_details.qty_available as stock',
+            //     'u.short_name as unit'
+            // )
+            //         ->groupBy('variation_location_details.id')
+            //         ->orderBy('stock', 'asc');
+
+            $datatable = Datatables::of($query2)
+                  
+                    ->addColumn('product', function ($row) {
+                        $total_remaining = '';
+                        return $total_remaining;
+                    })
+                    ->addColumn('location', function ($row) {
+                        $total_remaining = '';
+                        return $total_remaining;
+                    })
+                    ->addColumn('qty', function ($row) {
+                        $total_remaining = '';
+                        return $total_remaining;
+                    })
+       
+                    ->editColumn('product',
+            '<span class="product" >@if(!empty($product)) {{$product}} @endif</span>')
+            ->editColumn('location',
+            '<span class="location" >@if(!empty($location)) {{$location}} @endif</span>')
+            ->editColumn('qty',
+            '<span class="qty" >@if(!empty($quantity)) {{$quantity}} @endif</span>')
+          
+            ->filterColumn('product', function ($query, $keyword) {
+                        $query->where(function ($q) use ($keyword) {
+                            $q->where('pr.name', 'like', "%{$keyword}%");
+                        });
+            });
+
+                  
+                    // ->setRowAttr([
+                    //     'data-href' => function ($row) {
+                    //         if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
+                    //             return action('SellController@show', [$row->id]);
+                    //         } else {
+                    //             return '';
+                    //         }
+                    //     }]);
+            
+                $rawColumns = ['product','location','qty'];
+            
+                return $datatable->rawColumns($rawColumns)
+                    ->make(true);
         }
     }
 

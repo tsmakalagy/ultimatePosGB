@@ -689,6 +689,8 @@ class SellController extends Controller
      */
     public function create(Request $request)
     {
+        // $sell_lines=TransactionSellLine::All();
+        // dd($sell_lines);
         $sale_type = request()->get('sale_type', '');
 
         if ($sale_type == 'sales_order') {
@@ -879,7 +881,7 @@ class SellController extends Controller
         }
 
         $sell = $query->firstOrFail();
-
+// dd($sell);
         //shipper
         $shipper = Shipper::join(
             'transactions',

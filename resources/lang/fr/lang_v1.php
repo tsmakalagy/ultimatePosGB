@@ -34,7 +34,8 @@ return [
       'taxe' => 'Taxe',
     'fret' => 'Frette',
     'price_product.edit' => 'Editer prix des produits',
-
+    'product_sold' => 'Produit vendu',
+    'qty' => 'Qté',
     'price_product.add' => 'Ajouter prix des produits',
     'suggested_price' => 'prix suggerer',
     'price_maximum' => 'Prix maximum',

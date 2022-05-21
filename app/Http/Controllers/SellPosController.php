@@ -289,7 +289,8 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-        
+    //     $input = $request->except('_token');
+    //  dd($input['products']);   
         if (!auth()->user()->can('sell.create') && !auth()->user()->can('direct_sell.access') && !auth()->user()->can('so.create') ) {
             abort(403, 'Unauthorized action.');
         }

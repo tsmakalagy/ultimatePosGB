@@ -24,6 +24,8 @@ return [
     'price_minimum' => 'Minimum price',
     'filter_price' => 'Filter price',
     'transaction_date' => 'Date',
+    'product_sold' => 'Product sold',
+    'qty' => 'Qty',
 
     'max' => 'Max',
     'min' => 'Min',

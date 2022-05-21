@@ -13,12 +13,6 @@
     <br>
     @if(auth()->user()->can('dashboard.data'))
    
-           
-   
-      
-  
-
-        
         	<div class="row">
                 <div class="col-md-4 col-xs-12">
                     @if($is_admin || auth()->user()->can('can_see_more_dashboard'))
@@ -152,10 +146,6 @@
                     {!! $widget !!}
                 @endforeach
             @endif
-         
-
-
-    
     
     @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.all_sales')])
         @can('direct_sell.access')
@@ -225,8 +215,6 @@
             </table>
        
     @endcomponent
-
-
 
         <!-- end is_admin check -->
          @if(auth()->user()->can('sell.view') || auth()->user()->can('direct_sell.view'))
@@ -308,6 +296,7 @@
                 </div>
             @endcan
         </div>
+       
         @can('stock_report.view')
             <div class="row">
                 <div class="@if((session('business.enable_product_expiry') != 1) && auth()->user()->can('stock_report.view')) col-sm-12 @else col-sm-6 @endif">
@@ -354,6 +343,53 @@
                 @endif
       	    </div>
         @endcan
+ @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.product_sold')])
+    
+        @php
+            $custom_labels = json_decode(session('business.custom_labels'), true);
+         @endphp
+            <table class="table table-bordered table-striped ajax_view" id="product_sale" style="min-width: 100% " >
+                <thead>
+                    <tr>
+                        <th>@lang('sale.product')</th>
+                        <th>@lang('business.location')</th>
+                        <th>@lang('lang_v1.qty')</th>
+                                         
+                    </tr>
+                </thead>
+                <tbody></tbody>
+                <tfoot>
+                
+                </tfoot>
+            </table>
+       
+    @endcomponent
+
+        {{-- @can('stock_report.view')
+        <div class="row">
+            <div class=" col-sm-12">
+                @component('components.widget', ['class' => 'box-warning'])
+                  @slot('icon')
+                    <i class="fa fa-exclamation-triangle text-yellow" aria-hidden="true"></i>
+                  @endslot
+                  @slot('title')
+                    {{ __('home.product_stock_alert') }} @show_tooltip(__('tooltip.product_stock_alert'))
+                  @endslot
+                  <table class="table table-bordered table-striped" id="product_sale" style="width: 100%;">
+                    <thead>
+                      <tr>
+                        <th>@lang( 'sale.product' )</th>
+                        <th>@lang( 'business.location' )</th>
+                        <th>@lang( 'report.current_stock' )</th>
+                      </tr>
+                    </thead>
+                  </table>
+                @endcomponent
+            </div>
+    
+          </div>
+    @endcan --}}
+
         @if(auth()->user()->can('so.view_all') || auth()->user()->can('so.view_own'))
             <div class="row" @if(!auth()->user()->can('dashboard.data'))style="margin-top: 190px !important;"@endif>
                 <div class="col-sm-12">
@@ -515,6 +551,8 @@
             update_statistics(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'),user);
            // sell_table(start.format('YYYY-MM-DD'), end.format('YYYY-MM-DD'));
            sell_table.ajax.reload();
+           product_sale.ajax.reload();
+           
 
             if ($('#quotation_table').length && $('#dashboard_location').length) {
                 quotation_datatable.ajax.reload();
@@ -525,7 +563,9 @@
       $('#user').change(function(){
  
         var user= $(this).val();
+        product_sale.ajax.reload();
         sell_table.ajax.reload();
+        
  
         var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
         var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -547,9 +587,9 @@
         var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
         var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
         var location_id = '';
-    if ($('#dashboard_location').length > 0) {
-      location_id = $('#dashboard_location').val();
-    }
+        if ($('#dashboard_location').length > 0) {
+        location_id = $('#dashboard_location').val();
+        }
         d.start_date = start;
         d.end_date = end;                     
         d.is_direct_sale = 1;
@@ -631,12 +671,15 @@
 
         $('#only_subscriptions').on('ifChanged', function(event){
             sell_table.ajax.reload();
+            product_sale.ajax.reload();
         });
 
 
-    $('#dashboard_location').change( function(e) {
+      $('#dashboard_location').change( function(e) {
         var user= $('#user').val();
         sell_table.ajax.reload();
+        product_sale.ajax.reload();
+
  
         var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
         var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
@@ -659,6 +702,68 @@
             __currency_convert_recursively($('#stock_alert_table'));
         },
     });
+
+    // var product_sale = $('#product_sale').DataTable({
+    //     processing: true,
+    //     serverSide: true,
+    //     ordering: false,
+    //     searching: false,
+    //     scrollY:        "75vh",
+    //     scrollX:        true,
+    //     scrollCollapse: true,
+    //     fixedHeader: false,
+    //     dom: 'Btirp',
+    //     ajax: '/home/product-sales',
+    //     fnDrawCallback: function(oSettings) {
+    //         __currency_convert_recursively($('#product_sale'));
+    //     },
+    // });
+
+
+    //Date range as a button
+    var product_sale= $('#product_sale').DataTable({
+            processing: true,
+             serverSide: true,
+             aaSorting: [[1, 'desc']],
+             "ajax": {
+                 "url": "/home/product-sales",
+                 "data": function ( d ) {
+                    
+        var start = $('#dashboard_date_filter').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        var end = $('#dashboard_date_filter').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var location_id = '';
+        if ($('#dashboard_location').length > 0) {
+        location_id = $('#dashboard_location').val();
+        }
+        d.start_date = start;
+        d.end_date = end;                     
+        // d.is_direct_sale = 1;
+        d.location_id=location_id
+        d.user = $('#user').val(); 
+         // d.start_date = start;
+         // d.end_date = end;                     
+         // d.is_direct_sale = 1;
+         // d.location_id=location_id
+        //   d.user = $('#user').val(); 
+   
+        d = __datatable_ajax_callback(d);
+            }
+            },
+            scrollY:        "75vh",
+            scrollX:        true,
+            scrollCollapse: true,
+            columns: [
+                 { data: 'product', name: 'product'},
+                 { data: 'location', name: 'location'},
+                 { data: 'qty', name: 'qty'}
+              
+               
+             ],
+             "fnDrawCallback": function (oSettings) {
+                 __currency_convert_recursively($('#product_sale'));
+             }
+         });
+
     //payment dues datatables
     var purchase_payment_dues_table = $('#purchase_payment_dues_table').DataTable({
         processing: true,

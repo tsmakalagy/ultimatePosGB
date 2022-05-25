@@ -101,8 +101,6 @@ class HomeController extends Controller
      */
     public function index()
    {  
-
-
        $id=request()->session()->get('user.id');
         $business_id = request()->session()->get('user.business_id');
         $use=User::where('id',$id)->first();
@@ -1047,137 +1045,191 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
             $location_id = request()->location_id;
             $user = request()->user;
             
-            $query2=TransactionSellLine::join('transactions as tr',
+            $query1=BusinessLocation::join(
+                'transactions',
+                'transactions.location_id',
+                '=',
+                'business_locations.id'
+            ) 
+            ->leftjoin('transaction_sell_lines',
             'transaction_sell_lines.transaction_id',
             '=',
-            'tr.id')
-            ->join('products as pr',
+            'transactions.id')
+            ->join('products',
             'transaction_sell_lines.product_id',
             '=',
-            'pr.id')
-            ->leftjoin(
+            'products.id')          
+            ->select(
+                // 'products.name as product',
+                // // DB::raw('SUM(transaction_sell_lines.quantity) as quantity'),
+                'business_locations.name as location'
+            );
+           
+
+            $query2=Transaction::join(
                 'business_locations as l',
-                'tr.location_id',
+                'transactions.location_id',
                 '=',
                 'l.id'
-            )
+            ) ->leftjoin('transaction_sell_lines',
+            'transaction_sell_lines.transaction_id',
+            '=',
+            'transactions.id')
+            ->join('products',
+            'transaction_sell_lines.product_id',
+            '=',
+            'products.id') 
+            ->join('variations as v',
+            'v.product_id',
+            '=',
+            'products.id')          
             ->select(
-                'pr.name as product',
-                'pr.type',
-                'pr.sku',
+                'products.name as product',
+                'products.type',
+                'transactions.transaction_date',
+                 'products.id as product_id',
+                 'transaction_sell_lines.product_id as tsl_id',
+                 'transaction_sell_lines.unit_price_inc_tax as price',
+                'products.sku',
                 'transaction_sell_lines.id',
                 DB::raw('SUM(transaction_sell_lines.quantity) as quantity'),
+               //  DB::raw('SUM(transaction_sell_lines.unit_price_inc_tax) as prices'),
                 'l.name as location'
             )
-            ->groupBy('pr.id')
+            ->groupBy('product_id','l.id')
             ->orderBy('quantity', 'desc');
+            // ->orderBy('product', 'ASC')
+            
 
             if (!empty($start_date) && !empty($end_date)) {
 
-                $query2->whereDate(DB::raw('tr.transaction_date'), '>=', $start_date)
-                ->whereDate(DB::raw('tr.transaction_date'), '<=', $end_date);
+                $query2->whereDate(DB::raw('transactions.transaction_date'), '>=', $start_date)
+                ->whereDate(DB::raw('transactions.transaction_date'), '<=', $end_date);
        
             }
     
             if (empty($start_date) && !empty($end_date)) {
-                $query2->whereDate('tr.transaction_date', '<=', $end_date);
+                $query2->whereDate('transactions.transaction_date', '<=', $end_date);
             }
     
             //Filter by the location
             if (!empty($location_id)) {
-                $query2->where('tr.location_id', $location_id);
+                $query2->where('transactions.location_id', $location_id);
             }
-    
-            // $query = VariationLocationDetails::join(
-            //     'product_variations as pv',
-            //     'variation_location_details.product_variation_id',
-            //     '=',
-            //     'pv.id'
-            // )
-            //         ->join(
-            //             'variations as v',
-            //             'variation_location_details.variation_id',
-            //             '=',
-            //             'v.id'
-            //         )
-            //         ->join(
-            //             'products as p',
-            //             'variation_location_details.product_id',
-            //             '=',
-            //             'p.id'
-            //         )
-            //         ->leftjoin(
-            //             'business_locations as l',
-            //             'variation_location_details.location_id',
-            //             '=',
-            //             'l.id'
-            //         )
-            //         ->leftjoin('units as u', 'p.unit_id', '=', 'u.id')
-            //         ->where('p.business_id', $business_id)
-            //         // ->where('p.enable_stock', 1)
-            //         // ->where('p.is_inactive', 0)
-            //         // ->whereNull('v.deleted_at')
-            //         // ->whereRaw('variation_location_details.qty_available <= p.alert_quantity');
-            //             ;
-            // //Check for permitted locations of a user
-            // $permitted_locations = auth()->user()->permitted_locations();
-            // if ($permitted_locations != 'all') {
-            //     $query->whereIn('variation_location_details.location_id', $permitted_locations);
-            // }
 
-            // $products = $query->select(
-            //     'p.name as product',
-            //     'p.type',
-            //     'p.sku',
-            //     'pv.name as product_variation',
-            //     'v.name as variation',
-            //     'v.sub_sku',
-            //     'l.name as location',
-            //     'variation_location_details.qty_available as stock',
-            //     'u.short_name as unit'
-            // )
-            //         ->groupBy('variation_location_details.id')
-            //         ->orderBy('stock', 'asc');
+            $location2=Product::leftjoin('transaction_sell_lines',
+            'transaction_sell_lines.product_id',
+            '=',
+            'products.id')
+            ->join('transactions',
+            'transaction_sell_lines.transaction_id',
+            '=',
+            'transactions.id')
+            ->leftjoin(
+                'business_locations',
+                'transactions.location_id',
+                '=',
+                'business_locations.id'
+            ) 
+            ->select(
+                'business_locations.name as location'
+                // 'products.name as product',
+               // DB::raw('SUM(transaction_sell_lines.quantity) as quantity'),
+            );
 
             $datatable = Datatables::of($query2)
                   
-                    ->addColumn('product', function ($row) {
+            ->addColumn('product', function ($row) {
                         $total_remaining = '';
                         return $total_remaining;
                     })
-                    ->addColumn('location', function ($row) {
+            ->addColumn('price', function ($row) {
                         $total_remaining = '';
                         return $total_remaining;
                     })
-                    ->addColumn('qty', function ($row) {
+             ->addColumn('location', function ($row) use ($start_date,$end_date,$location_id) {
+                        $total_remaining = '';
+                        return $total_remaining;
+                        // $query= $query1 ->where('products.id',$row->id)->first();
+
+                        // $location=Product::leftjoin('transaction_sell_lines',
+                        // 'transaction_sell_lines.product_id',
+                        // '=',
+                        // 'products.id')
+                        // ->join('transactions',
+                        // 'transaction_sell_lines.transaction_id',
+                        // '=',
+                        // 'transactions.id')
+                        // ->leftjoin(
+                        //     'business_locations',
+                        //     'transactions.location_id',
+                        //     '=',
+                        //     'business_locations.id'
+                        // ) 
+                        // ->select(
+                        // //     // 'products.name as product',
+                        // //     // // DB::raw('SUM(transaction_sell_lines.quantity) as quantity'),
+                        // 'business_locations.name as location')
+                        // // ->where('transactions.transaction_date',$row->transaction_date)
+                        // ;
+
+                        // if (!empty($start_date) && !empty($end_date)) {
+
+                        //     $location->whereDate(DB::raw('transactions.transaction_date'), '>=', $start_date)
+                        //     ->whereDate(DB::raw('transactions.transaction_date'), '<=', $end_date);
+                   
+                        // }
+                
+                        // if (empty($start_date) && !empty($end_date)) {
+                        //     $location->whereDate('transactions.transaction_date', '<=', $end_date);
+                        // }
+                
+                        // //Filter by the location
+                        // if (!empty($location_id)) {
+                        //     $location->where('transactions.location_id', $location_id);
+                        // }
+
+                        // $location3=$location
+                        // ->where('products.id',$row->tsl_id)
+                        // //->groupBy('business_locations.id')
+                        // ->get();
+                        // //  $location=$query3->location;
+                        //  $all_location='';
+                        //  foreach($location3 as $locations){
+                        // $all_location.='<span class="date_paid_on">'.$locations->location.'</span><br>';
+                        //  }
+                        //  return $all_location;
+                        // if(!empty($location)){
+                        //     return $location;
+                        // }else{
+                        //  return '';
+                        // }
+                    })
+            ->addColumn('qty', function ($row) {
                         $total_remaining = '';
                         return $total_remaining;
                     })
        
-                    ->editColumn('product',
+            ->editColumn('product',
             '<span class="product" >@if(!empty($product)) {{$product}} @endif</span>')
             ->editColumn('location',
             '<span class="location" >@if(!empty($location)) {{$location}} @endif</span>')
+            ->editColumn('price', function ($row) {
+                $prices = $row->quantity*$row->price;
+            $price='<span class="price">'.number_format($prices,4).'</span><br>';
+
+                return $price;
+            })
             ->editColumn('qty',
             '<span class="qty" >@if(!empty($quantity)) {{$quantity}} @endif</span>')
           
             ->filterColumn('product', function ($query, $keyword) {
                         $query->where(function ($q) use ($keyword) {
-                            $q->where('pr.name', 'like', "%{$keyword}%");
+                            $q->where('products.name', 'like', "%{$keyword}%");
                         });
             });
-
-                  
-                    // ->setRowAttr([
-                    //     'data-href' => function ($row) {
-                    //         if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
-                    //             return action('SellController@show', [$row->id]);
-                    //         } else {
-                    //             return '';
-                    //         }
-                    //     }]);
             
-                $rawColumns = ['product','location','qty'];
+                $rawColumns = ['product','location','qty','price'];
             
                 return $datatable->rawColumns($rawColumns)
                     ->make(true);

@@ -257,7 +257,7 @@
                         { data: 'tax', name: 'tax_rates.name', searchable: false},
                         { data: 'sku', name: 'products.sku'},
                         { data: 'product_custom_field1', name: 'products.product_custom_field1'  },
-                        { data: 'product_custom_field2', name: 'products.product_custom_field2'  },
+                        { data: 'product_custom_field2', name: 'product_custom_field2'  },
                         { data: 'product_custom_field3', name: 'products.product_custom_field3'  },
                         { data: 'product_custom_field4', name: 'products.product_custom_field4'  }
                         

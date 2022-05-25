@@ -29,7 +29,7 @@
 						@if(!empty($product->product_custom_field2))
 							<br/>
 							<b>{{ $custom_labels['product']['custom_field_2'] ?? __('lang_v1.product_custom_field2') }}: </b>
-							{{$product->product_custom_field2 }}
+							<a target="_blank" href="{{$product->product_custom_field2}}">{{$product->product_custom_field2}}</a>
 						@endif
 
 						@if(!empty($product->product_custom_field3))

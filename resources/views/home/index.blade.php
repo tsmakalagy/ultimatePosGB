@@ -354,7 +354,7 @@
                         <th>@lang('sale.product')</th>
                         <th>@lang('business.location')</th>
                         <th>@lang('lang_v1.qty')</th>
-                                         
+                        <th>@lang('lang_v1.price')</th>                        
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -755,7 +755,8 @@
             columns: [
                  { data: 'product', name: 'product'},
                  { data: 'location', name: 'location'},
-                 { data: 'qty', name: 'qty'}
+                 { data: 'qty', name: 'qty'},
+                 { data: 'price', name: 'price'}
               
                
              ],

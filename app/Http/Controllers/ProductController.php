@@ -346,6 +346,13 @@ class ProductController extends Controller
                 ->editColumn('image', function ($row) {
                     return '<div style="display: flex;"><img src="' . $row->image_url . '" alt="Product image" class="product-thumbnail-small"></div>';
                 })
+                  ->addColumn('product_custom_field2', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->editColumn('product_custom_field2',function ($row) {
+                     return '<a target="_blank" href="'.$row->product_custom_field2.'" >'.$row->product_custom_field2.'</a>';                   
+        })
                 ->editColumn('type', '@lang("lang_v1." . $type)')
                 ->addColumn('mass_delete', function ($row) {
                     return  '<input type="checkbox" class="row-select" value="' . $row->id .'">' ;
@@ -373,7 +380,7 @@ class ProductController extends Controller
                             return '';
                         }
                     }])
-                ->rawColumns(['action', 'image', 'mass_delete', 'product', 'selling_price', 'purchase_price', 'category'])
+                ->rawColumns(['action', 'image','product_custom_field2', 'mass_delete', 'product', 'selling_price', 'purchase_price', 'category'])
                 ->make(true);
         }
 

@@ -57,7 +57,8 @@ class PurchaseController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {     
+        
         if (!auth()->user()->can('purchase.view') && !auth()->user()->can('purchase.create') && !auth()->user()->can('view_own_purchase')) {
             abort(403, 'Unauthorized action.');
         }
@@ -185,6 +186,49 @@ class PurchaseController extends Controller
                         return (string) view('sell.partials.payment_status', ['payment_status' => $payment_status, 'id' => $row->id, 'for_purchase' => true]);
                     }
                 )
+                ->editColumn(
+                    'products',
+                    function ($row) use ($business_id)  {
+                        $products = Transaction::join(
+                            'business_locations AS BS',
+                            'transactions.location_id',
+                            '=',
+                            'BS.id'
+                        )
+                        ->join(
+                            'purchase_lines AS pl',
+                            'transactions.id',
+                            '=',
+                            'pl.transaction_id'
+                        )
+                        ->join(
+                            'products AS pr',
+                            'pr.id',
+                            '=',
+                            'pl.product_id'
+                        )  ->select(
+                            'transactions.id',
+                            'pr.name',
+                            'pr.sku',
+                            'pl.quantity',
+                           )->where('transactions.id', $row->id)
+                         
+                           ->get();
+                           $product_details='';
+                           foreach($products as $product){
+                               $product_details.='<span class="date_paid_on">'.$product->sku.'('.number_format($product->quantity,0).')</span><br>';
+                           }
+                        // foreach($products as $product){
+                        //     $sku=$product->sku;
+                        // }
+            return $product_details;
+            }
+                 
+                )
+                 ->addColumn('products', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
                 ->addColumn('payment_due', function ($row) {
                     $due = $row->final_total - $row->amount_paid;
                     $due_html = '<strong>' . __('lang_v1.purchase') .':</strong> <span class="payment_due" data-orig-value="' . $due . '">' . $this->transactionUtil->num_f($due, true) . '</span>';
@@ -195,6 +239,11 @@ class PurchaseController extends Controller
                     }
                     return $due_html;
                 })
+            //     ->filterColumn('products', function ($query, $keyword) {
+            //             $query->where(function ($q) use ($keyword) {
+            //                 $q->where('prod.sku', 'like', "%{$keyword}%");
+            //             });
+            // })
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("purchase.view")) {
@@ -203,7 +252,7 @@ class PurchaseController extends Controller
                             return '';
                         }
                     }])
-                ->rawColumns(['final_total', 'action', 'payment_due', 'payment_status', 'status', 'ref_no', 'name'])
+                ->rawColumns(['final_total', 'action', 'payment_due','products','payment_status', 'status', 'ref_no', 'name'])
                 ->make(true);
         }
 

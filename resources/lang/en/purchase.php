@@ -23,6 +23,7 @@ return [
     'payment_updated_success' => 'Payment updated successfully',
     'payment_deleted_success' => 'Payment deleted successfully',
     'view_payments' => 'View Payments',
+    'products' => 'Products',
     'amount' => 'Amount',
     'payment_method' => 'Payment Method',
     'no_records_found' => 'No records found',

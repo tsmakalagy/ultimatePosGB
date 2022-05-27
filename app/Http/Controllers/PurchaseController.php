@@ -221,8 +221,8 @@ class PurchaseController extends Controller
                         // foreach($products as $product){
                         //     $sku=$product->sku;
                         // }
-            return $product_details;
-            }
+                return $product_details;
+                }
                  
                 )
                  ->addColumn('products', function ($row) {
@@ -239,7 +239,7 @@ class PurchaseController extends Controller
                     }
                     return $due_html;
                 })
-            //     ->filterColumn('products', function ($query, $keyword) {
+            //      ->filterColumn('products', function ($query, $keyword) {
             //             $query->where(function ($q) use ($keyword) {
             //                 $q->where('prod.sku', 'like', "%{$keyword}%");
             //             });

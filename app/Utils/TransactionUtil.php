@@ -4685,12 +4685,14 @@ class TransactionUtil extends Util
     public function getListPurchases($business_id)
     {
         $purchases = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
+   
             ->join(
                 'business_locations AS BS',
                 'transactions.location_id',
                 '=',
                 'BS.id'
             )
+            
             ->leftJoin(
                 'transaction_payments AS TP',
                 'transactions.id',
@@ -4704,6 +4706,17 @@ class TransactionUtil extends Util
                 'PR.return_parent_id'
             )
             ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
+            // ->leftJoin(
+            //     'purchase_lines AS pl',
+            //     'transactions.id',
+            //     '=',
+            //     'pl.transaction_id'
+            // )
+            // ->leftJoin(
+            //     'products as prod',
+            //     'prod.id',
+            //     '=',
+            //     'pl.product_id')
             ->where('transactions.business_id', $business_id)
             ->where('transactions.type', 'purchase')
             ->select(
@@ -4712,6 +4725,7 @@ class TransactionUtil extends Util
                 'transactions.transaction_date',
                 'transactions.ref_no',
                 'contacts.name',
+                // 'prod.sku',
                 'contacts.supplier_business_name',
                 'transactions.status',
                 'transactions.payment_status',

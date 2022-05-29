@@ -68,4 +68,5 @@ return [
     'attach_document' => 'Attach Document',
     'download_document' => 'Download Document',
     'max_file_size' => 'Max File size: :sizeMB',
+    'products' => 'Products',
 ];

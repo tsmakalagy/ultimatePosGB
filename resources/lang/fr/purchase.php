@@ -55,4 +55,5 @@
 "attach_document" => "Joindre un document",
 "download_document" => "Télécharger le document",
 "max_file_size" => "Taille maximale du fichier: :size Mo",
+     "products" => 'Produits'
 ];

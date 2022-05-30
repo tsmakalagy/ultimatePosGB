@@ -1216,12 +1216,12 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
             '<span class="location" >@if(!empty($location)) {{$location}} @endif</span>')
             ->editColumn('price', function ($row) {
                 $prices = $row->quantity*$row->price;
-            $price='<span class="price">'.number_format($prices,4).'</span><br>';
+            $price='<span class="price">'.number_format($prices,0).'</span><br>';
 
                 return $price;
             })
             ->editColumn('qty',
-            '<span class="qty" >@if(!empty($quantity)) {{$quantity}} @endif</span>')
+            '<span class="qty" >@if(!empty($quantity)) {{number_format($quantity,0)}} @endif</span>')
           
             ->filterColumn('product', function ($query, $keyword) {
                         $query->where(function ($q) use ($keyword) {

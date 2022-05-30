@@ -12,6 +12,7 @@
 "payment_updated_success" => "Paiement mis à jour avec succès",
 "payment_deleted_success" => "Paiement supprimé avec succès",
 "amount" => "Montant",
+"products" => "Produits",
 "payment_method" => "Mode de paiement",
 "no_records_found" => "Aucun enregistrement trouvé",
 "payment_due" => "Paiement dû",

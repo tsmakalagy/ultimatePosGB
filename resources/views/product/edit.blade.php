@@ -339,10 +339,20 @@
               <div class="form-group">
                 {!! Form::label('type', __('product.product_type') . ':*') !!} @show_tooltip(__('tooltip.product_type'))
                 {!! Form::select('type', $product_types, $product->type, ['class' => 'form-control select2',
-                  'required','disabled', 'data-action' => 'edit', 'data-product_id' => $product->id ]); !!}
+                  'required', 'data-action' => 'edit', 'data-product_id' => $product->id ]); !!}
               </div>
             </div>
+            {{-- //Update existing variations
+            $input_variations_edit = $request->get('product_variation_edit');
+            if (!empty($input_variations_edit)) {
+                $this->productUtil->updateVariableProductVariations($product->id, $input_variations_edit);
+            }
 
+            //Add new variations created.
+            $input_variations = $request->input('product_variation');
+            if (!empty($input_variations)) {
+                $this->productUtil->createVariableProductVariations($product->id, $input_variations);
+            } --}}
             <div class="form-group col-sm-12" id="product_form_part"></div>
             <input type="hidden" id="variation_counter" value="0">
             <input type="hidden" id="default_profit_percent" value="{{ $default_profit_percent }}">

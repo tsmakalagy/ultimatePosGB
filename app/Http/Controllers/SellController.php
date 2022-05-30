@@ -1195,13 +1195,13 @@ class SellController extends Controller
         }
 
         $commsn_agnt_setting = $business_details->sales_cmsn_agnt;
-        $commission_agent = [];
-        if ($commsn_agnt_setting == 'user') {
-            $commission_agent = User::forDropdown($business_id);
-        } elseif ($commsn_agnt_setting == 'cmsn_agnt') {
-            $commission_agent = User::saleCommissionAgentsDropdown($business_id);
-        }
-
+        // $commission_agent = [];
+        // if ($commsn_agnt_setting == 'user') {
+        //     $commission_agent = User::forDropdown($business_id);
+        // } elseif ($commsn_agnt_setting == 'cmsn_agnt') {
+        //     $commission_agent = User::saleCommissionAgentsDropdown($business_id);
+        // }
+        $commission_agent = User::saleCommissionAgentsDropdown($business_id);
         $types = [];
         if (auth()->user()->can('supplier.create')) {
             $types['supplier'] = __('report.supplier');

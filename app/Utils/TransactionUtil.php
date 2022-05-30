@@ -4685,12 +4685,14 @@ class TransactionUtil extends Util
     public function getListPurchases($business_id)
     {
         $purchases = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
+   
             ->join(
                 'business_locations AS BS',
                 'transactions.location_id',
                 '=',
                 'BS.id'
             )
+            
             ->leftJoin(
                 'transaction_payments AS TP',
                 'transactions.id',
@@ -4704,6 +4706,18 @@ class TransactionUtil extends Util
                 'PR.return_parent_id'
             )
             ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
+            ->join('purchase_lines AS pl',function ($join) {
+                $join->on('transactions.id', '=', 'pl.transaction_id')
+                ->groupBy('pl.transaction_id');
+                    
+             })
+           
+             ->join('products as prod',function ($join) {
+            $join->on('prod.id', '=', 'pl.product_id')
+            ;
+                
+        })
+            
             ->where('transactions.business_id', $business_id)
             ->where('transactions.type', 'purchase')
             ->select(
@@ -4712,6 +4726,7 @@ class TransactionUtil extends Util
                 'transactions.transaction_date',
                 'transactions.ref_no',
                 'contacts.name',
+                // 'prod.sku',
                 'contacts.supplier_business_name',
                 'transactions.status',
                 'transactions.payment_status',
@@ -4720,9 +4735,11 @@ class TransactionUtil extends Util
                 'transactions.pay_term_number',
                 'transactions.pay_term_type',
                 'PR.id as return_transaction_id',
-                DB::raw('SUM(TP.amount) as amount_paid'),
+                // DB::raw('SUM(TP.amount) as amount_paid'),
                 DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
                         TP2.transaction_id=PR.id ) as return_paid'),
+                        DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
+                        TP2.transaction_id=transactions.id ) as amount_paid'),
                 DB::raw('COUNT(PR.id) as return_exists'),
                 DB::raw('COALESCE(PR.final_total, 0) as amount_return'),
                 DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by")

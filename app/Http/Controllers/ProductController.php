@@ -1331,7 +1331,7 @@ class ProductController extends Controller
 
         try {
             $business_id = $request->session()->get('user.business_id');
-            $product_details = $request->only(['name', 'brand_id', 'unit_id', 'category_id', 'tax', 'barcode_type', 'sku', 'alert_quantity', 'tax_type', 'weight', 'product_custom_field1', 'product_custom_field2', 'product_custom_field3', 'product_custom_field4', 'product_description', 'sub_unit_ids']);
+            $product_details = $request->only(['name','type', 'brand_id', 'unit_id', 'category_id', 'tax', 'barcode_type', 'sku', 'alert_quantity', 'tax_type', 'weight', 'product_custom_field1', 'product_custom_field2', 'product_custom_field3', 'product_custom_field4', 'product_description', 'sub_unit_ids']);
 
             DB::beginTransaction();
             
@@ -1430,7 +1430,8 @@ class ProductController extends Controller
                                 $request->input('product_locations') : [];
             $product->product_locations()->sync($product_locations);
             
-            if ($product->type == 'single') {
+            if ($product_details['type'] == 'single') {
+                // dd($product_details);
                 $single_data = $request->only(['single_variation_id', 'single_dpp', 'single_dpp_inc_tax', 'single_dsp_inc_tax', 'profit_percent', 'single_dsp']);
                 $variation = Variation::find($single_data['single_variation_id']);
 
@@ -1443,16 +1444,20 @@ class ProductController extends Controller
                 $variation->save();
 
                 Media::uploadMedia($product->business_id, $variation, $request, 'variation_images');
-            } elseif ($product->type == 'variable') {
+            } elseif ($product_details['type'] == 'variable') {
+                // dd($product_details);
                 //Update existing variations
                 $input_variations_edit = $request->get('product_variation_edit');
                 if (!empty($input_variations_edit)) {
+                    // dd($product->id);
                     $this->productUtil->updateVariableProductVariations($product->id, $input_variations_edit);
+
                 }
 
                 //Add new variations created.
                 $input_variations = $request->input('product_variation');
                 if (!empty($input_variations)) {
+                    dd('hi');
                     $this->productUtil->createVariableProductVariations($product->id, $input_variations);
                 }
             } elseif ($product->type == 'combo') {

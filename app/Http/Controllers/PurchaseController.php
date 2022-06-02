@@ -240,18 +240,7 @@ class PurchaseController extends Controller
                     return $due_html;
                 })
                   ->filterColumn('products', function ($query, $keyword) {
-                    // $query2=$query->leftJoin(
-                    //     'purchase_lines AS pl',
-                    //     'transactions.id',
-                    //     '=',
-                    //     'pl.transaction_id'
-                    // )
-                    // ->leftJoin(
-                    //     'products as prod',
-                    //     'prod.id',
-                    //     '=',
-                    //     'pl.product_id')
-                    //     ->select('prod.sku');
+                   
                          $query->where(function ($q) use ($keyword) {
                              
                           

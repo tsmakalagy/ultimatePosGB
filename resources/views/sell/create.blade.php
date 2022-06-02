@@ -191,7 +191,7 @@
 					<div class="form-group">
 					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
 					{!! Form::select('commission_agent', 
-								$commission_agent, $use->id, ['class' => 'form-control commission_agent1']); !!}
+								$commission_agent, $use->id, ['class' => 'form-control select2']); !!}
 					</div>
 				</div>
 				@else
@@ -199,7 +199,7 @@
 					<div class="form-group">
 					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
 					{!! Form::select('commission_agent', 
-								$commission_agent, null, ['class' => 'form-control commission_agent2']); !!}
+								$commission_agent, null, ['class' => 'form-control select2']); !!}
 					</div>
 				</div>
 				@endif
@@ -862,15 +862,13 @@
     @endif
     <script type="text/javascript">
     	$(document).ready( function() {
-		// $('pos_unit_price').click(function(){
-		// 	alert('hello');
-		// });
+	
 		// 	$('.details').prop('readonly', true);
 
-			$('.commission_agent1').prop('disabled',true);
-			$('form').bind('submit', function () {
-				$('.commission_agent1').prop('disabled', false);
-  });
+		//	$('.commission_agent1').prop('disabled',true);
+// 			$('form').bind('submit', function () {
+// 				$('.commission_agent1').prop('disabled', false);
+//   });
 			$("#test").change(function () {
 				$('.cacher2').focus();		
        // $('.cacher').prop('disabled',false);

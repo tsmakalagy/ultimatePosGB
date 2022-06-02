@@ -1104,21 +1104,21 @@ class TransactionUtil extends Util
        
 
 
-        if(!empty($use) && $use->is_cmmsn_agnt == 1){
-             $full_name=$use->surname.' '.$use->first_name.' '.$use->last_name;
-           // $full_name=$use->last_name;
-            $output['commission_agent_label'] = 'Commission Agent';
-            $output['commission_agent'] = !empty($full_name) ? $full_name : '';
-            $output['commission_agent_mobile'] = !empty($use->contact_no) ? $use->contact_no : '';
+        // if(!empty($use) && $use->is_cmmsn_agnt == 1){
+        //      $full_name=$use->surname.' '.$use->first_name.' '.$use->last_name;
+        //    // $full_name=$use->last_name;
+        //     $output['commission_agent_label'] = 'Commission Agent';
+        //     $output['commission_agent'] = !empty($full_name) ? $full_name : '';
+        //     $output['commission_agent_mobile'] = !empty($use->contact_no) ? $use->contact_no : '';
 
-        }
-        else{
+        // }
+        // else{
 
         $output['commission_agent_label'] = 'Commission Agent';
         $output['commission_agent'] = !empty($transaction->sale_commission_agent->user_full_name) ? $transaction->sale_commission_agent->user_full_name : '';
         $output['commission_agent_mobile'] =!empty($transaction->sale_commission_agent->contact_no) ? $transaction->sale_commission_agent->contact_no : '';
 
-    }
+    //}
 
         //Invoice info
         $output['invoice_no'] = $transaction->invoice_no;
@@ -5019,7 +5019,7 @@ class TransactionUtil extends Util
             $join->on('transactions.id', '=', 'tsl.transaction_id')
                 ->whereNull('tsl.parent_sell_line_id');
         })
-        ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
+        ->leftJoin('users as u', 'transactions.commission_agent', '=', 'u.id')
        // ->leftJoin('users as c', 'transactions.created_by', '=', 'u.id')
 
         ->leftJoin('users as ss', 'transactions.res_waiter_id', '=', 'ss.id')
@@ -5100,7 +5100,6 @@ class TransactionUtil extends Util
              DB::raw('DATE_FORMAT(tp.paid_on, "%Y/%m/%d") as paid_on'),
             DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
             DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
-            //DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as u_added_by"),
             //DB::raw("CONCAT(COALESCE(c.surname, ''),' ',COALESCE(c.first_name, ''),' ',COALESCE(c.last_name,'')) as c_added_by"),
             DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
                     TP.transaction_id=transactions.id) as total_paid'),

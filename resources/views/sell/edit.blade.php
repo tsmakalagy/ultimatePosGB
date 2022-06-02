@@ -143,23 +143,23 @@
 		        </div>
 
 				@if(!empty($commission_agent))
-				@if($use->is_cmmsn_agnt == 1)
+				{{-- @if($use->is_cmmsn_agnt == 1)
 				<div class="col-sm-3">
 					<div class="form-group">
 					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
 					{!! Form::select('commission_agent', 
-								$commission_agent, $transaction->commission_agent, ['class' => 'form-control commission_agent1']); !!}
+								$commission_agent, $transaction->commission_agent, ['class' => 'form-control select2']); !!}
 					</div>
 				</div>
-				@else
+				@else --}}
 				<div class="col-sm-3">
 					<div class="form-group">
 					{!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
 					{!! Form::select('commission_agent', 
-								$commission_agent, $transaction->commission_agent, ['class' => 'form-control commission_agent2']); !!}
+								$commission_agent, $transaction->commission_agent, ['class' => 'form-control select2']); !!}
 					</div>
 				</div>
-				@endif
+				{{-- @endif --}}
 				@endif
 				<div class="@if(!empty($commission_agent)) col-sm-3 @else col-sm-4 @endif">
 					<div class="form-group">
@@ -835,10 +835,10 @@
     	$(document).ready( function(){
 			$('.pos_unit_price').prop('readonly', true)
 
-			$('.commission_agent1').prop('disabled',true);
-			$('form').bind('submit', function () {
-				$('.commission_agent1').prop('disabled', false);
-  });
+			// $('.commission_agent1').prop('disabled',true);
+// 			$('form').bind('submit', function () {
+// 				$('.commission_agent1').prop('disabled', false);
+//   });
 
 			var time = '<?php echo $carbon ?>';
     		$('.shipping_change').change(function(){

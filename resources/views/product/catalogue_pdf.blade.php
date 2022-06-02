@@ -10,7 +10,8 @@
         </h1>
         <style>
             body {
-  min-height: 100vh; 
+  min-height: 100vh;
+   padding-top:2px; 
   
 }
         </style>
@@ -21,11 +22,11 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="contents" style="background-color:white;padding-top:2px;">
         
         
 
-                       <div style="width: 100%;">
+                       <div class="container" style="width: 100%; ">
                         <!-- Masonry grid -->
                                          
                         <div class="header" style="text-align:center;">

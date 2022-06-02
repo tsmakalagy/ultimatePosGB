@@ -2913,18 +2913,19 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function cataloguePdf(Request $request){
+        
+        //dd($request->input());
         $All_input=$request->input();
-//dd($request->input());
-    $selected_catalogue =$request->input('selected_catalogue');
-    if (!empty( $selected_catalogue)) {
+        $selected_catalogue =$request->input('selected_catalogue');
+        if (!empty( $selected_catalogue)) {
         $input= explode( ',', $selected_catalogue );
-    }
-    else{
-        $input=$All_input;
-    } 
+        }
+        else{
+            $input=$All_input;
+        } 
    
-       $product_catalogue = Product::join('variations as v', 'v.product_id', '=', 'products.id')->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')->select('products.id','products.image','products.name as p_name','v.dpp_inc_tax','v.sell_price_inc_tax','vld.qty_available as current_stock')->find($input);
-// dd($product_catalogue);
+        $product_catalogue = Product::join('variations as v', 'v.product_id', '=', 'products.id')->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')->select('products.id','products.image','products.name as p_name','v.dpp_inc_tax','v.sell_price_inc_tax','vld.qty_available as current_stock')->find($input);
+        // dd($product_catalogue);
          // Setup a filename 
          $documentFileName = "catalogue_product";
  

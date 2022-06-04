@@ -23,13 +23,25 @@
 						@if(!empty($product->product_custom_field1))
 							<br/>
 							<b>{{ $custom_labels['product']['custom_field_1'] ?? __('lang_v1.product_custom_field1') }}: </b>
-							{{$product->product_custom_field1 }}
+							{{-- {{$url=$product->product_custom_field1}} --}}
+							{{-- @if(filter_var($url, FILTER_VALIDATE_URL)) 
+								<a target="_blank" href="{{$url}}">{{$url}}</a>
+							
+							@else
+								<p>{{$url}}</p>
+							 <a target="_blank" href="{{$product->product_custom_field2}}">{{$product->product_custom_field2}}</a>
+						@endif --}}
+						@if($custom_field1 == 1) 
+						<a target="_blank" href="{{$product->product_custom_field1}}">{{$product->product_custom_field1}}</a>
+						@else
+						{{$product->product_custom_field1}}
+						@endif
 						@endif
 
 						@if(!empty($product->product_custom_field2))
 							<br/>
 							<b>{{ $custom_labels['product']['custom_field_2'] ?? __('lang_v1.product_custom_field2') }}: </b>
-							<a target="_blank" href="{{$product->product_custom_field2}}">{{$product->product_custom_field2}}</a>
+							{{$product->product_custom_field2 }}
 						@endif
 
 						@if(!empty($product->product_custom_field3))

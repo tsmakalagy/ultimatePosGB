@@ -106,7 +106,7 @@ class HomeController extends Controller
         $use=User::where('id',$id)->first();
         $agent=User::select(
             DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) AS name"),'id')
-            ->where('is_cmmsn_agnt',1)->pluck('name', 'id');
+            ->where('is_cmmsn_agnt',1)->where('business_id', $business_id)->pluck('name', 'id');
       
 
         $is_admin = $this->businessUtil->is_admin(auth()->user());
@@ -307,6 +307,7 @@ if (request()->ajax()) {
 */
 
 //condition for  commission_agent
+$id=request()->session()->get('user.id');
 if($is_admin){
     $created_by=null;
     if(empty($user)){
@@ -1036,7 +1037,9 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
      */
     public function ProductSales()
     {
-       
+        $id=request()->session()->get('user.id');
+        $is_admin = $this->businessUtil->is_admin(auth()->user());
+
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
             
@@ -1082,7 +1085,17 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
             ->join('variations as v',
             'v.product_id',
             '=',
-            'products.id')          
+            'products.id')  
+            ->leftJoin(
+                'transactions AS SR',
+                'transactions.id',
+                '=',
+                'SR.return_parent_id'
+            )
+        //      ->leftJoin('transaction_payments as tp', function ($join) {
+        //     $join->on('transactions.id', '=', 'tp.transaction_id');
+                
+        // })        
             ->select(
                 'products.name as product',
                 'products.type',
@@ -1096,21 +1109,60 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
                //  DB::raw('SUM(transaction_sell_lines.unit_price_inc_tax) as prices'),
                 'l.name as location'
             )
+            ->where('transactions.type', 'sell')
+            -> where('transactions.status', 'final')
             ->groupBy('product_id','l.id')
             ->orderBy('quantity', 'desc');
             // ->orderBy('product', 'ASC')
             
+            //condition for  commission_agent
+            if($is_admin){
+                $created_by=null;
+                if(empty($user)){
+                    $cmmsn_agnt=null;
+                    }
+                else{
+                    $cmmsn_agnt=$user;
+                    
+                    }
+                }
 
-            if (!empty($start_date) && !empty($end_date)) {
+            else{
+                $created_by=$id;
+                $cmmsn_agnt=null;
 
-                $query2->whereDate(DB::raw('transactions.transaction_date'), '>=', $start_date)
-                ->whereDate(DB::raw('transactions.transaction_date'), '<=', $end_date);
+            }
+                if (!empty($created_by)) {
+                    $query2->where('transactions.created_by', $created_by);
+                    
+                }
+                if (!empty($cmmsn_agnt)) {
+                    $query2->where('transactions.commission_agent', $cmmsn_agnt);
+                    
+                }
+
+                
+         if (!empty($start_date) && !empty($end_date)) {
+
+            $query2->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id DESC LIMIT 1)'), '>=', $start_date)
+            ->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id  ORDER BY tp.id DESC LIMIT 1)'), '<=', $end_date);
+            //(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id) )  
+        }
+
+        if (empty($start_date) && !empty($end_date)) {
+            $query2->whereDate('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id DESC LIMIT 1)', '<=', $end_date);
+       }
+
+            // if (!empty($start_date) && !empty($end_date)) {
+
+            //     $query2->whereDate(DB::raw('transactions.transaction_date'), '>=', $start_date)
+            //     ->whereDate(DB::raw('transactions.transaction_date'), '<=', $end_date);
        
-            }
+            // }
     
-            if (empty($start_date) && !empty($end_date)) {
-                $query2->whereDate('transactions.transaction_date', '<=', $end_date);
-            }
+            // if (empty($start_date) && !empty($end_date)) {
+            //     $query2->whereDate('transactions.transaction_date', '<=', $end_date);
+            // }
     
             //Filter by the location
             if (!empty($location_id)) {

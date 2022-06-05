@@ -25,7 +25,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 
 
 use App\Account;
@@ -102,6 +103,8 @@ class ProductController extends Controller
      */
     public function index()
     {
+ 
+
         if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
@@ -346,12 +349,19 @@ class ProductController extends Controller
                 ->editColumn('image', function ($row) {
                     return '<div style="display: flex;"><img src="' . $row->image_url . '" alt="Product image" class="product-thumbnail-small"></div>';
                 })
-                  ->addColumn('product_custom_field2', function ($row) {
+                  ->addColumn('product_custom_field1', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->editColumn('product_custom_field2',function ($row) {
-                     return '<a target="_blank" href="'.$row->product_custom_field2.'" >'.$row->product_custom_field2.'</a>';                   
+                ->editColumn('product_custom_field1',function ($row) {
+                        $url=$row->product_custom_field1;
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            $product_custom_field1='<a target="_blank" href="'.$url.'" >'.$url.'</a>';
+        }
+        else{
+            $product_custom_field1='<p >'.$url.'</p>';
+        }
+                     return $product_custom_field1;                  
         })
                 ->editColumn('type', '@lang("lang_v1." . $type)')
                 ->addColumn('mass_delete', function ($row) {
@@ -380,7 +390,7 @@ class ProductController extends Controller
                             return '';
                         }
                     }])
-                ->rawColumns(['action', 'image','product_custom_field2', 'mass_delete', 'product', 'selling_price', 'purchase_price', 'category'])
+                ->rawColumns(['action', 'image','product_custom_field1', 'mass_delete', 'product', 'selling_price', 'purchase_price', 'category'])
                 ->make(true);
         }
 
@@ -2168,9 +2178,17 @@ class ProductController extends Controller
             ->select('images.image')->get();//pluck('id','image');
             //dd($images);
             //dd($images[0]->image);*/
+            $url=$product->product_custom_field1;
+             if (filter_var($url, FILTER_VALIDATE_URL)) {
+            $custom_field1=1;
+        }
+        else{
+            $custom_field1=2;
+        }
+                      
             return view('product.view-modal')->with(compact(
                 'product',
-               
+               'custom_field1',
                 'rack_details',
                 'allowed_group_prices',
                 'group_price_details',

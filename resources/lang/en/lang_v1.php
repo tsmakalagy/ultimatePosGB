@@ -9,6 +9,7 @@ return [
     'shipping_zone' => 'Shipping zone',
 
     'zone' => 'Zone',
+    'commission' => 'Commission',
     'Invoice No.' => 'Invoice No.',
     'Invoice' => 'Invoice',
     'Unit Price' => 'Unit Price',

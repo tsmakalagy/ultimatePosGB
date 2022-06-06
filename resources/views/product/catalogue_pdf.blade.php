@@ -10,9 +10,10 @@
         </h1>
         <style>
             body {
-                min-height: 100vh;
-
-            }
+  min-height: 100vh;
+   padding-top:2px; 
+  
+}
         </style>
         <!-- <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
@@ -21,32 +22,31 @@
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <section class="contents" style="background-color:white;padding-top:2px;">
+        
+        
 
-
-        <div style="width: 100%; background-color: white; ">
-            <!-- Masonry grid -->
-
-            <div class="header" style="text-align:center; ">
-                <h2>Going Beyond</h2>
-                <h6>Contact: 032 42 380 13</h6>
-            </div>
-        @foreach($product_catalogue as $product_catalogues)
-            <!-- Grid item -->
-                <div style="width: 30%;float: left;margin-left:15px;text-align:center;">
-                    {{-- asset('/img/default.png') --}}
-                    {{-- {{!empty($product_catalogues) ? <img class="img-fluid w-100 shadow-sm rounded-0 "  style="width:100%;height:100%;" src="{{$product_catalogues->image_url}}" alt=""> :  <img class="img-fluid w-100 shadow-sm rounded-0 "  style="width:100%;height:100%;" src="" alt="">}} --}}
-                    <img class="img-fluid w-100 shadow-sm rounded-0 " style="width:100%;height:100%;"
-                         src="{{!empty($product_catalogues) ? $product_catalogues->image_url:""}}" alt="">
-                    <p>{{str_limit($product_catalogues->p_name,25)}}</p>
-                    <p>@lang( 'lang_v1.price:') @format_currency($product_catalogues->sell_price_inc_tax)</p>
-                    {{-- <p>@lang( 'lang_v1.purchasse_price:'){{!empty($product_catalogues->dpp_inc_tax) ? $product_catalogues->dpp_inc_tax: "0.0000"}}</p> --}}
-                    {{-- <p>@lang( 'lang_v1.stock:'){{!empty($product_catalogues->current_stock) ? $product_catalogues->current_stock: "0.0000"}} pcs</p> --}}
-
-                </div>
-            @endforeach
-
+                       <div class="container" style="width: 100%; ">
+                        <!-- Masonry grid -->
+                                         
+                        <div class="header" style="text-align:center;">
+           <h1>Catalogue des produits</h1>
         </div>
+                             @foreach($product_catalogue as $product_catalogues)
+                            <!-- Grid item -->
+                            <div style="width: 30%;float: left;margin-left:15px;text-align:center;">
+                                {{-- asset('/img/default.png') --}}
+                                {{-- {{!empty($product_catalogues) ? <img class="img-fluid w-100 shadow-sm rounded-0 "  style="width:100%;height:100%;" src="{{$product_catalogues->image_url}}" alt=""> :  <img class="img-fluid w-100 shadow-sm rounded-0 "  style="width:100%;height:100%;" src="" alt="">}} --}}
+                             <img class="img-fluid w-100 shadow-sm rounded-0 "  style="width:100%;height:100%;" src="{{!empty($product_catalogues) ? $product_catalogues->image_url:""}}" alt=""> 
+                                <p>{{str_limit($product_catalogues->p_name,25)}}</p>
+                                <p>@lang( 'lang_v1.price:'){{!empty($product_catalogues->sell_price_inc_tax) ? $product_catalogues->sell_price_inc_tax: "0.0000"}}</p>
+                                {{-- <p>@lang( 'lang_v1.purchasse_price:'){{!empty($product_catalogues->dpp_inc_tax) ? $product_catalogues->dpp_inc_tax: "0.0000"}}</p> --}}
+                                {{-- <p>@lang( 'lang_v1.stock:'){{!empty($product_catalogues->current_stock) ? $product_catalogues->current_stock: "0.0000"}} pcs</p> --}}
+
+                            </div>
+                             @endforeach
+                           
+                        </div>
 
 
     </section>

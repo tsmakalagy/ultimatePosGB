@@ -2362,6 +2362,8 @@ class TransactionUtil extends Util
         $output['total_sell_exc_tax'] = $sell_details->total_before_tax;
         $output['invoice_due'] = $sell_details->total_due;
         $output['total_shipping_charges'] = $sell_details->total_shipping_charges;
+        $output['commission'] = $sell_details->total_sell/100;
+
 
         return $output;
     }
@@ -4267,12 +4269,12 @@ class TransactionUtil extends Util
         }
 
         if (!empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '>=', $start_date)
-                ->whereDate('transactions.transaction_date', '<=', $end_date);
+            $query->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)'), '>=', $start_date)
+                ->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)'), '<=', $end_date);
         }
 
         if (empty($start_date) && !empty($end_date)) {
-            $query->whereDate('transactions.transaction_date', '<=', $end_date);
+            $query->whereDate(DB::raw('(SELECT tp.paid_on FROM transaction_payments as tp WHERE tp.transaction_id = transactions.id ORDER BY tp.id LIMIT 1)'), '<=', $end_date);
         }
 
           //filter by commission_agent
@@ -4903,6 +4905,8 @@ class TransactionUtil extends Util
                 DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
                 DB::raw('((SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
                         TP.transaction_id=transactions.id)-transactions.shipping_charges) as total_paid'),
+                DB::raw('((SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
+                        TP.transaction_id=transactions.id)-transactions.shipping_charges) as total_paid_show'),
                 'bl.name as business_location',
                 DB::raw('COUNT(SR.id) as return_exists'),
                 DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE

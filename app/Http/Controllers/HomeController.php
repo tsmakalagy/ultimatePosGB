@@ -284,12 +284,15 @@ if (request()->ajax()) {
      $use=User::where('id',$id)->first();
      $user = request()->user;
 
+     $start_date = request()->start_date;
+     $end_date = request()->end_date;
+
     //if commission_agent connected
     if($use->is_cmmsn_agnt ==1){
-    $sells = $this->transactionUtil->getListSellsCmmsnAgnt($business_id, $sale_type);
+    $sells = $this->transactionUtil->getListSellsCmmsnAgnt($business_id, $sale_type,$start_date,$end_date);
     }
     else{
-    $sells = $this->transactionUtil->getListSells($business_id, $sale_type);
+    $sells = $this->transactionUtil->getListSells($business_id, $sale_type,$start_date,$end_date);
     }
     
     $permitted_locations = auth()->user()->permitted_locations();
@@ -674,12 +677,12 @@ else{
             'tax_amount',
             '<span class="total-tax" data-orig-value="{{$tax_amount}}">@format_currency($tax_amount)</span>'
         )
-        //  ->editColumn(
-        //             'total_paid',
-        //             '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
-        //         )
+     ->editColumn(
+                     'total_paid',
+                     '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
+                 )
         ->editColumn(
-             'total_paid',
+             'total_paid_show',
            //  '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
         // )
         function ($row) {
@@ -921,7 +924,7 @@ else{
                 }
             }]);
 
-    $rawColumns = ['final_total','date_paid_on', 'action', 'shipping_date', 'shipping_charges', 'shipper_name', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'delivered_to','types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'location','status'];
+    $rawColumns = ['final_total','date_paid_on', 'action', 'total_paid','shipping_date', 'shipping_charges', 'shipper_name', 'total_paid_show', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'shipping_address', 'delivered_to','types_of_service_name', 'payment_methods', 'return_due', 'conatct_name', 'location','status'];
 
     return $datatable->rawColumns($rawColumns)
         ->make(true);
@@ -1037,6 +1040,7 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
 
             $output['invoice_due'] = $sell_details['invoice_due'];
             $output['total_expense'] = $transaction_totals['total_expense'];
+            $output['commission'] =  $sell_details['commission'];
             
             return $output;
         }

@@ -146,6 +146,25 @@
                     </div>
                   <!-- /.info-box -->
                 </div>
+            
+
+           
+                <div class="col-md-3 col-sm-6 col-xs-12 col-custom">
+                    <div class="info-box info-box-new-style">
+                        <span class="info-box-icon bg-green">
+                          <i class="fa fa-gift"></i>
+                        </span>
+
+                        <div class="info-box-content">
+                          <span class="info-box-text">
+                            {{ __('lang_v1.commission') }}
+                          </span>
+                          <span class="info-box-number commission"><i class="fas fa-sync fa-spin fa-fw margin-bottom"></i></span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                  <!-- /.info-box -->
+                </div>
             </div>
             @if(!empty($widgets['after_sale_purchase_totals']))
                 @foreach($widgets['after_sale_purchase_totals'] as $widget)
@@ -577,7 +596,7 @@
                 { data: 'payment_methods', orderable: false, "searchable": false},
                
                 { data: 'final_total', name: 'final_total'},
-                { data: 'total_paid', name: 'total_paid', "searchable": false},
+                { data: 'total_paid_show', name: 'total_paid_show', "searchable": false},
                  { data: 'date_paid_on', name: 'date_paid_on'},
                 { data: 'total_remaining', name: 'total_remaining'},
                 { data: 'return_due', orderable: false, "searchable": false},
@@ -764,6 +783,7 @@ function update_statistics(start, end,user) {
     $('.total_sell').html(loader);
     $('.invoice_due').html(loader);
     $('.total_expense').html(loader);
+    $('.commission').html(loader);
     $.ajax({
         method: 'get',
         url: '/home/get-totals',
@@ -779,6 +799,7 @@ function update_statistics(start, end,user) {
             $('.invoice_due').html(__currency_trans_from_en(data.invoice_due, true));
             //expense details
             $('.total_expense').html(__currency_trans_from_en(data.total_expense, true));
+            $('.commission').html(__currency_trans_from_en(data.commission, true));
         },
     });
    

@@ -1083,9 +1083,13 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
             '=',
             'products.id') 
             ->join('variations as v',
-            'v.product_id',
+            'v.id',
             '=',
-            'products.id')  
+            'transaction_sell_lines.variation_id') 
+            ->join('product_variations as pv',
+            'pv.id',
+            '=',
+            'v.product_variation_id')  
             ->leftJoin(
                 'transactions AS SR',
                 'transactions.id',
@@ -1097,21 +1101,26 @@ return view('home.index', compact('date_filters', 'sells_chart_1', 'sells_chart_
                 
         // })        
             ->select(
-                'products.name as product',
+                // 'products.name as product',
                 'products.type',
+                'v.sub_sku as prod_sku',
                 'transactions.transaction_date',
                  'products.id as product_id',
                  'transaction_sell_lines.product_id as tsl_id',
-                 'transaction_sell_lines.unit_price_inc_tax as price',
+                 'v.sell_price_inc_tax as price',
+                //  'transaction_sell_lines.unit_price_inc_tax as price',
                 'products.sku',
                 'transaction_sell_lines.id',
-                DB::raw('SUM(transaction_sell_lines.quantity) as quantity'),
+                DB::raw('SUM(transaction_sell_lines.quantity-transaction_sell_lines.quantity_returned) as quantity'),
+                // DB::raw("CONCAT(COALESCE(products.name, ''),'-',COALESCE(v.name,'')) AS product"),
+                DB::raw("if(products.type='variable',CONCAT(COALESCE(products.name, ''),' ',COALESCE(pv.name, ''),':',COALESCE(v.name,'')),products.name) AS product"),
+
                //  DB::raw('SUM(transaction_sell_lines.unit_price_inc_tax) as prices'),
                 'l.name as location'
             )
             ->where('transactions.type', 'sell')
             -> where('transactions.status', 'final')
-            ->groupBy('product_id','l.id')
+            ->groupBy('v.id','l.id')
             ->orderBy('quantity', 'desc');
             // ->orderBy('product', 'ASC')
             

@@ -2927,28 +2927,48 @@ class ProductController extends Controller
         $product_catalogue = Product::join('variations as v', 'v.product_id', '=', 'products.id')->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')->select('products.id','products.image','products.name as p_name','v.dpp_inc_tax','v.sell_price_inc_tax','vld.qty_available as current_stock')->find($input);
         // dd($product_catalogue);
          // Setup a filename 
-         $documentFileName = "catalogue_product";
+         $documentFileName = "catalogue_product.pdf";
  
          // Create the mPDF document
          $document = new PDF( [
              'mode' => 'utf-8',
              'format' => 'A4',
-             'margin_header' => '1',
-             'margin_top' => '1',
-             'margin_bottom' => '1',
-             'margin_footer' => '1',
-         ]);     
+             'margin_header' => '10',
+             'margin_top' => '30',
+             'margin_bottom' => '8',
+             'margin_footer' => '10',
+         ]);
   
          // Set some header informations for output
          $header = [
              'Content-Type' => 'application/pdf',
              'Content-Disposition' => 'inline; filename="'.$documentFileName.'"'
          ];
+        $document->SetHTMLHeader('
+            <div style="text-align: right; font-weight: bold; margin-bottom: -20px;">
+                CATALOGUE
+            </div>
+            <div style="text-align: left; font-weight: bold; margin-bottom: -15px;">
+                GOING BEYOND
+            </div><hr/>');
+        $document->SetHTMLFooter('
+            <hr/><div style="text-align: right; margin-top: -15px;">
+                032 42 380 13 / 034 06 940 48
+            </div>
+            <div style="text-align: center; font-style: italic; margin-top: -20px;">
+                contact@goingbeyond.mg
+            </div>
+            <div style="text-align: left; margin-top: -20px;">
+                Ambohimanarina Ambodivonkely
+            </div>');
+//        $document->setHeader('GOING BEYOND');
+//         $document->setFooter('{PAGENO}');
   
          // Write some simple Content
   
          $document->WriteHTML(view('product.catalogue_pdf')
-                     ->with(compact('product_catalogue')));
+                     ->with(compact('product_catalogue')))
+             ;
           
          // Save PDF on your public storage 
          Storage::disk('public')->put($documentFileName, $document->Output($documentFileName, "I"));

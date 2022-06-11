@@ -1,6 +1,6 @@
 <table align="center" style="border-spacing: {{$barcode_details->col_distance * 1}}in {{$barcode_details->row_distance * 1}}in; overflow: hidden !important;">
-@foreach($page_products as $page_product)
-
+@foreach($page_products as $value => $page_product)
+	{{-- {{dd($page_product->barcode_type)}} --}}
 	@if($loop->index % $barcode_details->stickers_in_one_row == 0)
 		<!-- create a new row -->
 		<tr>
@@ -69,9 +69,12 @@
 						</span>
 					@endif
 					<br>
-
+					
+					{{-- {{$sub=$page_product->sub_sku.$i.$value}} --}}
+	
 					{{-- Barcode --}}
-					<img style="max-width:90% !important;height: {{$barcode_details->height*0.24}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, $page_product->barcode_type, 3,30,array(39, 48, 54), true)}}">
+					<img style="max-width:50% !important;height: {{$barcode_details->height*0.26}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku.'-'.$i.$value.'-'.$format_date, $page_product->barcode_type, 2,20,array(39, 48, 54), true)}}">
+				
 				</div>
 			</div>
 		
@@ -80,6 +83,7 @@
 	@if($loop->iteration % $barcode_details->stickers_in_one_row == 0)
 		</tr>
 	@endif
+	
 @endforeach
 </table>
 

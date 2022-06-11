@@ -111,13 +111,15 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::resource('products', 'ProductController');
     // Route::get('products/product_sell/{id}','ProductController@productSell');
     // Route::get('test/{id}','ProductSellController@test');
-
+    
     Route::post('/purchases/update-status', 'PurchaseController@updateStatus');
     Route::get('/purchases/get_products', 'PurchaseController@getProducts');
     Route::get('/purchases/get_suppliers', 'PurchaseController@getSuppliers');
     Route::post('/purchases/get_purchase_entry_row', 'PurchaseController@getPurchaseEntryRow');
     Route::post('/purchases/check_ref_number', 'PurchaseController@checkRefNumber');
     Route::resource('purchases', 'PurchaseController')->except(['show']);
+    Route::get('/purchases/export/excel/{id}', 'PurchaseController@exportToExcel')->name('export_excel');
+
 
     Route::get('/toggle-subscription/{id}', 'SellPosController@toggleRecurringInvoices');
     Route::post('/sells/pos/get-types-of-service-details', 'SellPosController@getTypesOfServiceDetails');

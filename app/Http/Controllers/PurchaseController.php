@@ -2,27 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\AccountTransaction;
-use App\Business;
-use App\BusinessLocation;
-use App\Contact;
-use App\CustomerGroup;
-use App\Product;
-use App\PurchaseLine;
-use App\TaxRate;
-use App\Transaction;
 use App\User;
+use App\Contact;
+use App\Product;
+use App\TaxRate;
+use App\Business;
+use App\Variation;
+use App\Transaction;
+use App\PurchaseLine;
+use App\CustomerGroup;
+use App\BusinessLocation;
+use App\Utils\ModuleUtil;
+use Maatwebsite\Excel\Facades\Excel;
+
+use App\Utils\ProductUtil;
+use App\AccountTransaction;
 use App\Utils\BusinessUtil;
 
-use App\Utils\ModuleUtil;
-use App\Utils\ProductUtil;
-use App\Utils\TransactionUtil;
-
-use App\Variation;
 use Illuminate\Http\Request;
+use App\Utils\TransactionUtil;
+use App\Exports\PurchaseExport;
 use Illuminate\Support\Facades\DB;
-use Yajra\DataTables\Facades\DataTables;
 use Spatie\Activitylog\Models\Activity;
+use Yajra\DataTables\Facades\DataTables;
 
 class PurchaseController extends Controller
 {
@@ -125,6 +127,7 @@ class PurchaseController extends Controller
                     }
 
                     $html .= '<li><a href="' . action('LabelsController@show') . '?purchase_id=' . $row->id . '" data-toggle="tooltip" title="' . __('lang_v1.label_help') . '"><i class="fas fa-barcode"></i>' . __('barcode.labels') . '</a></li>';
+                    $html .= '<li><a href="' . action('PurchaseController@exportToExcel', [$row->id]) . '" class="export-purchase"><i class="fas fa-trash"></i>' . __("export_to excel") . '</a></li>';
 
                     if (auth()->user()->can("purchase.view") && !empty($row->document)) {
                         $document_name = !empty(explode("_", $row->document, 2)[1]) ? explode("_", $row->document, 2)[1] : $row->document ;
@@ -1307,5 +1310,16 @@ class PurchaseController extends Controller
         }
 
         return $output;
+    }
+    
+       /**
+     * Export to Excel.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function exportToExcel($id)
+    { 
+        return Excel::download(new PurchaseExport, 'purchases.xlsx');
     }
 }

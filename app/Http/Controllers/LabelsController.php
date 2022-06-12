@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Barcode;
 use App\Product;
+use App\PurchaseLine;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use Illuminate\Http\Request;
@@ -57,7 +58,7 @@ class LabelsController extends Controller
         $barcode_settings = $barcode_settings->pluck('name', 'id');
 
         return view('labels.show')
-            ->with(compact('products', 'barcode_settings', 'default'));
+            ->with(compact('products','purchase_id', 'barcode_settings', 'default'));
     }
 
     /**
@@ -89,12 +90,22 @@ class LabelsController extends Controller
      */
     public function preview(Request $request)
     {
+        // for($i=0;$i < 4; $i++){
+        //     $a=$i;
+        // }
+        // dd($a);
         try {
             $products = $request->get('products');
+            $purchase = $request->get('purchase_id');
+
             $print = $request->get('print');
             $barcode_setting = $request->get('barcode_setting');
             $business_id = $request->session()->get('user.business_id');
 
+            $created=PurchaseLine::where('transaction_id',$purchase)->select('created_at','id')->first();
+        $created_at=$created->created_at;
+        $format_date=date('Y/m/d H:i',strtotime($created_at));
+        // dd($format_date);
             $barcode_details = Barcode::find($barcode_setting);
             $barcode_details->stickers_in_one_sheet = $barcode_details->is_continuous ? $barcode_details->stickers_in_one_row : $barcode_details->stickers_in_one_sheet;
             $barcode_details->paper_height = $barcode_details->is_continuous ? $barcode_details->height : $barcode_details->paper_height;
@@ -126,6 +137,7 @@ class LabelsController extends Controller
                 for ($i=0; $i < $value['quantity']; $i++) {
 
                     $page = intdiv($total_qty, $barcode_details->stickers_in_one_sheet);
+                    // $page = $total_qty;
 
                     if($total_qty % $barcode_details->stickers_in_one_sheet == 0){
                         $product_details_page_wise[$page] = [];
@@ -133,9 +145,12 @@ class LabelsController extends Controller
 
                     $product_details_page_wise[$page][] = $details;
                     $total_qty++;
+                    
                 }
+                
+                // $quantity=$value['quantity'];
+                
             }
-
             $margin_top = $barcode_details->is_continuous ? 0: $barcode_details->top_margin*1;
             $margin_left = $barcode_details->is_continuous ? 0: $barcode_details->left_margin*1;
             $paper_width = $barcode_details->paper_width*1;
@@ -168,8 +183,10 @@ class LabelsController extends Controller
             //$original_aspect_ratio = 4;//(w/h)
             $factor = (($barcode_details->width / $barcode_details->height)) / ($barcode_details->is_continuous ? 2 : 4);
             $html = '';
+            // dd($product_details_page_wise);
+            // dd($quantity);
             foreach ($product_details_page_wise as $page => $page_products) {
-
+                
                 if($i == 0){
                     $is_first = true;
                 }
@@ -177,9 +194,11 @@ class LabelsController extends Controller
                 if($i == $len-1){
                     $is_last = true;
                 }
-
+                // dd($product_details_page[]);
+                $count= count($page_products);
+          
                 $output = view('labels.partials.preview_2')
-                            ->with(compact('print', 'page_products', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
+                            ->with(compact('print','count','format_date', 'page_products','i', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
                 print_r($output);
                 //$mpdf->WriteHTML($output);
 

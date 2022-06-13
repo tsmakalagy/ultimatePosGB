@@ -94,6 +94,7 @@ class LabelsController extends Controller
         //     $a=$i;
         // }
         // dd($a);
+
         try {
             $products = $request->get('products');
             $purchase = $request->get('purchase_id');
@@ -109,6 +110,7 @@ class LabelsController extends Controller
             $barcode_details = Barcode::find($barcode_setting);
             $barcode_details->stickers_in_one_sheet = $barcode_details->is_continuous ? $barcode_details->stickers_in_one_row : $barcode_details->stickers_in_one_sheet;
             $barcode_details->paper_height = $barcode_details->is_continuous ? $barcode_details->height : $barcode_details->paper_height;
+           
             if($barcode_details->stickers_in_one_row == 1){
                 $barcode_details->col_distance = 0;
                 $barcode_details->row_distance = 0;
@@ -133,7 +135,10 @@ class LabelsController extends Controller
                 if (!empty($value['lot_number'])) {
                     $details->lot_number = $value['lot_number'];
                 }
+                // for ($i=0; $i < $value['quantity']; $i++) {
+                //  $details->sub_sku=$details->sub_sku.$i;
 
+                // }
                 for ($i=0; $i < $value['quantity']; $i++) {
 
                     $page = intdiv($total_qty, $barcode_details->stickers_in_one_sheet);
@@ -142,12 +147,18 @@ class LabelsController extends Controller
                     if($total_qty % $barcode_details->stickers_in_one_sheet == 0){
                         $product_details_page_wise[$page] = [];
                     }
-
+                    // $details->sub_sku+=$i;
+                 
                     $product_details_page_wise[$page][] = $details;
+                    // $product_details_page_wise[$page][]->sub_sku=$product_details_page_wise[$page][]->sub_sku;
+                    // $sub_sku=$details->sub_sku.$i;
+                    
                     $total_qty++;
+                   
                     
                 }
-                
+                // $details->sub_sku=$details->sub_sku.$i;
+                    //  dd($product_details_page_wise->sub_sku);
                 // $quantity=$value['quantity'];
                 
             }

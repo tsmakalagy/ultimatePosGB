@@ -73,8 +73,11 @@
 					{{-- {{$sub=$page_product->sub_sku.$i.$value}} --}}
 	
 					{{-- Barcode --}}
-					<img style="max-width:50% !important;height: {{$barcode_details->height*0.26}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, $page_product->barcode_type, 2,20,array(39, 48, 54), true)}}">
-				
+
+{{--					<img style="max-width:50% !important;height: {{$barcode_details->height*0.26}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku.'-'.$i.$value.'-'.$format_date, $page_product->barcode_type, 2,20,array(39, 48, 54), true)}}">--}}
+					<img style="max-width:50% !important;height: {{$barcode_details->height*0.25}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku.'-'.$i.$value.'-'.$format_date, 'C128', 4,55,array(39, 48, 54), true)}}">
+
+
 				</div>
 			</div>
 		

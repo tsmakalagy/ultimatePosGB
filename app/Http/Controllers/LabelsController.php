@@ -51,14 +51,14 @@ class LabelsController extends Controller
         }
 
         $barcode_settings = Barcode::where('business_id', $business_id)
-                                ->orWhereNull('business_id')
-                                ->select(DB::raw('CONCAT(name, ", ", COALESCE(description, "")) as name, id, is_default'))
-                                ->get();
+            ->orWhereNull('business_id')
+            ->select(DB::raw('CONCAT(name, ", ", COALESCE(description, "")) as name, id, is_default'))
+            ->get();
         $default = $barcode_settings->where('is_default', 1)->first();
         $barcode_settings = $barcode_settings->pluck('name', 'id');
 
         return view('labels.show')
-            ->with(compact('products','purchase_id', 'barcode_settings', 'default'));
+            ->with(compact('products', 'purchase_id', 'barcode_settings', 'default'));
     }
 
     /**
@@ -72,13 +72,13 @@ class LabelsController extends Controller
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
             $business_id = $request->session()->get('user.business_id');
-            
+
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProduct($business_id, $product_id, $variation_id);
-                
+
                 return view('labels.partials.show_table_rows')
-                        ->with(compact('products', 'index'));
+                    ->with(compact('products', 'index'));
             }
         }
     }
@@ -103,15 +103,20 @@ class LabelsController extends Controller
             $barcode_setting = $request->get('barcode_setting');
             $business_id = $request->session()->get('user.business_id');
 
-            $created=PurchaseLine::where('transaction_id',$purchase)->select('created_at','id')->first();
-        $created_at=$created->created_at;
-        $format_date=date('Y/m/d H:i',strtotime($created_at));
-        // dd($format_date);
+            $created = PurchaseLine::where('transaction_id', $purchase)->select('created_at', 'id')->first();
+            $created_at = $created->created_at->format('Y-m-d H:i');
+            $format_date = preg_replace('/[\s]+/mu', '', $created_at);
+//            $format_date = date('Y/m/d H:i', strtotime($created_at));
+            // dd($format_date);
             $barcode_details = Barcode::find($barcode_setting);
             $barcode_details->stickers_in_one_sheet = $barcode_details->is_continuous ? $barcode_details->stickers_in_one_row : $barcode_details->stickers_in_one_sheet;
             $barcode_details->paper_height = $barcode_details->is_continuous ? $barcode_details->height : $barcode_details->paper_height;
+<<<<<<< HEAD
            
             if($barcode_details->stickers_in_one_row == 1){
+=======
+            if ($barcode_details->stickers_in_one_row == 1) {
+>>>>>>> c84da20e4322e729befa87d762c42e9d39519906
                 $barcode_details->col_distance = 0;
                 $barcode_details->row_distance = 0;
             }
@@ -138,13 +143,17 @@ class LabelsController extends Controller
                 // for ($i=0; $i < $value['quantity']; $i++) {
                 //  $details->sub_sku=$details->sub_sku.$i;
 
+<<<<<<< HEAD
                 // }
                 for ($i=0; $i < $value['quantity']; $i++) {
+=======
+                for ($i = 0; $i < $value['quantity']; $i++) {
+>>>>>>> c84da20e4322e729befa87d762c42e9d39519906
 
                     $page = intdiv($total_qty, $barcode_details->stickers_in_one_sheet);
                     // $page = $total_qty;
 
-                    if($total_qty % $barcode_details->stickers_in_one_sheet == 0){
+                    if ($total_qty % $barcode_details->stickers_in_one_sheet == 0) {
                         $product_details_page_wise[$page] = [];
                     }
                     // $details->sub_sku+=$i;
@@ -154,18 +163,24 @@ class LabelsController extends Controller
                     // $sub_sku=$details->sub_sku.$i;
                     
                     $total_qty++;
+<<<<<<< HEAD
                    
                     
                 }
                 // $details->sub_sku=$details->sub_sku.$i;
                     //  dd($product_details_page_wise->sub_sku);
+=======
+
+                }
+
+>>>>>>> c84da20e4322e729befa87d762c42e9d39519906
                 // $quantity=$value['quantity'];
-                
+
             }
-            $margin_top = $barcode_details->is_continuous ? 0: $barcode_details->top_margin*1;
-            $margin_left = $barcode_details->is_continuous ? 0: $barcode_details->left_margin*1;
-            $paper_width = $barcode_details->paper_width*1;
-            $paper_height = $barcode_details->paper_height*1;
+            $margin_top = $barcode_details->is_continuous ? 0 : $barcode_details->top_margin * 1;
+            $margin_left = $barcode_details->is_continuous ? 0 : $barcode_details->left_margin * 1;
+            $paper_width = $barcode_details->paper_width * 1;
+            $paper_height = $barcode_details->paper_height * 1;
 
             // print_r($paper_height);
             // echo "==";
@@ -197,19 +212,19 @@ class LabelsController extends Controller
             // dd($product_details_page_wise);
             // dd($quantity);
             foreach ($product_details_page_wise as $page => $page_products) {
-                
-                if($i == 0){
+
+                if ($i == 0) {
                     $is_first = true;
                 }
 
-                if($i == $len-1){
+                if ($i == $len - 1) {
                     $is_last = true;
                 }
                 // dd($product_details_page[]);
-                $count= count($page_products);
-          
+                $count = count($page_products);
+
                 $output = view('labels.partials.preview_2')
-                            ->with(compact('print','count','format_date', 'page_products','i', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
+                    ->with(compact('print', 'count', 'format_date', 'page_products', 'i', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
                 print_r($output);
                 //$mpdf->WriteHTML($output);
 
@@ -241,7 +256,104 @@ class LabelsController extends Controller
             //                 'msg' => ''
             //             ];
         } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
+
+            $output = __('lang_v1.barcode_label_error');
+        }
+
+        //return $output;
+    }
+
+
+    /**
+     * Returns the html for labels preview
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function mypreview(Request $request)
+    {
+        try {
+            $products = $request->get('products');
+            $purchase = $request->get('purchase_id');
+
+            $print = $request->get('print');
+            $barcode_setting = $request->get('barcode_setting');
+            $business_id = $request->session()->get('user.business_id');
+
+            $created = PurchaseLine::where('transaction_id', $purchase)->select('created_at', 'id')->first();
+            $created_at = $created->created_at;
+            $format_date = date('Y/m/d H:i', strtotime($created_at));
+            $barcode_details = Barcode::find($barcode_setting);
+            $barcode_details->stickers_in_one_sheet = $barcode_details->is_continuous ? $barcode_details->stickers_in_one_row : $barcode_details->stickers_in_one_sheet;
+            $barcode_details->paper_height = $barcode_details->is_continuous ? $barcode_details->height : $barcode_details->paper_height;
+            if ($barcode_details->stickers_in_one_row == 1) {
+                $barcode_details->col_distance = 0;
+                $barcode_details->row_distance = 0;
+            }
+            $business_name = $request->session()->get('business.name');
+
+            $product_details_page_wise = [];
+            $total_qty = 0;
+            foreach ($products as $value) {
+                $details = $this->productUtil->getDetailsFromVariation($value['variation_id'], $business_id, null, false);
+
+                if (!empty($value['exp_date'])) {
+                    $details->exp_date = $value['exp_date'];
+                }
+                if (!empty($value['packing_date'])) {
+                    $details->packing_date = $value['packing_date'];
+                }
+                if (!empty($value['lot_number'])) {
+                    $details->lot_number = $value['lot_number'];
+                }
+
+                for ($i = 0; $i < $value['quantity']; $i++) {
+
+                    $page = intdiv($total_qty, $barcode_details->stickers_in_one_sheet);
+                    // $page = $total_qty;
+
+                    if ($total_qty % $barcode_details->stickers_in_one_sheet == 0) {
+                        $product_details_page_wise[$page] = [];
+                    }
+
+                    $product_details_page_wise[$page][] = $details;
+                    $total_qty++;
+
+                }
+            }
+            $margin_top = $barcode_details->is_continuous ? 0 : $barcode_details->top_margin * 1;
+            $margin_left = $barcode_details->is_continuous ? 0 : $barcode_details->left_margin * 1;
+            $paper_width = $barcode_details->paper_width * 1;
+            $paper_height = $barcode_details->paper_height * 1;
+
+            $i = 0;
+            $len = count($product_details_page_wise);
+            $is_first = false;
+            $is_last = false;
+
+            //$original_aspect_ratio = 4;//(w/h)
+            $factor = (($barcode_details->width / $barcode_details->height)) / ($barcode_details->is_continuous ? 2 : 4);
+            $html = '';
+            foreach ($product_details_page_wise as $page => $page_products) {
+
+                if ($i == 0) {
+                    $is_first = true;
+                }
+
+                if ($i == $len - 1) {
+                    $is_last = true;
+                }
+                $count = count($page_products);
+
+                $output = view('labels.partials.preview_2')
+                    ->with(compact('print', 'count', 'format_date', 'page_products', 'i', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
+
+
+                $i++;
+            }
+
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
 
             $output = __('lang_v1.barcode_label_error');
         }

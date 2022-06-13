@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\CustomPurchaseExport;
 use App\User;
 use App\Contact;
 use App\Product;
@@ -213,7 +214,7 @@ class PurchaseController extends Controller
                             'transactions.id',
                             'pr.name',
                             'pr.sku',
-                            'pl.quantity',
+                            'pl.quantity'
                            )->where('transactions.id', $row->id)
                          
                            ->get();
@@ -1320,6 +1321,7 @@ class PurchaseController extends Controller
      */
     public function exportToExcel($id)
     { 
-        return Excel::download(new PurchaseExport, 'purchases.xlsx');
+//        return Excel::download(new PurchaseExport, 'purchases.xlsx');
+        return (new CustomPurchaseExport(7))->download('invoices.xlsx');
     }
 }

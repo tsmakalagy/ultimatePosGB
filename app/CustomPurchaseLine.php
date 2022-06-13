@@ -84,6 +84,7 @@ class CustomPurchaseLine extends Model
     {
         $qty = $this->quantity;
         $barcodes = array();
+        $v = 0;
         for ($i = 1; $i < $qty + 1; $i++) {
             $bc = $this->product->sku . '-' . $i . '-' . $this->created_at->format('Y-m-d H:i');
             $bc = preg_replace('/[\s]+/mu', '', $bc);

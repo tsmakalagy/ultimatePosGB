@@ -485,6 +485,7 @@ class ProductUtil extends Util
                     ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
             'p.id as product_id',
             'p.brand_id',
+            'p.sku',
             'p.category_id',
             'p.tax as tax_id',
             'p.enable_stock',

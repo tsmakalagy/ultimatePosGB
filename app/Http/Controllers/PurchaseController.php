@@ -1322,6 +1322,6 @@ class PurchaseController extends Controller
     public function exportToExcel($id)
     { 
 //        return Excel::download(new PurchaseExport, 'purchases.xlsx');
-        return (new CustomPurchaseExport(7))->download('invoices.xlsx');
+        return (new CustomPurchaseExport($id))->download('invoices.xlsx');
     }
 }

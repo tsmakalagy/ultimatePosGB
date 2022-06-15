@@ -454,6 +454,7 @@ class ProductUtil extends Util
     public function getDetailsFromVariation($variation_id, $business_id, $location_id = null, $check_qty = true)
     {
         $query = Variation::join('products AS p', 'variations.product_id', '=', 'p.id')
+                ->join('purchase_lines AS pl', 'variations.id', '=', 'pl.variation_id')
                 ->join('product_variations AS pv', 'variations.product_variation_id', '=', 'pv.id')
                 ->leftjoin('variation_location_details AS vld', 'variations.id', '=', 'vld.variation_id')
                 ->leftjoin('units', 'p.unit_id', '=', 'units.id')
@@ -506,6 +507,7 @@ class ProductUtil extends Util
             'units.id as unit_id',
             'units.allow_decimal as unit_allow_decimal',
             'brands.name as brand',
+            'pl.id',
             DB::raw("(SELECT purchase_price_inc_tax FROM purchase_lines WHERE 
                         variation_id=variations.id ORDER BY id DESC LIMIT 1) as last_purchased_price")
         )

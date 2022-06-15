@@ -1,3 +1,4 @@
+
 <table align="center" style="border-spacing: {{$barcode_details->col_distance * 1}}in {{$barcode_details->row_distance * 1}}in; overflow: hidden !important;">
 @foreach($page_products as $value => $page_product)
 	{{-- {{dd($page_product->barcode_type)}} --}}

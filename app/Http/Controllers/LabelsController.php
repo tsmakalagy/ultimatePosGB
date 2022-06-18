@@ -112,9 +112,10 @@ class LabelsController extends Controller
     {
         try {
             $products = $request->get('products');
-            $purchase = $request->get('purchase_id');
+            
+            $purchase = $request->get('purchase_id') ;
             $created = PurchaseLine::where('transaction_id', $purchase)->select('created_at', 'id')->first();
-            $created_at = $created->created_at->format('Y-m-d H:i');
+            $created_at = $created ? $created->created_at->format('Y-m-d H:i') :'';
             $format_date = preg_replace('/[\s]+/mu', '', $created_at);
             $cd = array();
             $j=0;
@@ -122,12 +123,7 @@ class LabelsController extends Controller
 
             $print = $request->get('print');
             $barcode_setting = $request->get('barcode_setting');
-            $business_id = $request->session()->get('user.business_id');
-
-
-            $created = PurchaseLine::where('transaction_id', $purchase)->select('created_at', 'id')->first();
-            $created_at = $created->created_at->format('Y-m-d H:i');
-            $format_date = preg_replace('/[\s]+/mu', '', $created_at);
+            $business_id = $request->session()->get('user.business_id');          
 
             $barcode_details = Barcode::find($barcode_setting);
             $barcode_details->stickers_in_one_sheet = $barcode_details->is_continuous ? $barcode_details->stickers_in_one_row : $barcode_details->stickers_in_one_sheet;
@@ -147,8 +143,8 @@ class LabelsController extends Controller
             $barcodes = array();
 
             foreach ($products as $value) {
+                
                 $details = $this->productUtil->getDetailsFromVariation($value['variation_id'], $business_id, null, false);
-
                 if (!empty($value['exp_date'])) {
                     $details->exp_date = $value['exp_date'];
                 }
@@ -164,7 +160,7 @@ class LabelsController extends Controller
 
                     $j = $kk + 1;
 
-                    $bc = $details->sku . '-' . $j . '-' . $created_at;
+                    $bc = $created_at ? $details->sku . '-' . $j . '-' . $created_at : $details->sku . '-' . $j;
                     $bc = preg_replace('/[\s]+/mu', '', $bc);
                     array_push($barcodes, $bc);
 
@@ -179,18 +175,9 @@ class LabelsController extends Controller
                     if ($total_qty % $barcode_details->stickers_in_one_sheet == 0) {
                         $product_details_page_wise[$page] = [];
                     }
-                    // $details->sub_sku+=$i;
-                //  $bar=$purchaseLine->barcode[$i];
-                //  echo($bar);
-                //  dd($bar);
-                    //  $auths=$authe[$i];
-                    //  $details->sub_sku='holljj';
-                    $details->sub_sku=$details->sub_sku.$i;
+                                 
                     $product_details_page_wise[$page][] = $details;
-                    // $product_details_page_wise[$page][]->sub_sku=$product_details_page_wise[$page][]->sub_sku;
-                    // $sub_sku=$details->sub_sku.$i;
-                    
-                    $total_qty++;
+                   $total_qty++;
                     
                 }
 

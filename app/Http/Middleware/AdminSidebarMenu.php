@@ -215,6 +215,35 @@ class AdminSidebarMenu
                     ['icon' => 'fa fas fa-cubes', 'id' => 'tour_step5']
                 )->order(20);
             }
+                 //Products dropdown
+                 if (auth()->user()->can('product.view') || auth()->user()->can('product.create') ||
+                 auth()->user()->can('brand.view') || auth()->user()->can('unit.view') ||
+                 auth()->user()->can('category.view') || auth()->user()->can('brand.create') ||
+                 auth()->user()->can('unit.create') || auth()->user()->can('category.create')) {
+                 $menu->dropdown(
+                     __('lang_v1.package'),
+                     function ($sub) {
+                         if (auth()->user()->can('product.view')) {
+                             $sub->url(
+                                 action('PackageController@index'),
+                                 __('lang_v1.list_package'),
+                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'products' && request()->segment(2) == '']
+                             );
+                         }
+                         if (auth()->user()->can('product.create')) {
+                             $sub->url(
+                                 action('PackageController@create'),
+                                 __('lang_v1.add_package'),
+                                 ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'products' && request()->segment(2) == 'create']
+                             );
+                         }
+                 
+                 
+                      
+                     },
+                     ['icon' => 'fa fas fa-cubes', 'id' => 'tour_step5']
+                 )->order(20);
+             }
 
             //Purchase dropdown
             if (in_array('purchases', $enabled_modules) && (auth()->user()->can('purchase.view') || auth()->user()->can('purchase.create') || auth()->user()->can('purchase.update'))) {

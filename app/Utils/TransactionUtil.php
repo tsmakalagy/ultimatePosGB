@@ -7,6 +7,7 @@ use App\Business;
 use App\BusinessLocation;
 use App\Contact;
 use App\Currency;
+use App\Package;
 use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentDeleted;
 use App\Events\TransactionPaymentUpdated;
@@ -5196,6 +5197,38 @@ class TransactionUtil extends Util
         return $price_product;
     }
 
+   /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getPackage()
+    {   $package= Package::join(
+        'contacts as ct',
+        'ct.id',
+        '=',
+        'packages.contact_id'
+    )
+    ->select(
+        'packages.id',
+        'packages.product',
+        'packages.bar_code',
+        // 'packages.client',
+        'packages.volume',
+        'packages.weight',
+        'packages.image',
+        // 'packages.status',
+        'packages.other_field1',
+        'packages.other_field2',
+        'ct.mobile',
+        'ct.name',
+        DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status")
+        
+    )->where('ct.type','customer');
+        return $package;
+    }
+   
 
     /**
      * common function to get
@@ -5218,6 +5251,8 @@ class TransactionUtil extends Util
         'product_prices.suggested_price',
         'product_prices.byship_price',
         'product_prices.byplane_price'
+      
+
         
     );
         return $price_product;

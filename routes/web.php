@@ -433,6 +433,17 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('product-price/delete/{id}', 'ProductPriceController@delete')->name('ProductPrice.delete');
     Route::get('product-price/show/{id}', 'ProductPriceController@show')->name('ProductPrice.show');
 
+
+    //route for package
+    Route::get('package', 'PackageController@index')->name('Package.index');
+    Route::get('package/create', 'PackageController@create')->name('Package.create');
+    Route::post('package/store', 'PackageController@store')->name('Package.store');
+    Route::get('package/edit/{id}', 'PackageController@edit')->name('Package.edit');
+    Route::post('package/update/{id}', 'PackageController@update')->name('Package.update');
+    Route::get('package/delete/{id}', 'PackageController@delete')->name('Package.delete');
+    Route::get('package/show/{id}', 'PackageController@show')->name('Package.show');
+
+
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');
     Route::get('test/{id}','ProductSellController@test');

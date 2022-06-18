@@ -376,6 +376,61 @@ class ProductUtil extends Util
         return true;
     }
 
+
+     /**
+     * Checks if products has manage stock enabled then Updates quantity for product and its
+     * variations
+     *
+     * @param $location_id
+     * @param $product_id
+     * @param $variation_id
+     * @param $new_quantity
+     * @param $old_quantity = 0
+     * @param $number_format = null
+     * @param $uf_data = true, if false it will accept numbers in database format
+     *
+     * @return boolean
+     */
+    public function updateProductQuantity2($location_id, $product_id, $variation_id, $new_quantity, $old_quantity = 0, $number_format = null, $uf_data = true,$combo,$qty)
+    {
+        if ($uf_data) {
+            $qty_difference = $this->num_uf($new_quantity, $number_format) - $this->num_uf($old_quantity, $number_format);
+        } else {
+            $qty_difference = $new_quantity - $old_quantity;
+        }
+
+        $product = Product::find($product_id);
+
+        //Check if stock is enabled or not.
+        if ($product->enable_stock == 1 && $qty_difference != 0) {
+            $variation = Variation::where('id', $variation_id)
+                            ->where('product_id', $product_id)
+                            ->first();
+            
+            //Add quantity in VariationLocationDetails
+            $variation_location_d = VariationLocationDetails
+                          ::where('variation_id', $variation->id)
+                          ->where('product_id', $product_id)
+                          ->where('product_variation_id', $variation->product_variation_id)
+                          ->where('location_id', $location_id)
+                          ->first();
+
+            if (empty($variation_location_d)) {
+                $variation_location_d = new VariationLocationDetails();
+                $variation_location_d->variation_id = $variation->id;
+                $variation_location_d->product_id = $product_id;
+                $variation_location_d->location_id = $location_id;
+                $variation_location_d->product_variation_id = $variation->product_variation_id;
+                $variation_location_d->qty_available = 0;
+            }
+
+            $variation_location_d->qty_available += $qty_difference;
+            $variation_location_d->save();
+        }
+        
+        return true;
+    }
+
     /**
      * Checks if products has manage stock enabled then Decrease quantity for product and its variations
      *
@@ -454,7 +509,7 @@ class ProductUtil extends Util
     public function getDetailsFromVariation($variation_id, $business_id, $location_id = null, $check_qty = true)
     {
         $query = Variation::join('products AS p', 'variations.product_id', '=', 'p.id')
-                ->join('purchase_lines AS pl', 'variations.id', '=', 'pl.variation_id')
+                // ->join('purchase_lines AS pl', 'variations.id', '=', 'pl.variation_id')
                 ->join('product_variations AS pv', 'variations.product_variation_id', '=', 'pv.id')
                 ->leftjoin('variation_location_details AS vld', 'variations.id', '=', 'vld.variation_id')
                 ->leftjoin('units', 'p.unit_id', '=', 'units.id')
@@ -508,7 +563,7 @@ class ProductUtil extends Util
             'units.id as unit_id',
             'units.allow_decimal as unit_allow_decimal',
             'brands.name as brand',
-            'pl.id',
+       
             DB::raw("(SELECT purchase_price_inc_tax FROM purchase_lines WHERE 
                         variation_id=variations.id ORDER BY id DESC LIMIT 1) as last_purchased_price")
         )
@@ -1156,6 +1211,15 @@ class ProductUtil extends Util
         $exchange_rate = !empty($transaction->exchange_rate) ? $transaction->exchange_rate : 1;
         
         foreach ($input_data as $data) {
+            //type of product
+            $product_id=$data['product_id'];
+            $product_type=Product::where('id',$product_id)
+            ->join('variations as vr', 'products.id', '=', 'vr.product_id')
+            ->first();
+            $type=$product_type->type;
+            $combo=$product_type->combo_variations;
+            $qty=$data['quantity'];
+
             $multiplier = 1;
             if (isset($data['sub_unit_id']) && $data['sub_unit_id'] == $data['product_unit_id']) {
                 unset($data['sub_unit_id']);
@@ -1184,7 +1248,12 @@ class ProductUtil extends Util
 
                 //Increase quantity only if status is received
                 if ($transaction->status == 'received') {
+                    // if($type='combo'){
+                    // $this->updateProductQuantity2($transaction->location_id, $data['product_id'], $data['variation_id'], $new_quantity_f, 0, $currency_details,$combo,$qty);
+                    // }
+                    // else{
                     $this->updateProductQuantity($transaction->location_id, $data['product_id'], $data['variation_id'], $new_quantity_f, 0, $currency_details);
+                    // }
                 }
             }
 

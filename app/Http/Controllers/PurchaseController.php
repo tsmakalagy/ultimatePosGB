@@ -342,7 +342,7 @@ class PurchaseController extends Controller
         if (!auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
         }
-
+//  dd($request->input('purchases'));
         try {
             $business_id = $request->session()->get('user.business_id');
 
@@ -1008,9 +1008,9 @@ class PurchaseController extends Controller
                 )
                 ->groupBy('variation_id');
 
-            if ($check_enable_stock) {
-                $q->where('enable_stock', 1);
-            }
+            // if ($check_enable_stock) {
+            //     $q->where('enable_stock', 1);
+            // }
             if (!empty(request()->location_id)) {
                 $q->ForLocation(request()->location_id);
             }

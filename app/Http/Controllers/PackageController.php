@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\PriceProduct;
 use App\ProductPriceSetting;
 use App\ProductPrice;
+use App\Image;
 
 use App\Account;
 use App\Business;
 use App\BusinessLocation;
 use App\Contact;
-use App\Image;
 use App\Shipper;
 use App\Province;
 use App\CentreVille;
@@ -80,8 +80,7 @@ class PackageController extends Controller
     }
 
     public function index(){
-        //  $price_product=ProductPriceSetting::all();
-        //   dd($price_product);
+
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
@@ -343,8 +342,9 @@ class PackageController extends Controller
 
                        if (auth()->user()->can('sell.delete')) {
                             $html .=
-                                '<li><a href="' . action('PackageController@show', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.view") . '</a></li>';
+                                '<li><a href="' . action('PackageController@show', [$row->id]) . '" class="view-product"><i class="fa fa-eye"></i> ' . __("messages.view") . '</a></li>';
                         }
+
 
                         if (auth()->user()->can('product.update')) {
                             $html .=
@@ -424,7 +424,18 @@ class PackageController extends Controller
                         '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
                        
                         ->editColumn('image', function ($row) {
-                            return '<div style="display: flex;"><img src="' . $row->image_url . '"  class="product-thumbnail-small" ></div>';
+                            $image_url=Image::where('product_id',$row->id)->first();
+                            
+                            if (!empty($image_url)) {
+                                $img_src=$image_url->image;
+                                $img_expl=explode('|',$img_src);
+                                $img = asset('/uploads/img/' . rawurlencode($img_expl[0]));
+                                    } else {
+                                        $img = asset('/img/default.png');
+                                    }
+                                   
+
+                            return '<div style="display: flex;"><img src="' . $img . '"  class="product-thumbnail-small" ></div>';
                         })
 
                         ->editColumn('status',
@@ -602,23 +613,41 @@ class PackageController extends Controller
     //         $image=Image::create(['product_id'=>$product->id,'image'=>$image]);
     //     $image=$request->input('image');
     //  dd($image);
-    $file=$request->file('image');
-    $destinationPath = 'uploads/img/';
-    $file->move($destinationPath,$file->getClientOriginalName());
  
      
             $product=$request->input('product');
             $bar_code=$request->input('bar_code');
             $client=$request->input('client');
             $volume=$request->input('volume');
-            $image=$request->file('image')->getClientOriginalName();
+            // $image=$request->file('images')->getClientOriginalName();
+            $image="image";
             $status=$request->input('status');
             $weight=$request->input('weight');
             $other_field1=$request->input('other_field1');
             $other_field2=$request->input('other_field2');
        
             $package= Package::firstOrCreate(['product'=> $product,'bar_code'=>$bar_code,'contact_id'=>$client,'volume'=>$volume,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
-           
+        //    dd($package->id);
+        $destinationPath = 'uploads/img/';
+        $array=array();
+        if($request->has('images'))
+        {
+            foreach($request->file('images') as $image)
+            {
+           $original_name=$package->product.'-'.$package->id.'-'.$image->getClientOriginalName();
+           array_push($array, $original_name);
+            $image->move($destinationPath,$original_name);
+               
+            }
+            $create_image=Image::create(['product_id'=> $package->id,'image'=>implode('|',$array)]);
+            //  dd($create_image);
+        }
+
+        //    $file=$request->file('image');
+        //    $destinationPath = 'uploads/img/';
+        //    $original_name=$file->getClientOriginalName();
+        //    // $file->move($destinationPath,$file->getClientOriginalName());
+        // dd($file);
             return redirect()->route('Package.index');
             
            
@@ -640,11 +669,16 @@ class PackageController extends Controller
 
         // $business_id = request()->session()->get('user.business_id');
         // $details = $this->productUtil->getRackDetails($business_id, $id, true)
-        $package =  Package::findOrFail($id);
+        $package =  Package::where('packages.id',$id)->join(
+            'contacts as ct',
+            'ct.id',
+            '=',
+            'packages.contact_id')->first();
         $contact = Contact::pluck('name', 'id');;
      
+        $image_url=Image::where('product_id',$id)->first();
 
-        return view('package.show')->with(compact('$package','contact'));
+        return view('packages.view-modal')->with(compact('package','contact','image_url'));
     }
     /**
      * formulaire d'edition
@@ -676,22 +710,38 @@ class PackageController extends Controller
 
         $package=  Package::findOrFail($id);
 
-        $file=$request->file('image');
-        $destinationPath = 'uploads/img/';
-        $file->move($destinationPath,$file->getClientOriginalName());
-      
+        $image_id=  Image::where('product_id',$id)->first();
+// dd($image_id);
             $product=$request->input('product');
             $bar_code=$request->input('bar_code');
             $client=$request->input('client');
             $volume=$request->input('volume');
-            $image=$request->file('image')->getClientOriginalName();
+            $image='image';
             $status=$request->input('status');
             $weight=$request->input('weight');
             $other_field1=$request->input('other_field1');
             $other_field2=$request->input('other_field2');
        
             $package->update(['product'=> $product,'bar_code'=>$bar_code,'contact_id'=>$client,'volume'=>$volume,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
-           
+            $destinationPath = 'uploads/img/';
+            $array=array();
+            if($request->has('images'))
+            {
+                foreach($request->file('images') as $image)
+                {
+               $original_name=$package->product.'-'.$package->id.'-'.$image->getClientOriginalName();
+               array_push($array, $original_name);
+                $image->move($destinationPath,$original_name);
+                }
+                if(!empty($image_id)){
+                $create_image=$image_id->update(['product_id'=> $package->id,'image'=>implode('|',$array)]);
+                }
+                else{
+                $create_image=Image::create(['product_id'=> $package->id,'image'=>implode('|',$array)]);
+                     
+                }
+            }
+                 
 
         return redirect()->route('Package.index');
     }

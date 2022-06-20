@@ -39,6 +39,21 @@ class Product extends Model
         return $image_url;
     }
 
+    // /**
+    //  * Get the products image.
+    //  *
+    //  * @return string
+    //  */
+    // public function getImageUrlAttributeForImage()
+    // {
+    //     if (!empty($this->image)) {
+    //         $image_url = asset('/uploads/img/' . rawurlencode($this->image));
+    //     } else {
+    //         $image_url = asset('/img/default.png');
+    //     }
+    //     return $image_url;
+    // }
+
     /**
     * Get the products image path.
     *

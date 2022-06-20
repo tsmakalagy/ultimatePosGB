@@ -46,6 +46,22 @@
         @endcomponent
             {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
             </div> --}}
+            {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+
+<div class="modal fade" id="view_package_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+ --}}
+ <div class="modal fade product_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+
+<div class="modal fade" id="view_product_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+
     </section>
     <!-- /.content -->
 

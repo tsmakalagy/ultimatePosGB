@@ -65,7 +65,7 @@
                             <div class="form-group">
                                 {!! Form::label('image', __('lang_v1.image') . ':') !!}
                               
-                                <input type="file" id="upload_ima" value="{{$package->image}}" name="image">
+                                <input type="file" id="upload_ima"  name="images[]" accept="image/*" multiple>
                             </div>
                         </div>
                         

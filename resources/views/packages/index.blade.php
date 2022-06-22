@@ -14,10 +14,13 @@
         @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.package') ])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
             @slot('tool')
-            <div class="box-tools">
-                <a class="btn btn-block btn-primary" href="{{action('PackageController@create')}}">
-                <i class="fa fa-plus"></i> @lang('messages.add')</a>
-            </div>
+         
+             <div class="box-tools">
+                        <button type="button" class="btn btn-block btn-primary btn-modal"
+                                data-href="{{action('PackageController@scan')}}"
+                                data-container=".scan_modal">
+                            <i class="fa fa-plus"></i> @lang('messages.scan')</button>
+                    </div>
         @endslot
             @endif
             @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
@@ -29,12 +32,16 @@
 
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
-                        <th>@lang('lang_v1.product_name')</th>                      
+                                             
                         <th>@lang('lang_v1.customer')</th>
                         <th>@lang('lang_v1.mobile')</th>
-                        <th>@lang('lang_v1.volume')</th>
-                        <th>@lang('lang_v1.weight')</th>                
                         <th>@lang('lang_v1.barcode')</th>
+                        <th>@lang('lang_v1.product_name')</th> 
+                        <th>@lang('lang_v1.longeur')</th>
+                        <th>@lang('lang_v1.largeur')</th>
+                        <th>@lang('lang_v1.hauteur')</th>
+                        <th>@lang('lang_v1.weight')</th>                
+                        
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
                         <th>@lang('lang_v1.status')</th>  
@@ -54,11 +61,17 @@
     aria-labelledby="gridSystemModalLabel">
 </div>
  --}}
- <div class="modal fade product_modal" tabindex="-1" role="dialog" 
+ <div class="modal product_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
 
-<div class="modal fade" id="view_product_modal" tabindex="-1" role="dialog" 
+<div class="modal " id="view_product_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+<div class="modal scan_modal" id="scan_modal" tabindex="-1" role="dialog" 
+    aria-labelledby="gridSystemModalLabel">
+</div>
+<div class="modal uploadImg_modal" id="uploadImg_modal" tabindex="-1" role="dialog" 
     aria-labelledby="gridSystemModalLabel">
 </div>
 
@@ -76,6 +89,9 @@
   <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#myModal').on('shown.bs.modal', function () {
+    $('#my_barcode').focus();
+});
 
 
             shipper_table = $('#shipper_table').DataTable({
@@ -83,7 +99,7 @@
                 serverSide: true,
                 aaSorting: [[1, 'desc']],
                 "ajax": {
-                    "url": "/package",
+                    "url": "/my-package",
                     "data": function (d) {
                         if ($('#sell_list_filter_date_range').val()) {
                             var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -114,12 +130,16 @@
                 columns: [
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
                     {data: 'image', name: 'packages.image'},
-                    {data: 'product', name: 'product'},                            
-                    {data: 'customer', name: 'customer'},
-                    {data: 'mobile', name: 'mobile'},
-                    {data: 'volume', name: 'volume'},
+                                               
+                    {data: 'customer_name', name: 'customer_name'},
+                    {data: 'customer_tel', name: 'customer_tel'},
+                    {data: 'bar_code', name: 'bar_code'},
+                    {data: 'product', name: 'product'}, 
+                    {data: 'longeur', name: 'longeur'},
+                    {data: 'largeur', name: 'largeur'},
+                    {data: 'hauteur', name: 'hauteur'},
                     {data: 'weight', name: 'weight'},                 
-                    {data: 'bar_code', name: 'bar_code'},                 
+                                     
                     {data: 'other_field1', name: 'other_field1'},
                     {data: 'other_field2', name: 'other_field2'},
                     {data: 'status', name: 'status'}

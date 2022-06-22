@@ -14,6 +14,8 @@
 "please_select" => "Veuillez sélectionner",
 "cancel" => "Annuler",
 "date" => "Date",
+'scan' => 'Scanner',
+
 "filter_by_date" => "Filtrer par date",
 "location" => "Emplacement",
 "go_back" => "Retourner",

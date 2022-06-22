@@ -40,21 +40,27 @@
         <div class="table-responsive">
           <table class="table bg-gray">
             <tr class="bg-green">
-            
-              <th>{{ __('lang_v1.product_name') }}</th>
-              <th>{{ __('lang_v1.customer') }}</th>
-              <th>{{ __('lang_v1.volume') }}</th>
-              <th>{{ __('lang_v1.weight') }}</th>
               <th>{{ __('lang_v1.barcode') }}</th>
+              
+              <th>{{ __('lang_v1.customer') }}</th>
+              <th>{{ __('lang_v1.customer_tel') }}</th>
+              <th>{{ __('lang_v1.product_name') }}</th>
+              <th>{{ __('lang_v1.longeur') }}</th>
+              <th>{{ __('lang_v1.largeur') }}</th>
+              <th>{{ __('lang_v1.hauteur') }}</th>
+              <th>{{ __('lang_v1.weight') }}</th>         
               <th>{{ __('lang_v1.status') }}</th>
             </tr>
 
               <tr>
+                 <td>{{$package->bar_code }} </td>
+                <td>{{ ucfirst($package->customer_name) }}</td>
+                <td>{{$package->customer_tel }}</td>
                 <td>{{ ucfirst($package->product) }}</td>
-                <td>{{ ucfirst($package->name) }}</td>
-                <td>{{$package->volume }}</td>
-                <td>{{$package->weight }}</td>
-                <td>{{$package->bar_code }} </td>
+                <td>{{$package->longeur }}</td>
+                <td>{{$package->largeur }}</td>
+                <td>{{$package->hauteur }}</td>
+                <td>{{$package->weight }}</td>              
                 <td>{{$package->status }} </td>
 
               </tr>

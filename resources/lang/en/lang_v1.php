@@ -124,6 +124,13 @@ return [
     'location_to' => 'Location (To)',
     'edit_package' => 'Edit package',
     'list_package' => 'Liste packages',
+    'longeur' => 'Longeur',
+    'largeur' => 'Largeur',
+    'hauteur' => 'Hauteur',
+    'customer_tel' => 'Contact',
+    'scan' => 'Scanner',
+    'scan_codebar' => 'Scanner codebare',
+    
 
     'add_package' => 'Add package',
     'shipping_charges' => 'Shipping Charges',

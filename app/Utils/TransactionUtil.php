@@ -5204,28 +5204,27 @@ class TransactionUtil extends Util
      * @return object
      */
     public function getPackage()
-    {   $package= Package::join(
-        'contacts as ct',
-        'ct.id',
-        '=',
-        'packages.contact_id'
-    )
-    ->select(
+    {   $package= Package::select(
         'packages.id',
         'packages.product',
         'packages.bar_code',
         // 'packages.client',
         'packages.volume',
         'packages.weight',
+        'packages.longeur',
+        'packages.largeur',
+        'packages.hauteur',
+        'packages.customer_tel',
+        'packages.customer_name',
         'packages.image',
         // 'packages.status',
         'packages.other_field1',
         'packages.other_field2',
-        'ct.mobile',
-        'ct.name',
-        DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status")
-        
-    )->where('ct.type','customer');
+       // 'ct.mobile',
+       // 'ct.name',
+        DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"));
+    //->where('ct.type','customer')
+    
         return $package;
     }
    

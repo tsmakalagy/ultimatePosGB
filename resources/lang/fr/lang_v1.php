@@ -15,11 +15,16 @@ return [
     'package' => 'Paquet',
     'status' => 'Status',
     'mobile' => 'Tel',
+    'scan' => 'Scan',
     'barcode' => 'Codebar',
     'bar_code' => 'Codebar',
     'edit_package' => 'Editer paquet',
     'add_package' => 'Ajouter paquet',
     'list_package' => 'Liste paquet',
+     'longeur' => 'Length',
+    'largeur' => 'width',
+    'hauteur' => 'Height',
+    'customer_tel' => 'Contact',
     'paid_on' => 'Payé le',
     'paid' => 'Payé',
     'price' => 'Prix',
@@ -53,11 +58,8 @@ return [
     'min' => 'Min',
     'maximum' => 'Maximum',
     'minimum' => 'Minimum',
-
-
+    'scan_codebar' => 'Scan codebar',
     'transaction_date' => 'Date',
-
-
      //product price setting
      'product_name' => 'Nom du produit',
      'product_spec' => 'Spec du produit',

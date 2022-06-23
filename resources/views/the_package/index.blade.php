@@ -15,12 +15,10 @@
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
             @slot('tool')
          
-             <div class="box-tools">
-                        <button type="button" class="btn btn-block btn-primary btn-modal"
-                                data-href="{{action('PackageController@scan')}}"
-                                data-container=".scan_modal">
-                            <i class="fa fa-plus"></i> @lang('messages.scan')</button>
-                    </div>
+            <div class="box-tools">
+                <a class="btn btn-block btn-primary" href="{{action('ThePackageController@create')}}">
+                <i class="fa fa-plus"></i> @lang('messages.add')</a>
+            </div
         @endslot
             @endif
             @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
@@ -32,10 +30,9 @@
 
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
-                        <th>@lang('lang_v1.date')</th>           
+                                             
                         <th>@lang('lang_v1.customer')</th>
                         <th>@lang('lang_v1.mobile')</th>
-                        
                         <th>@lang('lang_v1.barcode')</th>
                         <th>@lang('lang_v1.product_name')</th> 
                         <th>@lang('lang_v1.longeur')</th>
@@ -100,7 +97,7 @@
                 serverSide: true,
                 aaSorting: [[1, 'desc']],
                 "ajax": {
-                    "url": "/my-package",
+                    "url": "/the-package",
                     "data": function (d) {
                         if ($('#sell_list_filter_date_range').val()) {
                             var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -131,9 +128,8 @@
                 columns: [
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
                     {data: 'image', name: 'packages.image'},
-                      {data: 'created_at', name: 'created_at'},                         
+                                               
                     {data: 'customer_name', name: 'customer_name'},
-                    
                     {data: 'customer_tel', name: 'customer_tel'},
                     {data: 'bar_code', name: 'bar_code'},
                     {data: 'product', name: 'product'}, 

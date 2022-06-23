@@ -8,6 +8,7 @@ use App\BusinessLocation;
 use App\Contact;
 use App\Currency;
 use App\Package;
+use App\ThePackage;
 use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentDeleted;
 use App\Events\TransactionPaymentUpdated;
@@ -5220,12 +5221,50 @@ class TransactionUtil extends Util
         // 'packages.status',
         'packages.other_field1',
         'packages.other_field2',
+        // 'packages.created_at',
        // 'ct.mobile',
        // 'ct.name',
-        DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"));
+        DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"),
+        DB::raw("DATE_FORMAT(packages.created_at, '%Y-%m-%d') as created_at"))
+        // DB::raw('packages.created_at as created_at'));
+
+         ->orderBy('created_at', 'DESC');
+
+        ;
     //->where('ct.type','customer')
     
         return $package;
+    }
+
+     /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getThePackage()
+    {   $the_package= ThePackage::select(
+        'the_packages.id',
+        'the_packages.package_id',
+        'the_packages.bar_code',
+        // 'the_packages.client',
+        'the_packages.volume',
+        'the_packages.weight',
+        'the_packages.longeur',
+        'the_packages.largeur',
+        'the_packages.hauteur',
+        'the_packages.customer_tel',
+        'the_packages.customer_name',
+        'the_packages.image',
+        // 'the_packages.status',
+        'the_packages.other_field1',
+        'the_packages.other_field2',
+       // 'ct.mobile',
+       // 'ct.name',
+        DB::raw(" IF(the_packages.status = 0, 'entrant', 'sortant') as status"));
+    //->where('ct.type','customer')
+    
+        return $the_package;
     }
    
 

@@ -28,8 +28,6 @@
                        style="min-width: 100% ">
                     <thead class="text-center">
                     <tr>
-
-
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
                         <th>@lang('lang_v1.date')</th>

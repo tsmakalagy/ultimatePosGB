@@ -32,13 +32,13 @@
                         <th>&nbsp;</th>
                         <th>@lang('lang_v1.date')</th>
                         <th>@lang('lang_v1.customer')</th>
-                        <th>@lang('lang_v1.mobile')</th>
+                        <th>@lang('lang_v1.customer_tel')</th>
 
                         <th>@lang('lang_v1.barcode')</th>
-                        <th>@lang('lang_v1.product_name')</th>
-                        <th>@lang('lang_v1.longeur')</th>
-                        <th>@lang('lang_v1.largeur')</th>
-                        <th>@lang('lang_v1.hauteur')</th>
+                        <th>@lang('lang_v1.product')</th>
+                        <th>@lang('lang_v1.length')</th>
+                        <th>@lang('lang_v1.width')</th>
+                        <th>@lang('lang_v1.height')</th>
                         <th>@lang('lang_v1.weight')</th>
 
                         <th>@lang('lang_v1.other_field1')</th>

@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-md-12 ">
                         <div class="form-group ">
-                            <label for="scanner">@lang('lang_v1.scan_codebar')</label>
+                            <label for="scanner">@lang('lang_v1.scan_barcode')</label>
                             <input type="text" name="my_barcode" id="scanner" class="form-control"/>
                         </div>
                     </div>

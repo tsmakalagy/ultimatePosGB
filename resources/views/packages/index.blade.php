@@ -30,7 +30,7 @@
                     <tr>
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
-                        <th>@lang('lang_v1.date')</th>
+                        <th width="75px">@lang('lang_v1.date')</th>
                         <th>@lang('lang_v1.customer')</th>
                         <th>@lang('lang_v1.customer_tel')</th>
 

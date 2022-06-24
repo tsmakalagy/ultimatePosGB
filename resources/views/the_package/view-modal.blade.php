@@ -26,9 +26,9 @@
   @endphp
   <div class="col-sm-3 col-md-3 invoice-col">
 					{{-- <div class="thumbnail"> --}}
-						<img src="{{$img}}"class="img-thumbnail" style="width:300px;height:200px;">
-					</div>
-				{{-- </div> --}}
+						<img src="{{$img}}" alt="Product image">
+					{{-- </div> --}}
+				</div>
       
   @endforeach
       @endif

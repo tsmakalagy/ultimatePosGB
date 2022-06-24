@@ -434,7 +434,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('product-price/show/{id}', 'ProductPriceController@show')->name('ProductPrice.show');
 
 
-    //route for package
+    //route for my_package
     Route::get('my-package', 'PackageController@index')->name('Package.index');
     Route::get('my-package/create', 'PackageController@create')->name('Package.create');
     Route::post('my-package/store', 'PackageController@store')->name('Package.store');
@@ -445,6 +445,18 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('my-package/scan', 'PackageController@scan')->name('Package.scan');
     Route::get('my-package/upload-img/{id}', 'PackageController@uploadImg')->name('Package.upload_img');
     Route::post('my-package/save-img/{id}', 'PackageController@saveImg')->name('Package.save_img');
+
+     //route for the_package
+    Route::get('the-package', 'ThePackageController@index')->name('ThePackage.index');
+    Route::get('the-package/create', 'ThePackageController@create')->name('ThePackage.create');
+    Route::post('the-package/store', 'ThePackageController@store')->name('ThePackage.store');
+    Route::get('the-package/edit/{id}', 'ThePackageController@edit')->name('ThePackage.edit');
+    Route::post('the-package/update/{id}', 'ThePackageController@update')->name('ThePackage.update');
+    Route::get('the-package/delete/{id}', 'ThePackageController@delete')->name('ThePackage.delete');
+    Route::get('the-package/show/{id}', 'ThePackageController@show')->name('ThePackage.show');
+    Route::get('the-package/scan', 'ThePackageController@scan')->name('ThePackage.scan');
+    Route::get('the-package/upload-img/{id}', 'ThePackageController@uploadImg')->name('ThePackage.upload_img');
+    Route::post('the-package/save-img/{id}', 'ThePackageController@saveImg')->name('ThePackage.save_img');
 
 
 

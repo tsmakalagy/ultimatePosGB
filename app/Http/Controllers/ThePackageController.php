@@ -23,6 +23,7 @@ use App\SellingPriceGroup;
 use App\TaxRate;
 use App\Transaction;
 use App\package;
+use App\ThePackage;
 use App\TransactionSellLine;
 use App\TypesOfService;
 use App\User;
@@ -41,7 +42,7 @@ use App\Media;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Validation\Rule;
 
-class PackageController extends Controller
+class ThePackageController extends Controller
 {
        /**
      * All Utils instance.
@@ -86,7 +87,7 @@ class PackageController extends Controller
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
             abort(403, 'Unauthorized action.');
         }
-
+        
         $business_id = request()->session()->get('user.business_id');
         $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
         $is_tables_enabled = $this->transactionUtil->isModuleEnabled('tables');
@@ -106,7 +107,7 @@ class PackageController extends Controller
             $price_product = $this->transactionUtil->getProductPriceSettings();
             $product_price = $this->transactionUtil->getProductPrice();
             $package = $this->transactionUtil->getPackage();
-            // dd($package);
+            $the_package = $this->transactionUtil->getThePackage();
 
 
             $permitted_locations = auth()->user()->permitted_locations();
@@ -327,7 +328,7 @@ class PackageController extends Controller
                 $sells->addSelect('transactions.is_recurring', 'transactions.recur_parent_id');
             }
             $sales_order_statuses = Transaction::sales_order_statuses();
-            $datatable = Datatables::of( $package)
+            $datatable = Datatables::of( $the_package)
                 ->addColumn(
                     'action',
                     function ($row) use ($only_shipments, $is_admin, $sale_type) {
@@ -427,16 +428,7 @@ class PackageController extends Controller
                 
                         ->editColumn('weight',
                         '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
-       
-                        ->editColumn(
-                            'created_at',
-                            function ($row) {
-                            $created_at = $row->created_at ? $row->created_at->format('Y-m-d') :'';
-                            $format_date = preg_replace('/[\s]+/mu', '', $created_at);
-                                return '<span class="total-discount" data-orig-value="">'.$created_at.'</span>';
-                            }
-                        )
-
+                       
                         ->editColumn('image', function ($row) {
                             $image_url=Image::where('product_id',$row->id)->first();
                             
@@ -511,10 +503,6 @@ class PackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                     ->addColumn('created_at', function ($row) {
-                    $total_remaining = '';
-                    return $total_remaining;
-                })
                 ->addColumn('hauteur', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -557,24 +545,6 @@ class PackageController extends Controller
                         $q->where( DB::raw(" IF(packages.status = 0, 'entrant', 'sortant')"), 'like', "%{$keyword}%");
                     });
                 })
-
-                ->filterColumn('created_at', function ($query, $keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('created_at', 'like', "%{$keyword}%")
-                            ;
-                    });
-                })
-                // ->filterColumn('added_by', function ($query, $keyword) {
-                //     $query->whereRaw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) like ?", ["%{$keyword}%"]);
-                // })
-                //    ->filterColumn('created_at', function ($query, $keyword) {
-                   
-                //     $query->where(function ($q,$row) use ($keyword) {
-                //         $created_at = $row->created_at ? $row->created_at->format('d/m/Y') :'';
-                //         $format_date = preg_replace('/[\s]+/mu', '', $created_at);
-                //         $q->where( $created_at, 'like', "%{$keyword}%");
-                //     });
-                // })
              
                 ->editColumn('so_qty_remaining', '')
            
@@ -587,7 +557,7 @@ class PackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','created_at','product','customer_tel','longeur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total','product','customer_tel','longeur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -612,7 +582,7 @@ class PackageController extends Controller
 
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
-        return view('packages.index')
+        return view('the_package.index')
             ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
 
        
@@ -636,17 +606,21 @@ class PackageController extends Controller
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
-          $barcode=$request->get('barcode');
-          if(!empty($barcode)){
-         $contact = Contact::pluck('name', 'id');
-          $product_price_setting = ProductPriceSetting::first();
+        //   $barcode=$request->get('barcode');
+        //   if(!empty($barcode)){
+        //  $contact = Contact::pluck('name', 'id');
+        //   $product_price_setting = ProductPriceSetting::first();
          
 
-        return view('packages.create', compact('product_price_setting','barcode'));
-          }
-          else{
-            return redirect()->route('Package.index');
-          }
+        // return view('the_package.create', compact('product_price_setting','barcode'));
+        //   }
+        //   else{
+        //     return redirect()->route('ThePackage.index');
+        //   }
+        $package = Package::pluck('bar_code', 'id');
+
+         return view('the_package.create', compact('package'));
+
     }
 
     /**
@@ -657,7 +631,7 @@ class PackageController extends Controller
      */
     public function store(Request $request)
     {
-     
+    //  dd($request);
             $product=$request->input('product');
             $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
@@ -688,7 +662,7 @@ class PackageController extends Controller
             
         }
 
-            return redirect()->route('Package.index');
+            return redirect()->route('ThePackage.index');
             
            
        
@@ -712,7 +686,7 @@ class PackageController extends Controller
      
         $image_url=Image::where('product_id',$id)->first();
 
-        return view('packages.view-modal')->with(compact('package','contact','image_url'));
+        return view('the_package.view-modal')->with(compact('package','contact','image_url'));
     }
     /**
      * formulaire d'edition
@@ -725,7 +699,7 @@ class PackageController extends Controller
         $package =  Package::findOrFail($id);
         $contact = Contact::pluck('name', 'id');
 
-        return view('packages.edit', compact('package','product_price_setting','contact'));
+        return view('the_package.edit', compact('package','product_price_setting','contact'));
 
     }
 
@@ -777,7 +751,7 @@ class PackageController extends Controller
             }
                  
 
-        return redirect()->route('Package.index');
+        return redirect()->route('ThePackage.index');
     }
 
     /**
@@ -790,7 +764,7 @@ class PackageController extends Controller
 
         $package = Package::findOrFail($id);
         $package->delete();
-        return redirect()->route('Package.index');
+        return redirect()->route('ThePackage.index');
 
     }
 
@@ -802,7 +776,7 @@ class PackageController extends Controller
     public function scan()
     {
 
-        return view('packages.scan-modal');
+        return view('the_package.scan-modal');
 
     }
 
@@ -814,7 +788,7 @@ class PackageController extends Controller
     public function uploadImg($id)
     {
 
-        return view('packages.uploadImg-modal', compact('id'));
+        return view('the_package.uploadImg-modal', compact('id'));
 
     }
 
@@ -850,7 +824,7 @@ class PackageController extends Controller
                  
             }
         }
-        return redirect()->route('Package.index');
+        return redirect()->route('ThePackage.index');
     }
 
 }

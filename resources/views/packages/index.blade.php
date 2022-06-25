@@ -12,7 +12,7 @@
     <!-- Main content -->
     <section class="content no-print">
 
-        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.package') ])
+        @component('components.widget', ['class' => 'box-primary' ])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 @slot('tool')
                     <div class="box-tools">

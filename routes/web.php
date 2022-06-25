@@ -457,7 +457,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('the-package/scan', 'ThePackageController@scan')->name('ThePackage.scan');
     Route::get('the-package/upload-img/{id}', 'ThePackageController@uploadImg')->name('ThePackage.upload_img');
     Route::post('the-package/save-img/{id}', 'ThePackageController@saveImg')->name('ThePackage.save_img');
-
+    Route::get('the-package/get-package', 'ThePackageController@getPackage')->name('ThePackage.get_package');
 
 
     //Route for the products sales

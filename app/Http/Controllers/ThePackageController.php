@@ -631,7 +631,7 @@ class ThePackageController extends Controller
      */
     public function store(Request $request)
     {
-    //  dd($request);
+    //   dd($request);
             $product=$request->input('product');
             $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
@@ -644,6 +644,7 @@ class ThePackageController extends Controller
             $weight=$request->input('weight');
             $other_field1=$request->input('other_field1');
             $other_field2=$request->input('other_field2');
+            $bar_code='234444';
        
             $package= Package::firstOrCreate(['product'=> $product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
        
@@ -827,4 +828,32 @@ class ThePackageController extends Controller
         return redirect()->route('ThePackage.index');
     }
 
+    
+         /**
+     * formulaire d'edition
+     * @param $id
+     * @return view
+     */
+    public function getPackage(Request $request)
+    {
+ //requete ajax
+ if (request()->ajax()) {
+    //$centre_villes= CentreVille::pluck('commune', 'id');
+ 
+    // if($selectedbrand==1){
+    //     $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
+       
+    // }  
+        
+   $val= $request->get('val',false);
+    // $package=  Package::findOrFail($val);
+    $package =  Package::where('packages.id',$val)->select(
+        'packages.product',
+        'packages.bar_code',
+        'packages.id'
+    )
+    ->first();
+     return $package;
+    }
+    }
 }

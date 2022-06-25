@@ -11,6 +11,30 @@
 
     <!-- Main content -->
     <section class="content no-print">
+          @component('components.filters', ['title' => __('report.filters')])
+        {{-- @include('sell.partials.sell_list_filters') --}}
+        
+        @if(empty($only) || in_array('sell_list_filter_date_range', $only))
+    <div class="col-md-4 pull-right" >
+        <div class="form-group">
+            {!! Form::label('sell_list_filter_date_range', __('report.date_range') . ':') !!}
+            {!! Form::text('sell_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']); !!}
+        </div>
+    </div>
+    @endif
+        @if($is_woocommerce)
+            <div class="col-md-3">
+                <div class="form-group">
+                    <div class="checkbox">
+                        <label>
+                          {!! Form::checkbox('only_woocommerce_sells', 1, false, 
+                          [ 'class' => 'input-icheck', 'id' => 'synced_from_woocommerce']); !!} {{ __('lang_v1.synced_from_woocommerce') }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        @endif
+    @endcomponent
         @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.package') ])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
             @slot('tool')
@@ -42,7 +66,7 @@
                         <th>@lang('lang_v1.largeur')</th>
                         <th>@lang('lang_v1.hauteur')</th>
                         <th>@lang('lang_v1.weight')</th>                
-                        
+                        <th>@lang('lang_v1.volume')</th>   
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
                         <th>@lang('lang_v1.status')</th>  
@@ -93,7 +117,18 @@
             $('#myModal').on('shown.bs.modal', function () {
     $('#my_barcode').focus();
 });
-
+//Date range as a button
+$('#sell_list_filter_date_range').daterangepicker(
+        dateRangeSettings,
+        function (start, end) {
+            $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+            shipper_table.ajax.reload();
+        }
+    );
+    $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
+        $('#sell_list_filter_date_range').val('');
+        shipper_table.ajax.reload();
+    });
 
             shipper_table = $('#shipper_table').DataTable({
                 processing: true,
@@ -141,7 +176,7 @@
                     {data: 'largeur', name: 'largeur'},
                     {data: 'hauteur', name: 'hauteur'},
                     {data: 'weight', name: 'weight'},                 
-                                     
+                    {data: 'weight', name: 'volume'}, 
                     {data: 'other_field1', name: 'other_field1'},
                     {data: 'other_field2', name: 'other_field2'},
                     {data: 'status', name: 'status'}
@@ -165,6 +200,7 @@
         $(document).on('shown.bs.modal', '.shipper_modal', function(e) {
             // initAutocomplete();
         });
+        
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>

@@ -50,10 +50,45 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('packages', __('lang_v1.package') . ':') !!}
-                                {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!}
+                                {!! Form::select('packages', $package,null,['class' => 'form-control select2',  'id' => 'product_locations','placeholder' => __('messages.please_select'),'required']); !!}
+                                {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
                                
                             </div>
                         </div>
+{{-- 
+                        <div class="row col-sm-8 " style="min-height: 0">
+                            <div class="the_package">
+                            </div>
+                        </div> --}}
+
+
+
+
+
+
+                        <div class="row col-sm-12 pos_product_div" style="min-height: 0">
+
+                     
+                            
+                            <div class="table-responsive">
+                            <table class="table table-condensed table-bordered table-striped table-responsive" id="pos_table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">	
+                                            @lang('sale.product')
+                                        </th>
+                                        <th class="text-center">
+                                            @lang('sale.qty')
+                                        </th>   
+                                       
+                                        <th class="text-center"><i class="fas fa-times" id="close" onclick="Remove()"  aria-hidden="true"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="my_tbody"></tbody>
+                            </table>
+                            </div>
+                        </div> 
+
                         
                         <div class="col-md-6">
                             <div class="form-group">
@@ -159,7 +194,40 @@ $(document).ready(function(){
 			$('form').bind('submit', function () {
 				$('#status').prop('disabled', false);
     });
+var j=0;
+    $('#product_locations').change(function () {
+        var val=$(this).val();
+      
+     j=j+1;
+        $.ajax({
+          type: 'GET',
+          cache:false,
+        url: '/the-package/get-package',
+         data: {val:val},
+         success: function(response) {
 
+    var name=response.product;           
+    var id=response.id;           
+    var barcode=response.bar_code;           
+              append(name,id,bar_code,j);
+         }
+        });
+
+         
+      
+    });
+function append(name,id,barcode,j){
+    
+    var txt1 = '<tr><td class="text-center name">'+name+'<input type="hidden" name="packages['+j+'][]" value="'+name+'"/></td><td class="text-center"><input type="text" name="packages['+j+'][]" /></td><td class="text-center" ><span class="close">x</span></td></tr>';  
+        $('.my_tbody').append(txt1);
+}
+// $(".close").click(function(){
+//     alert('hello');
+// })
+// function Remove(){
+
+//     alert('helllo');
+// }
     });
 
 </script>

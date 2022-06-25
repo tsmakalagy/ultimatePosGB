@@ -89,6 +89,12 @@
                                 {!! Form::text('hauteur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
+                                {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                            </div>
+                        </div>
 
                         <div class="col-md-6">
                             <div class="form-group">

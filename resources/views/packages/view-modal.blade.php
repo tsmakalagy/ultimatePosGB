@@ -49,6 +49,7 @@
               <th>{{ __('lang_v1.largeur') }}</th>
               <th>{{ __('lang_v1.hauteur') }}</th>
               <th>{{ __('lang_v1.weight') }}</th>         
+              <th>{{ __('lang_v1.volume') }}</th>         
               <th>{{ __('lang_v1.status') }}</th>
             </tr>
 
@@ -61,6 +62,7 @@
                 <td>{{$package->largeur }}</td>
                 <td>{{$package->hauteur }}</td>
                 <td>{{$package->weight }}</td>              
+                <td>{{$package->volume }}</td>              
                 <td>{{$package->status }} </td>
 
               </tr>

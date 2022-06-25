@@ -211,8 +211,8 @@ class PackageController extends Controller
             if (!empty(request()->start_date) && !empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end = request()->end_date;
-                $sells->whereDate('transactions.transaction_date', '>=', $start)
-                    ->whereDate('transactions.transaction_date', '<=', $end);
+                $package->whereDate('packages.created_at', '>=', $start)
+                    ->whereDate('packages.created_at', '<=', $end);
             }
 
             //Check is_direct sell
@@ -424,6 +424,8 @@ class PackageController extends Controller
                         '<span class="china_price" data-orig-value="{{$largeur}}">@if(!empty($largeur)) {{$largeur}} @endif   </span>')
                         ->editColumn('hauteur',
                         '<span class="china_price" data-orig-value="{{$hauteur}}">@if(!empty($hauteur)) {{$hauteur}} @endif   </span>')
+                        ->editColumn('volume',
+                        '<span class="china_price" data-orig-value="{{$volume}}">@if(!empty($volume)) {{$volume}} @endif   </span>')
                 
                         ->editColumn('weight',
                         '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
@@ -519,6 +521,10 @@ class PackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
+                ->addColumn('volume', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
              
                 ->addColumn('weight', function ($row) {
                     $total_remaining = '';
@@ -587,7 +593,7 @@ class PackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','created_at','product','customer_tel','longeur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total','created_at','product','customer_tel','longeur','volume','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -665,13 +671,14 @@ class PackageController extends Controller
             $longeur=$request->input('longeur');
             $largeur=$request->input('largeur');
             $hauteur=$request->input('hauteur');
+            $volume=$request->input('volume');
             $image="image";
             $status=$request->input('status');
             $weight=$request->input('weight');
             $other_field1=$request->input('other_field1');
             $other_field2=$request->input('other_field2');
        
-            $package= Package::firstOrCreate(['product'=> $product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+            $package= Package::firstOrCreate(['product'=> $product,'bar_code'=>$bar_code,'volume'=>$volume,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
        
         $destinationPath = 'uploads/img/';
         $array=array();
@@ -753,10 +760,11 @@ class PackageController extends Controller
             $image='image';
             $status=$request->input('status');
             $weight=$request->input('weight');
+            $volume=$request->input('volume');
             $other_field1=$request->input('other_field1');
             $other_field2=$request->input('other_field2');
        
-            $package->update(['product'=> $product,'bar_code'=>$bar_code,'customer_name'=>$customer_name,'customer_tel'=>$customer_tel,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+            $package->update(['product'=> $product,'bar_code'=>$bar_code,'volume'=>$volume,'customer_name'=>$customer_name,'customer_tel'=>$customer_tel,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
             $destinationPath = 'uploads/img/';
             $array=array();
             if($request->has('images'))

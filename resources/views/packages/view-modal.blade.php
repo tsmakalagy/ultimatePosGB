@@ -44,10 +44,10 @@
               
               <th>{{ __('lang_v1.customer') }}</th>
               <th>{{ __('lang_v1.customer_tel') }}</th>
-              <th>{{ __('lang_v1.product_name') }}</th>
-              <th>{{ __('lang_v1.longeur') }}</th>
-              <th>{{ __('lang_v1.largeur') }}</th>
-              <th>{{ __('lang_v1.hauteur') }}</th>
+              <th>{{ __('lang_v1.product') }}</th>
+              <th>{{ __('lang_v1.length') }}</th>
+              <th>{{ __('lang_v1.width') }}</th>
+              <th>{{ __('lang_v1.height') }}</th>
               <th>{{ __('lang_v1.weight') }}</th>         
               <th>{{ __('lang_v1.volume') }}</th>         
               <th>{{ __('lang_v1.status') }}</th>

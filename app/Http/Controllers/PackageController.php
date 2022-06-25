@@ -157,8 +157,9 @@ class PackageController extends Controller
                     'created_at',
                     function ($row) {
                         $created_at = $row->created_at ? $row->created_at->format('Y-m-d') : '';
+                        $data_order = $row->created_at ? $row->created_at->format('Y-m-d H:i', strtotime($row->created_at)) : '';
                         $format_date = preg_replace('/[\s]+/mu', '', $created_at);
-                        return '<span class="total-discount" data-orig-value="">' . $created_at . '</span>';
+                        return '<span data-order="' . $data_order  . '" class="total-discount" data-orig-value="">' . $created_at . '</span>';
                     }
                 )
                 ->editColumn('image', function ($row) {
@@ -257,6 +258,12 @@ class PackageController extends Controller
         return view('packages.index');
 
 
+    }
+
+    public function indexApi()
+    {
+        $package = Package::all();
+        return response()->json($package->toArray());
     }
 
     /**

@@ -64,6 +64,7 @@
                         <th>@lang('lang_v1.width')</th>
                         <th>@lang('lang_v1.height')</th>
                         <th>@lang('lang_v1.weight')</th>
+                        <th>@lang('lang_v1.volume')</th>
 
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
@@ -176,6 +177,7 @@ $('#sell_list_filter_date_range').daterangepicker(
                     {data: 'hauteur', name: 'hauteur'},
 
                     {data: 'weight', name: 'weight'},
+                    {data: 'volume', name: 'volume'},
 
                     {data: 'other_field1', name: 'other_field1'},
                     {data: 'other_field2', name: 'other_field2'},

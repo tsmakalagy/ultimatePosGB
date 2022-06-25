@@ -5261,7 +5261,7 @@ class TransactionUtil extends Util
         'the_packages.other_field2',
        // 'ct.mobile',
        // 'ct.name',
-        DB::raw(" IF(the_packages.status = 0, 'entrant', 'sortant') as status"));
+        DB::raw(" IF(the_packages.status = 1, 'sortant', 'entrant') as status"));
     //->where('ct.type','customer')
     
         return $the_package;

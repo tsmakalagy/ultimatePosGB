@@ -93,6 +93,15 @@
                             </div>
                         </div>
                         <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
+                                {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                            </div>
+                        </div>
+                    </div>
+
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
@@ -100,14 +109,7 @@
                                 </div>
                             </div>
 
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
-                                {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-
+                      
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('other_field2', __('lang_v1.other_field2') . ':') !!}

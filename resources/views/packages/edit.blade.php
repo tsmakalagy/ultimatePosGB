@@ -43,15 +43,16 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('customer_tel', __('lang_v1.tel') . ':') !!}
+                                {!! Form::label('customer_tel', __('lang_v1.customer_tel') . ':') !!}
                                 {!! Form::text('customer_tel', $package->customer_tel, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
 
                             <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('product', __('lang_v1.product_name') . '*:') !!}
-                                {!! Form::text('product', $package->product, ['class' => 'form-control', 'rows' => 3,'required']); !!}
+                                {!! Form::label('product', __('lang_v1.product') . ' ('.__('lang_v1.qty') .'):') !!}
+                                
+                                {!! Form::textarea('product', $package->product, ['class' => 'form-control', 'rows' => 3,'required']); !!}
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -70,19 +71,19 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('longeur', __('lang_v1.longeur') . ':') !!}
+                                {!! Form::label('longeur', __('lang_v1.length') . ':') !!}
                                 {!! Form::text('longeur', $package->longeur, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('largeur', __('lang_v1.largeur') . ':') !!}
+                                {!! Form::label('largeur', __('lang_v1.width') . ':') !!}
                                 {!! Form::text('largeur', $package->largeur, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('hauteur', __('lang_v1.hauteur') . ':') !!}
+                                {!! Form::label('hauteur', __('lang_v1.height') . ':') !!}
                                 {!! Form::text('hauteur', $package->hauteur, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div> 

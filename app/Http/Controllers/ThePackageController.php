@@ -631,8 +631,16 @@ class ThePackageController extends Controller
      */
     public function store(Request $request)
     {
-    //   dd($request);
             $product=$request->input('product');
+            $packages=$request->input('packages');
+            $arr=array();
+            foreach($packages as $package){
+                $impl=implode(':', $package);
+                array_push($arr, $impl);
+                // dd($package);
+
+            }
+    //    dd($arr);
             $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
             $customer_tel=$request->input('customer_tel');

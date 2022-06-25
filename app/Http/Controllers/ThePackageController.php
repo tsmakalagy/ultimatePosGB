@@ -632,21 +632,31 @@ class ThePackageController extends Controller
     public function store(Request $request)
     {
             $product=$request->input('product');
+            $product=$request->input('product');
             $packages=$request->input('packages');
             $arr=array();
+        if($request->has('packages')){
             foreach($packages as $package){
                 $impl=implode(':', $package);
                 array_push($arr, $impl);
                 // dd($package);
 
             }
-    //    dd($arr);
-            $bar_code=$request->input('bar_code');
+        }
+            $implod=implode(',',$arr);
+
+            $patterns='/\r\n/';
+            $replacements=',';
+            $pr=preg_replace($patterns, $replacements, $product);
+            $concat_product=$implod.','.$pr;
+        // dd($concat);
+            // $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
             $customer_tel=$request->input('customer_tel');
             $longeur=$request->input('longeur');
             $largeur=$request->input('largeur');
             $hauteur=$request->input('hauteur');
+            $volume=$request->input('volume');
             $image="image";
             $status=$request->input('status');
             $weight=$request->input('weight');
@@ -654,7 +664,7 @@ class ThePackageController extends Controller
             $other_field2=$request->input('other_field2');
             $bar_code='234444';
        
-            $package= Package::firstOrCreate(['product'=> $product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+            $package= ThePackage::firstOrCreate(['product'=> $concat_product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>$image,'volume'=>$volume,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
        
         $destinationPath = 'uploads/img/';
         $array=array();

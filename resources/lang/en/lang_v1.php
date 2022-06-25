@@ -126,8 +126,9 @@ return [
     'customer_tel' => 'Contact',
     'scan' => 'Scanner',
     'scan_barcode' => 'Scanner barcode',
-
-
+ 
+    'list_package_out' => 'List package out',
+    'add_package_out' => 'Add package out',
     'add_package' => 'Add package',
     'shipping_charges' => 'Shipping Charges',
     'stock_transfer_added_successfully' => 'Stock transfer added successfully',

@@ -428,7 +428,14 @@ class ThePackageController extends Controller
                 
                         ->editColumn('weight',
                         '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
-                       
+                        ->editColumn(
+                            'created_at',
+                            function ($row) {
+                                $created_at = $row->created_at ? $row->created_at->format('Y-m-d') : '';
+                                $format_date = preg_replace('/[\s]+/mu', '', $created_at);
+                                return '<span class="total-discount" data-orig-value="">' . $created_at . '</span>';
+                            }
+                        )
                         ->editColumn('image', function ($row) {
                             $image_url=Image::where('product_id',$row->id)->first();
                             
@@ -446,8 +453,8 @@ class ThePackageController extends Controller
                            
                         })
 
-                        ->editColumn('status',
-                        '<span class="weight" data-orig-value="{{$status}}">@if(!empty($status)) {{$status}} @endif  </span>')
+                        // ->editColumn('status',
+                        // '<span class="weight" data-orig-value="{{$status}}">@if(!empty($status)) {{$status}} @endif  </span>')
                         ->editColumn('other_field1',
                         '<span class="other_field1" data-orig-value="{{$other_field1}}">@if(!empty($other_field1)) {{$other_field1}} @endif   </span>')
                         ->editColumn('other_field2',
@@ -487,6 +494,10 @@ class ThePackageController extends Controller
                     return $status;
                 })
                 ->addColumn('product', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                       ->addColumn('created_at', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -557,7 +568,7 @@ class ThePackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','product','customer_tel','longueur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total','product','created_at','customer_tel','longueur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -583,7 +594,7 @@ class ThePackageController extends Controller
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
         return view('the_package.index')
-            ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
+            ->with(compact('business_locations','customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
 
        
             }
@@ -631,14 +642,32 @@ class ThePackageController extends Controller
      */
     public function store(Request $request)
     {
-    //   dd($request);
             $product=$request->input('product');
-            $bar_code=$request->input('bar_code');
+            $product=$request->input('product');
+            $packages=$request->input('packages');
+            $arr=array();
+        if($request->has('packages')){
+            foreach($packages as $package){
+                $impl=implode(':', $package);
+                array_push($arr, $impl);
+                // dd($package);
+
+            }
+        }
+            $implod=implode(',',$arr);
+
+            $patterns='/\r\n/';
+            $replacements=',';
+            $pr=preg_replace($patterns, $replacements, $product);
+            $concat_product=$implod.','.$pr;
+        // dd($concat);
+            // $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
             $customer_tel=$request->input('customer_tel');
             $longueur=$request->input('longueur');
             $largeur=$request->input('largeur');
             $hauteur=$request->input('hauteur');
+            $volume=$request->input('volume');
             $image="image";
             $status=$request->input('status');
             $weight=$request->input('weight');
@@ -646,7 +675,9 @@ class ThePackageController extends Controller
             $other_field2=$request->input('other_field2');
             $bar_code='234444';
        
-            $package= Package::firstOrCreate(['product'=> $product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longueur'=>$longueur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+
+            $package= ThePackage::firstOrCreate(['product'=> $concat_product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longueur'=>$longueur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>$image,'volume'=>$volume,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+
        
         $destinationPath = 'uploads/img/';
         $array=array();

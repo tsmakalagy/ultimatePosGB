@@ -230,13 +230,20 @@ class AdminSidebarMenu
                                  ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'products' && request()->segment(2) == '']
                              );
                          }
-                        //  if (auth()->user()->can('product.create')) {
-                        //      $sub->url(
-                        //          action('PackageController@create'),
-                        //          __('lang_v1.add_package'),
-                        //          ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'products' && request()->segment(2) == 'create']
-                        //      );
-                        //  }
+                            if (auth()->user()->can('product.view')) {
+                             $sub->url(
+                                 action('ThePackageController@index'),
+                                 __('lang_v1.list_package_out'),
+                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'products' && request()->segment(2) == '']
+                             );
+                         }
+                         if (auth()->user()->can('product.create')) {
+                             $sub->url(
+                                 action('ThePackageController@create'),
+                                 __('lang_v1.add_package_out'),
+                                 ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'products' && request()->segment(2) == 'create']
+                             );
+                         }
                  
                  
                       

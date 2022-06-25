@@ -99,7 +99,7 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('longeur', __('lang_v1.length') . ':') !!}
-                                    {!! Form::text('longeur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                                    {!! Form::text('longueur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
                                 </div>
                             </div>
 
@@ -116,12 +116,7 @@
                                 </div>
                         </div>
                              
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('longueur', __('lang_v1.longueur') . ':') !!}
-                                {!! Form::text('longueur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-
-                            </div>
+                   
                         </div>
                         <div class="row">
                             <div class="col-md-6">

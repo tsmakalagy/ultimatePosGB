@@ -30,19 +30,20 @@
 
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
-                                             
+                        <th width="75px">@lang('lang_v1.date')</th>
                         <th>@lang('lang_v1.customer')</th>
-                        <th>@lang('lang_v1.mobile')</th>
+                        <th>@lang('lang_v1.customer_tel')</th>
+
                         <th>@lang('lang_v1.barcode')</th>
-                        <th>@lang('lang_v1.product_name')</th> 
-                        <th>@lang('lang_v1.longueur')</th>
-                        <th>@lang('lang_v1.largeur')</th>
-                        <th>@lang('lang_v1.hauteur')</th>
-                        <th>@lang('lang_v1.weight')</th>                
-                        
+                        <th>@lang('lang_v1.product')</th>
+                        <th>@lang('lang_v1.length')</th>
+                        <th>@lang('lang_v1.width')</th>
+                        <th>@lang('lang_v1.height')</th>
+                        <th>@lang('lang_v1.weight')</th>
+                        <th>@lang('lang_v1.volume')</th>
+
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
-                        <th>@lang('lang_v1.status')</th>  
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -127,20 +128,19 @@
                 scrollCollapse: true,
                 columns: [
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
-                    {data: 'image', name: 'packages.image'},
-                                               
+                    {data: 'image', name: 'image'},
+                    {data: 'created_at', name: 'created_at'},
                     {data: 'customer_name', name: 'customer_name'},
                     {data: 'customer_tel', name: 'customer_tel'},
                     {data: 'bar_code', name: 'bar_code'},
-                    {data: 'product', name: 'product'}, 
+                    {data: 'product', name: 'product'},
                     {data: 'longueur', name: 'longueur'},
                     {data: 'largeur', name: 'largeur'},
                     {data: 'hauteur', name: 'hauteur'},
-                    {data: 'weight', name: 'weight'},                 
-                                     
+                    {data: 'weight', name: 'weight'},
+                    {data: 'volume', name: 'volume'},
                     {data: 'other_field1', name: 'other_field1'},
-                    {data: 'other_field2', name: 'other_field2'},
-                    {data: 'status', name: 'status'}
+                    {data: 'other_field2', name: 'other_field2'}
                    
                 ],
                 "fnDrawCallback": function (oSettings) {

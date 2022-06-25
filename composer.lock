@@ -5590,19 +5590,20 @@
         },
         {
             "name": "spatie/dropbox-api",
-            "version": "1.20.1",
+            "version": "1.20.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spatie/dropbox-api.git",
-                "reference": "f7563632fa6e4970b895805169688be273fcbf19"
+                "reference": "9a515343b248aacebff0febd1cd657fda4f9eb2b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/dropbox-api/zipball/f7563632fa6e4970b895805169688be273fcbf19",
-                "reference": "f7563632fa6e4970b895805169688be273fcbf19",
+                "url": "https://api.github.com/repos/spatie/dropbox-api/zipball/9a515343b248aacebff0febd1cd657fda4f9eb2b",
+                "reference": "9a515343b248aacebff0febd1cd657fda4f9eb2b",
                 "shasum": ""
             },
             "require": {
+                "ext-json": "*",
                 "graham-campbell/guzzle-factory": "^3.0|^4.0|^5.0",
                 "guzzlehttp/guzzle": "^6.2|^7.0",
                 "php": "^7.1|^8.0"
@@ -5648,7 +5649,7 @@
             ],
             "support": {
                 "issues": "https://github.com/spatie/dropbox-api/issues",
-                "source": "https://github.com/spatie/dropbox-api/tree/1.20.1"
+                "source": "https://github.com/spatie/dropbox-api/tree/1.20.2"
             },
             "funding": [
                 {
@@ -5660,7 +5661,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-29T06:41:44+00:00"
+            "time": "2022-06-24T05:57:19+00:00"
         },
         {
             "name": "spatie/flysystem-dropbox",
@@ -8778,16 +8779,16 @@
         },
         {
             "name": "yajra/laravel-datatables-oracle",
-            "version": "v9.20.0",
+            "version": "v9.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yajra/laravel-datatables.git",
-                "reference": "4c22b09c8c664df5aad9f17d99c3823c0f2d84e2"
+                "reference": "8f37e59e7ed1c1d2ff713497918bcaee72d587bb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/4c22b09c8c664df5aad9f17d99c3823c0f2d84e2",
-                "reference": "4c22b09c8c664df5aad9f17d99c3823c0f2d84e2",
+                "url": "https://api.github.com/repos/yajra/laravel-datatables/zipball/8f37e59e7ed1c1d2ff713497918bcaee72d587bb",
+                "reference": "8f37e59e7ed1c1d2ff713497918bcaee72d587bb",
                 "shasum": ""
             },
             "require": {
@@ -8847,7 +8848,7 @@
             ],
             "support": {
                 "issues": "https://github.com/yajra/laravel-datatables/issues",
-                "source": "https://github.com/yajra/laravel-datatables/tree/v9.20.0"
+                "source": "https://github.com/yajra/laravel-datatables/tree/v9.21.1"
             },
             "funding": [
                 {
@@ -8859,7 +8860,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2022-05-08T16:04:16+00:00"
+            "time": "2022-06-22T09:21:30+00:00"
         },
         {
             "name": "zendframework/zend-diactoros",

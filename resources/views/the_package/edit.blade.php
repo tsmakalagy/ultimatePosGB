@@ -70,8 +70,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('longeur', __('lang_v1.longeur') . ':') !!}
-                                {!! Form::text('longeur', $package->longeur, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::label('longueur', __('lang_v1.longueur') . ':') !!}
+                                {!! Form::text('longueur', $package->longueur, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
                         <div class="col-md-6">

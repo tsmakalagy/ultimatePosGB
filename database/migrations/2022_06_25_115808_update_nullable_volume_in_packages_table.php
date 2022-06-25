@@ -15,7 +15,7 @@ class UpdateNullableVolumeInPackagesTable extends Migration
     {
         Schema::table('packages', function (Blueprint $table) {
              $table->decimal('volume',20,2)->nullable()->change();
-            $table->decimal('longeur',20,2)->nullable()->change();
+            $table->decimal('longueur',20,2)->nullable()->change();
             $table->decimal('largeur',20,2)->nullable()->change();
             $table->decimal('hauteur',20,2)->nullable()->change();
             $table->decimal('weight',20,2)->nullable()->change();

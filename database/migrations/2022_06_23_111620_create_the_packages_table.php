@@ -19,7 +19,7 @@ class CreateThePackagesTable extends Migration
             $table->unsignedInteger('package_id');
             $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
             $table->decimal('volume',20,2);
-            $table->decimal('longeur',20,2);
+            $table->decimal('longueur',20,2);
             $table->decimal('largeur',20,2);
             $table->decimal('hauteur',20,2);
             $table->string('customer_name');

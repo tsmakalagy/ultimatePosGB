@@ -58,7 +58,7 @@
                 <td>{{ ucfirst($package->customer_name) }}</td>
                 <td>{{$package->customer_tel }}</td>
                 <td>{{ ucfirst($package->product) }}</td>
-                <td>{{$package->longeur }}</td>
+                <td>{{$package->longueur }}</td>
                 <td>{{$package->largeur }}</td>
                 <td>{{$package->hauteur }}</td>
                 <td>{{$package->weight }}</td>              

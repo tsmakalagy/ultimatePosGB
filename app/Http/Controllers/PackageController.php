@@ -130,8 +130,8 @@ class PackageController extends Controller
                     '<span class="product_spec" data-orig-value="{{$bar_code}}">@if(!empty($bar_code)) {{$bar_code}} @endif   </span>')
                 ->editColumn('customer_tel',
                     '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
-                ->editColumn('longeur',
-                    '<span class="china_price" data-orig-value="{{$longeur}}">@if(!empty($longeur)) {{$longeur}} @endif   </span>')
+                ->editColumn('longueur',
+                    '<span class="china_price" data-orig-value="{{$longueur}}">@if(!empty($longueur)) {{$longueur}} @endif   </span>')
                 ->editColumn('largeur',
                     '<span class="china_price" data-orig-value="{{$largeur}}">@if(!empty($largeur)) {{$largeur}} @endif   </span>')
                 ->editColumn('hauteur',
@@ -140,7 +140,7 @@ class PackageController extends Controller
                     'volume',
                     function ($row) {
                         $la = $row->largeur;
-                        $Lo = $row->longeur;
+                        $Lo = $row->longueur;
                         $h = $row->hauteur;
                         $v = $row->volume;
                         if (empty($v)) {
@@ -190,7 +190,7 @@ class PackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->addColumn('longeur', function ($row) {
+                ->addColumn('longueur', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -249,7 +249,7 @@ class PackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['created_at', 'product', 'customer_tel', 'longeur', 'volume', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel'];
+            $rawColumns = ['created_at', 'product', 'customer_tel', 'longueur', 'volume', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -302,7 +302,7 @@ class PackageController extends Controller
         $bar_code = $request->input('bar_code');
         $customer_name = $request->input('customer_name');
         $customer_tel = $request->input('customer_tel');
-        $longeur = $request->input('longeur');
+        $longueur = $request->input('longueur');
         $largeur = $request->input('largeur');
         $hauteur = $request->input('hauteur');
         $volume = $request->input('volume');
@@ -312,7 +312,7 @@ class PackageController extends Controller
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package = Package::firstOrCreate(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longeur' => $longeur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package = Package::firstOrCreate(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
 
         $destinationPath = 'uploads/img/';
         $array = array();
@@ -386,7 +386,7 @@ class PackageController extends Controller
         $bar_code = $request->input('bar_code');
         $customer_name = $request->input('customer_name');
         $customer_tel = $request->input('customer_tel');
-        $longeur = $request->input('longeur');
+        $longueur = $request->input('longueur');
         $largeur = $request->input('largeur');
         $hauteur = $request->input('hauteur');
         $image = 'image';
@@ -396,7 +396,7 @@ class PackageController extends Controller
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package->update(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longeur' => $longeur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package->update(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
         $destinationPath = 'uploads/img/';
         $array = array();
         if ($request->has('images')) {

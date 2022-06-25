@@ -145,7 +145,7 @@
                     {data: 'customer_tel', name: 'customer_tel'},
                     {data: 'bar_code', name: 'bar_code'},
                     {data: 'product', name: 'product'},
-                    {data: 'longeur', name: 'longeur'},
+                    {data: 'longueur', name: 'longueur'},
                     {data: 'largeur', name: 'largeur'},
                     {data: 'hauteur', name: 'hauteur'},
                     {data: 'weight', name: 'weight'},

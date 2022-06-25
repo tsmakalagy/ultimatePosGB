@@ -59,8 +59,8 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('longeur', __('lang_v1.length') . ':') !!}
-                                    {!! Form::text('longeur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                                    {!! Form::label('longueur', __('lang_v1.length') . ':') !!}
+                                    {!! Form::text('longueur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
                                 </div>
                             </div>
 

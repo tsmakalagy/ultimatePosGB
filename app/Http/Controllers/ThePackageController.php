@@ -419,8 +419,8 @@ class ThePackageController extends Controller
                         // '<span class="china_price" data-orig-value="{{customer_name}}">@if(!empty($customer_name)) {{$customer_name}} @endif   </span>')
                         ->editColumn('customer_tel',
                         '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
-                          ->editColumn('longeur',
-                        '<span class="china_price" data-orig-value="{{$longeur}}">@if(!empty($longeur)) {{$longeur}} @endif   </span>')
+                          ->editColumn('longueur',
+                        '<span class="china_price" data-orig-value="{{$longueur}}">@if(!empty($longueur)) {{$longueur}} @endif   </span>')
                         ->editColumn('largeur',
                         '<span class="china_price" data-orig-value="{{$largeur}}">@if(!empty($largeur)) {{$largeur}} @endif   </span>')
                         ->editColumn('hauteur',
@@ -495,7 +495,7 @@ class ThePackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                   ->addColumn('longeur', function ($row) {
+                   ->addColumn('longueur', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -557,7 +557,7 @@ class ThePackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','product','customer_tel','longeur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total','product','customer_tel','longueur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -653,7 +653,7 @@ class ThePackageController extends Controller
             // $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
             $customer_tel=$request->input('customer_tel');
-            $longeur=$request->input('longeur');
+            $longueur=$request->input('longueur');
             $largeur=$request->input('largeur');
             $hauteur=$request->input('hauteur');
             $volume=$request->input('volume');
@@ -664,7 +664,9 @@ class ThePackageController extends Controller
             $other_field2=$request->input('other_field2');
             $bar_code='234444';
        
+
             $package= ThePackage::firstOrCreate(['product'=> $concat_product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>$image,'volume'=>$volume,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+
        
         $destinationPath = 'uploads/img/';
         $array=array();
@@ -740,7 +742,7 @@ class ThePackageController extends Controller
             $bar_code=$request->input('bar_code');
             $customer_name=$request->input('customer_name');
             $customer_tel=$request->input('customer_tel');
-            $longeur=$request->input('longeur');
+            $longueur=$request->input('longueur');
             $largeur=$request->input('largeur');
             $hauteur=$request->input('heuteur');
             $image='image';
@@ -749,7 +751,7 @@ class ThePackageController extends Controller
             $other_field1=$request->input('other_field1');
             $other_field2=$request->input('other_field2');
        
-            $package->update(['product'=> $product,'bar_code'=>$bar_code,'customer_name'=>$customer_name,'customer_tel'=>$customer_tel,'longeur'=>$longeur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
+            $package->update(['product'=> $product,'bar_code'=>$bar_code,'customer_name'=>$customer_name,'customer_tel'=>$customer_tel,'longueur'=>$longueur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
             $destinationPath = 'uploads/img/';
             $array=array();
             if($request->has('images'))

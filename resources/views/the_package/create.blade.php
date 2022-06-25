@@ -109,12 +109,18 @@
                                     {!! Form::text('largeur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
                                 </div>
                             </div>
-
-                            <div class="col-md-4">
+                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('hauteur', __('lang_v1.height') . ':') !!}
                                     {!! Form::text('hauteur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
                                 </div>
+                        </div>
+                             
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                {!! Form::label('longueur', __('lang_v1.longueur') . ':') !!}
+                                {!! Form::text('longueur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+
                             </div>
                         </div>
                         <div class="row">

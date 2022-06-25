@@ -45,7 +45,7 @@
               <th>{{ __('lang_v1.customer') }}</th>
               <th>{{ __('lang_v1.customer_tel') }}</th>
               <th>{{ __('lang_v1.product_name') }}</th>
-              <th>{{ __('lang_v1.longeur') }}</th>
+              <th>{{ __('lang_v1.longueur') }}</th>
               <th>{{ __('lang_v1.largeur') }}</th>
               <th>{{ __('lang_v1.hauteur') }}</th>
               <th>{{ __('lang_v1.weight') }}</th>         
@@ -57,7 +57,7 @@
                 <td>{{ ucfirst($package->customer_name) }}</td>
                 <td>{{$package->customer_tel }}</td>
                 <td>{{ ucfirst($package->product) }}</td>
-                <td>{{$package->longeur }}</td>
+                <td>{{$package->longueur }}</td>
                 <td>{{$package->largeur }}</td>
                 <td>{{$package->hauteur }}</td>
                 <td>{{$package->weight }}</td>              

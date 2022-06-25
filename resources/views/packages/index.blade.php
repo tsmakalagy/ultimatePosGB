@@ -116,7 +116,18 @@ aria-labelledby="gridSystemModalLabel">
 
                 $('#my_barcode').focus();
             });
-
+            //Date range as a button
+$('#sell_list_filter_date_range').daterangepicker(
+        dateRangeSettings,
+        function (start, end) {
+            $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+            shipper_table.ajax.reload();
+        }
+    );
+    $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
+        $('#sell_list_filter_date_range').val('');
+        shipper_table.ajax.reload();
+    });
 
             shipper_table = $('#shipper_table').DataTable({
                 processing: true,

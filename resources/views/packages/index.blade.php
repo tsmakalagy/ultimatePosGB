@@ -53,7 +53,6 @@
 
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
-                        <th>@lang('lang_v1.status')</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -143,20 +142,16 @@
                     {data: 'image', name: 'packages.image'},
                     {data: 'created_at', name: 'created_at'},
                     {data: 'customer_name', name: 'customer_name'},
-
                     {data: 'customer_tel', name: 'customer_tel'},
                     {data: 'bar_code', name: 'bar_code'},
                     {data: 'product', name: 'product'},
                     {data: 'longeur', name: 'longeur'},
                     {data: 'largeur', name: 'largeur'},
                     {data: 'hauteur', name: 'hauteur'},
-
                     {data: 'weight', name: 'weight'},
                     {data: 'volume', name: 'volume'},
-
                     {data: 'other_field1', name: 'other_field1'},
-                    {data: 'other_field2', name: 'other_field2'},
-                    {data: 'status', name: 'status'}
+                    {data: 'other_field2', name: 'other_field2'}
 
                 ],
                 "fnDrawCallback": function (oSettings) {

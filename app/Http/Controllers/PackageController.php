@@ -88,12 +88,6 @@ class PackageController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $business_id = request()->session()->get('user.business_id');
-        $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
-        $is_tables_enabled = $this->transactionUtil->isModuleEnabled('tables');
-        $is_service_staff_enabled = $this->transactionUtil->isModuleEnabled('service_staff');
-        $is_types_service_enabled = $this->moduleUtil->isModuleEnabled('types_of_service');
-
         if (request()->ajax()) {
             $with = [];
             $package = $this->transactionUtil->getPackage();
@@ -128,7 +122,6 @@ class PackageController extends Controller
                     }
                 )
                 ->removeColumn('id')
-
                 ->editColumn('tel',
                     '<span class="tel">   </span>')
                 ->editColumn('product',
@@ -143,8 +136,21 @@ class PackageController extends Controller
                     '<span class="china_price" data-orig-value="{{$largeur}}">@if(!empty($largeur)) {{$largeur}} @endif   </span>')
                 ->editColumn('hauteur',
                     '<span class="china_price" data-orig-value="{{$hauteur}}">@if(!empty($hauteur)) {{$hauteur}} @endif   </span>')
-                ->editColumn('volume',
-                    '<span class="china_price" data-orig-value="{{$volume}}">@if(!empty($volume)) {{$volume}}  @endif   </span>')
+                ->editColumn(
+                    'volume',
+                    function ($row) {
+                        $la = $row->largeur;
+                        $Lo = $row->longeur;
+                        $h = $row->hauteur;
+                        $v = $row->volume;
+                        if (empty($v)) {
+                            if ($la != 0 && $Lo != 0 && $h != 0) {
+                                $v = $la * $Lo * $h * 0.000001;
+                            }
+                        }
+                        return '<span class="china_price" data-orig-value="' . $v . '">' . number_format($v, 4) . '</span>';
+                    }
+                )
                 ->editColumn('weight',
                     '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
                 ->editColumn(
@@ -170,13 +176,12 @@ class PackageController extends Controller
                     }
 
                 })
-                ->editColumn('status',
-                    '<span class="weight" data-orig-value="{{$status}}">@if(!empty($status)) {{$status}} @endif  </span>')
+//                ->editColumn('status',
+//                    '<span class="weight" data-orig-value="{{$status}}">@if(!empty($status)) {{$status}} @endif  </span>')
                 ->editColumn('other_field1',
                     '<span class="other_field1" data-orig-value="{{$other_field1}}">@if(!empty($other_field1)) {{$other_field1}} @endif   </span>')
                 ->editColumn('other_field2',
                     '<span class="other_field2" data-orig-value="{{$other_field2}}">@if(!empty($other_field2)) {{$other_field2}} @endif   </span>')
-
                 ->addColumn('product', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -209,10 +214,10 @@ class PackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->addColumn('status', function ($row) {
-                    $total_remaining = '';
-                    return $total_remaining;
-                })
+//                ->addColumn('status', function ($row) {
+//                    $total_remaining = '';
+//                    return $total_remaining;
+//                })
                 ->addColumn('other_field1', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -225,11 +230,11 @@ class PackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->filterColumn('status', function ($query, $keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where(DB::raw(" IF(packages.status = 0, 'entrant', 'sortant')"), 'like', "%{$keyword}%");
-                    });
-                })
+//                ->filterColumn('status', function ($query, $keyword) {
+//                    $query->where(function ($q) use ($keyword) {
+//                        $q->where(DB::raw(" IF(packages.status = 0, 'entrant', 'sortant')"), 'like', "%{$keyword}%");
+//                    });
+//                })
                 ->filterColumn('created_at', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
                         $q->where('created_at', 'like', "%{$keyword}%");
@@ -244,7 +249,7 @@ class PackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'created_at', 'product', 'customer_tel', 'longeur', 'volume', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['created_at', 'product', 'customer_tel', 'longeur', 'volume', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);

@@ -756,7 +756,7 @@ class PackageController extends Controller
             $customer_tel=$request->input('customer_tel');
             $longeur=$request->input('longeur');
             $largeur=$request->input('largeur');
-            $hauteur=$request->input('heuteur');
+            $hauteur=$request->input('hauteur');
             $image='image';
             $status=$request->input('status');
             $weight=$request->input('weight');

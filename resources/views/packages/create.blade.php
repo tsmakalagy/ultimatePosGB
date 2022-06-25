@@ -48,27 +48,13 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="form-group">
-                                    {!! Form::label('product', __('lang_v1.product') . ' ('.__('lang_v1.qty') .'):') !!}
+                                    {!! Form::label('product', __('lang_v1.product_list') . ' ('.__('lang_v1.qty') .'):') !!}
                                     {!! Form::textarea('product', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
                                 </div>
                             </div>
 
-
-                            {{--                        <div class="col-md-6">--}}
-                            {{--                            <div class="form-group">--}}
-                            {{--                                {!! Form::label('status', __('lang_v1.status') . ':') !!}--}}
-                            {{--                                {!! Form::select('status', [0=>'entrant',1=>'sortant'],0,['class' => 'form-control select2', 'placeholder' => __('messages.please_select'),'required']); !!}--}}
-                            {{--                               --}}
-                            {{--                            </div>--}}
-                            {{--                        </div>--}}
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
-                                    {!! Form::text('weight', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
                         </div>
                         <div class="row">
                             <div class="col-md-4">
@@ -93,12 +79,18 @@
                             </div>
                         </div>
                         <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
-                                {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
+                                    {!! Form::text('weight', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
                             </div>
-                        </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
+                                    {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
+                            </div>
                     </div>
 
                         <div class="row">

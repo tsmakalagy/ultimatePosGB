@@ -11,34 +11,10 @@
 
     <!-- Main content -->
     <section class="content no-print">
-          @component('components.filters', ['title' => __('report.filters')])
-        {{-- @include('sell.partials.sell_list_filters') --}}
-        
-        @if(empty($only) || in_array('sell_list_filter_date_range', $only))
-    <div class="col-md-4 pull-right" >
-        <div class="form-group">
-            {!! Form::label('sell_list_filter_date_range', __('report.date_range') . ':') !!}
-            {!! Form::text('sell_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']); !!}
-        </div>
-    </div>
-    @endif
-        @if($is_woocommerce)
-            <div class="col-md-3">
-                <div class="form-group">
-                    <div class="checkbox">
-                        <label>
-                          {!! Form::checkbox('only_woocommerce_sells', 1, false, 
-                          [ 'class' => 'input-icheck', 'id' => 'synced_from_woocommerce']); !!} {{ __('lang_v1.synced_from_woocommerce') }}
-                        </label>
-                    </div>
-                </div>
-            </div>
-        @endif
-    @endcomponent
-        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.package') ])
+
+        @component('components.widget', ['class' => 'box-primary' ])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 @slot('tool')
-
                     <div class="box-tools">
                         <button type="button" class="btn btn-block btn-primary btn-modal"
                                 data-href="{{action('PackageController@scan')}}"
@@ -46,6 +22,15 @@
                             <i class="fa fa-plus"></i> @lang('messages.scan')</button>
                     </div>
                 @endslot
+                    <div class="row">
+                        <div class="col-md-4 col-md-offset-4">
+                            <div class="form-group">
+                                {!! Form::label('sell_list_filter_date_range', __('report.date_range_filter') . ':') !!}
+                                {!! Form::text('sell_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']); !!}
+                            </div>
+                        </div>
+                    </div>
+<div class="clearfix"></div>
             @endif
             @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 <table class="table table-bordered table-striped ajax_view " id="shipper_table"
@@ -118,17 +103,17 @@ aria-labelledby="gridSystemModalLabel">
                 $('#my_barcode').focus();
             });
             //Date range as a button
-$('#sell_list_filter_date_range').daterangepicker(
-        dateRangeSettings,
-        function (start, end) {
-            $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
-            shipper_table.ajax.reload();
-        }
-    );
-    $('#sell_list_filter_date_range').on('cancel.daterangepicker', function(ev, picker) {
-        $('#sell_list_filter_date_range').val('');
-        shipper_table.ajax.reload();
-    });
+            $('#sell_list_filter_date_range').daterangepicker(
+                dateRangeSettings,
+                function (start, end) {
+                    $('#sell_list_filter_date_range').val(start.format(moment_date_format) + ' ~ ' + end.format(moment_date_format));
+                    shipper_table.ajax.reload();
+                }
+            );
+            $('#sell_list_filter_date_range').on('cancel.daterangepicker', function (ev, picker) {
+                $('#sell_list_filter_date_range').val('');
+                shipper_table.ajax.reload();
+            });
 
             shipper_table = $('#shipper_table').DataTable({
                 processing: true,
@@ -202,7 +187,7 @@ $('#sell_list_filter_date_range').daterangepicker(
         $(document).on('shown.bs.modal', '.shipper_modal', function (e) {
             // initAutocomplete();
         });
-        
+
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>

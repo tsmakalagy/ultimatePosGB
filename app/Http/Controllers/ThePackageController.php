@@ -630,7 +630,7 @@ class ThePackageController extends Controller
         //   }
         $package = Package::pluck('bar_code', 'id');
 
-         return view('the_package.create', compact('package'));
+         return view('the_package.create_tmp', compact('package'));
 
     }
 

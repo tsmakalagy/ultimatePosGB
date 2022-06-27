@@ -121,7 +121,7 @@ return [
     'edit_package' => 'Edit package',
     'edit_the_package' => 'Edit cartoon',
     'list_package' => 'Packages List',
-    'the_package' => 'cartoon',
+    'the_package' => 'Box',
     'length' => 'Length',
     'width' => 'Width',
     'height' => 'Height',

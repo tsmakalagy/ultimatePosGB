@@ -58,12 +58,12 @@ return [
     'min' => 'Min',
     'edit_the_package' => 'Editer carton',
 
-    'the_package' => 'carton',
+    'the_package' => 'Carton',
     'list_package_out' => 'List colis sortant',
     'add_package_out' => 'Ajouter colis sortant',
     'edit_package' => 'Editer colis',
     'add_package' => 'Ajouter colis',
-    'add_the_package' => 'Ajouter cartoon',
+    'add_the_package' => 'Ajouter carton',
 
     'maximum' => 'Maximum',
     'minimum' => 'Minimum',

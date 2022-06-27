@@ -11,23 +11,21 @@
 
     <!-- Main content -->
     <section class="content no-print">
-        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.the_package') ])
+        @component('components.widget', ['class' => 'box-primary'])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
-            @slot('tool')
-         
-            <div class="box-tools">
-                <a class="btn btn-block btn-primary" href="{{action('ThePackageController@create')}}">
-                <i class="fa fa-plus"></i> @lang('messages.add')</a>
-            </div
-        @endslot
+                @slot('tool')
+
+                    <div class="box-tools">
+                        <a class="btn btn-block btn-primary" href="{{action('ThePackageController@create')}}">
+                            <i class="fa fa-plus"></i> @lang('messages.add')</a>
+                    </div>
+                @endslot
             @endif
             @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 <table class="table table-bordered table-striped ajax_view " id="shipper_table"
                        style="min-width: 100% ">
                     <thead class="text-center">
                     <tr>
-                       
-
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
                         <th width="75px">@lang('lang_v1.date')</th>
@@ -50,29 +48,29 @@
                 </table>
             @endif
         @endcomponent
-            {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
-            </div> --}}
-            {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
+        {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
+        </div> --}}
+        {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog"
+aria-labelledby="gridSystemModalLabel">
 </div>
 
-<div class="modal fade" id="view_package_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
+<div class="modal fade" id="view_package_modal" tabindex="-1" role="dialog"
+aria-labelledby="gridSystemModalLabel">
 </div>
- --}}
- <div class="modal product_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
-</div>
+--}}
+        <div class="modal product_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
 
-<div class="modal " id="view_product_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
-</div>
-<div class="modal scan_modal" id="scan_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
-</div>
-<div class="modal uploadImg_modal" id="uploadImg_modal" tabindex="-1" role="dialog" 
-    aria-labelledby="gridSystemModalLabel">
-</div>
+        <div class="modal " id="view_product_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
+        <div class="modal scan_modal" id="scan_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
+        <div class="modal uploadImg_modal" id="uploadImg_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
 
     </section>
     <!-- /.content -->
@@ -84,13 +82,13 @@
 @stop
 
 @section('javascript')
- @php $asset_v = env('APP_VERSION'); @endphp
-  <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+    @php $asset_v = env('APP_VERSION'); @endphp
+    <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
             $('#myModal').on('shown.bs.modal', function () {
-    $('#my_barcode').focus();
-});
+                $('#my_barcode').focus();
+            });
 
 
             shipper_table = $('#shipper_table').DataTable({
@@ -141,7 +139,7 @@
                     {data: 'volume', name: 'volume'},
                     {data: 'other_field1', name: 'other_field1'},
                     {data: 'other_field2', name: 'other_field2'}
-                   
+
                 ],
                 "fnDrawCallback": function (oSettings) {
                     __currency_convert_recursively($('#sell_table'));
@@ -158,12 +156,12 @@
         });
     </script>
     <script type="text/javascript">
-        $(document).on('shown.bs.modal', '.shipper_modal', function(e) {
+        $(document).on('shown.bs.modal', '.shipper_modal', function (e) {
             // initAutocomplete();
         });
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 
 
 @endsection

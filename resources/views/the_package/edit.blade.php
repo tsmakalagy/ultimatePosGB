@@ -93,8 +93,9 @@
                             </div>
                         </div>         
                          
-                        <div class="row">
-  
+                        
+                            {!! Form::hidden('bar_code', $the_package->bar_code, ['class' => 'form-control', 'rows' => 3]); !!}
+                    <div class="row">
                           <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
@@ -173,7 +174,7 @@
                     </div>
                     @endcomponent
                      {!! Form::close()  !!}
-                     
+
                      <div class="modal scan_modal" id="scan_modal" role="dialog"
                      aria-labelledby="gridSystemModalLabel">
                 </div>

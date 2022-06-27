@@ -82,7 +82,7 @@ class ThePackageController extends Controller
 
     public function index()
     {
-
+        
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
@@ -633,27 +633,9 @@ class ThePackageController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request);
-        // $product = $request->input('product');
-        // $product = $request->input('product');
-        // $packages = $request->input('packages');
-        // $arr = array();
-        // if ($request->has('packages')) {
-        //     foreach ($packages as $package) {
-        //         $impl = implode(':', $package);
-        //         array_push($arr, $impl);
-        //         // dd($package);
+    
 
-        //     }
-        // }
-        // $implod = implode(',', $arr);
-
-        // $patterns = '/\r\n/';
-        // $replacements = ',';
-        // $pr = preg_replace($patterns, $replacements, $product);
-        // $concat_product = $implod . ',' . $pr;
-        // dd($concat);
-        // $bar_code=$request->input('bar_code');
+      
         $customer_name = $request->input('customer_name');
         $customer_tel = $request->input('customer_tel');
         $product = $request->input('product');
@@ -689,7 +671,10 @@ class ThePackageController extends Controller
         if (!empty($packages)) {
             $package->thepackage_package()->sync($packages);
         }
-        
+        $created_at=$package->created_at->format('Y-m-d H:i');
+        $id=str_pad($package->id, 4, '0', STR_PAD_LEFT);
+        $barcode='pack-'.$id.'-'.$created_at;
+        $package->update(['bar_code' => $barcode]);
 
         return redirect()->route('ThePackage.index');
 
@@ -751,7 +736,7 @@ class ThePackageController extends Controller
         $image_id = Image::where('product_id', $id)->first();
 
         $product = $request->input('product');
-        $bar_code = '234444';
+        $bar_code = $request->input('bar_code');;
         $customer_name = $request->input('customer_name');
         $customer_tel = $request->input('customer_tel');
         $longueur = $request->input('longueur');

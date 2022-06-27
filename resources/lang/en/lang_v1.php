@@ -133,6 +133,8 @@ return [
     'add_package_out' => 'Add package out',
     'edit_package' => 'Edit package',
     'edit_package' => 'Edit package',
+    'add_package' => 'Add package',
+    'add_the_package' => 'Add cartoon',
     'shipping_charges' => 'Shipping Charges',
     'stock_transfer_added_successfully' => 'Stock transfer added successfully',
     'stock_transfer_delete_success' => 'Stock transfer deleted successfully',

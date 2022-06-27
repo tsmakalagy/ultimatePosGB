@@ -62,6 +62,8 @@ return [
     'list_package_out' => 'List colis sortant',
     'add_package_out' => 'Ajouter colis sortant',
     'edit_package' => 'Editer colis',
+    'add_package' => 'Ajouter colis',
+    'add_the_package' => 'Ajouter cartoon',
 
     'maximum' => 'Maximum',
     'minimum' => 'Minimum',

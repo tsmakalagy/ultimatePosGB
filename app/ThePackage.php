@@ -45,4 +45,12 @@ class ThePackage extends Model
     {
         return $this->belongsToMany(\App\Package::class, 'thePackage_packages', 'the_package_id', 'package_id');
     }
+
+    public function getBarcodeAttribute()
+    {
+        $created_at=$this->created_at->format('Y-m-d H:i');
+        $id=str_pad($this->id, 4, '0', STR_PAD_LEFT);
+        $barcode='the_package-'.$id.'-'.$created_at;
+        return $barcode;
+    }
 }

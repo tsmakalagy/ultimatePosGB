@@ -44,7 +44,7 @@ use Illuminate\Validation\Rule;
 
 class ThePackageController extends Controller
 {
-       /**
+    /**
      * All Utils instance.
      *
      */
@@ -80,14 +80,15 @@ class ThePackageController extends Controller
         ];
     }
 
-    public function index(){
+    public function index()
+    {
 
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         $business_id = request()->session()->get('user.business_id');
         $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
         $is_tables_enabled = $this->transactionUtil->isModuleEnabled('tables');
@@ -328,7 +329,7 @@ class ThePackageController extends Controller
                 $sells->addSelect('transactions.is_recurring', 'transactions.recur_parent_id');
             }
             $sales_order_statuses = Transaction::sales_order_statuses();
-            $datatable = Datatables::of( $the_package)
+            $datatable = Datatables::of($the_package)
                 ->addColumn(
                     'action',
                     function ($row) use ($only_shipments, $is_admin, $sale_type) {
@@ -341,7 +342,7 @@ class ThePackageController extends Controller
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-left" role="menu">';
 
-                       if (auth()->user()->can('sell.delete')) {
+                        if (auth()->user()->can('sell.delete')) {
                             $html .=
                                 '<li><a href="' . action('PackageController@show', [$row->id]) . '" class="view-product"><i class="fa fa-eye"></i> ' . __("messages.view") . '</a></li>';
                         }
@@ -355,8 +356,7 @@ class ThePackageController extends Controller
                             $html .=
                                 '<li><a href="' . action('PackageController@delete', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
                         }
-                         
-                       
+
 
                         if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
                             $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
@@ -412,55 +412,51 @@ class ThePackageController extends Controller
                 ->editColumn('tel',
                     '<span class="tel">   </span>')
                 ->editColumn('product',
-                        '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
-                        ->editColumn('bar_code',
-                        '<span class="product_spec" data-orig-value="{{$bar_code}}">@if(!empty($bar_code)) {{$bar_code}} @endif   </span>')
-                        // ->editColumn('customer_name',
-                        // '<span class="china_price" data-orig-value="{{customer_name}}">@if(!empty($customer_name)) {{$customer_name}} @endif   </span>')
-                        ->editColumn('customer_tel',
-                        '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
-                          ->editColumn('longueur',
-                        '<span class="china_price" data-orig-value="{{$longueur}}">@if(!empty($longueur)) {{$longueur}} @endif   </span>')
-                        ->editColumn('largeur',
-                        '<span class="china_price" data-orig-value="{{$largeur}}">@if(!empty($largeur)) {{$largeur}} @endif   </span>')
-                        ->editColumn('hauteur',
-                        '<span class="china_price" data-orig-value="{{$hauteur}}">@if(!empty($hauteur)) {{$hauteur}} @endif   </span>')
-                
-                        ->editColumn('weight',
-                        '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
-                        ->editColumn(
-                            'created_at',
-                            function ($row) {
-                                $created_at = $row->created_at ? $row->created_at->format('Y-m-d') : '';
-                                $format_date = preg_replace('/[\s]+/mu', '', $created_at);
-                                return '<span class="total-discount" data-orig-value="">' . $created_at . '</span>';
-                            }
-                        )
-                        ->editColumn('image', function ($row) {
-                            $image_url=Image::where('product_id',$row->id)->first();
-                            
-                            if (!empty($image_url)) {
-                                $img_src=$image_url->image;
-                                $img_expl=explode('|',$img_src);
-                                $img = asset('/uploads/img/' . rawurlencode($img_expl[0]));
-                            return '<div style="display: flex;"><img src="' . $img . '"  class="product-thumbnail-small" ></div>';
-                                    } 
-                                    else {
-                                        // $img = asset('/img/default.png');
-                            return '<button type="button" class="btn btn-block btn-xs btn-primary btn-modal" data-href="' . action('PackageController@uploadImg', [$row->id]) . '"  data-container=".uploadImg_modal">upload img</button>';
+                    '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
+                ->editColumn('bar_code',
+                    '<span class="product_spec" data-orig-value="{{$bar_code}}">@if(!empty($bar_code)) {{$bar_code}} @endif   </span>')
+                // ->editColumn('customer_name',
+                // '<span class="china_price" data-orig-value="{{customer_name}}">@if(!empty($customer_name)) {{$customer_name}} @endif   </span>')
+                ->editColumn('customer_tel',
+                    '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
+                ->editColumn('longueur',
+                    '<span class="china_price" data-orig-value="{{$longueur}}">@if(!empty($longueur)) {{$longueur}} @endif   </span>')
+                ->editColumn('largeur',
+                    '<span class="china_price" data-orig-value="{{$largeur}}">@if(!empty($largeur)) {{$largeur}} @endif   </span>')
+                ->editColumn('hauteur',
+                    '<span class="china_price" data-orig-value="{{$hauteur}}">@if(!empty($hauteur)) {{$hauteur}} @endif   </span>')
+                ->editColumn('weight',
+                    '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
+                ->editColumn(
+                    'created_at',
+                    function ($row) {
+                        $created_at = $row->created_at ? $row->created_at->format('Y-m-d') : '';
+                        $format_date = preg_replace('/[\s]+/mu', '', $created_at);
+                        return '<span class="total-discount" data-orig-value="">' . $created_at . '</span>';
+                    }
+                )
+                ->editColumn('image', function ($row) {
+                    $image_url = Image::where('product_id', $row->id)->first();
 
-                                    }
-                           
-                        })
+                    if (!empty($image_url)) {
+                        $img_src = $image_url->image;
+                        $img_expl = explode('|', $img_src);
+                        $img = asset('/uploads/img/' . rawurlencode($img_expl[0]));
+                        return '<div style="display: flex;"><img src="' . $img . '"  class="product-thumbnail-small" ></div>';
+                    } else {
+                        // $img = asset('/img/default.png');
+                        return '<button type="button" class="btn btn-block btn-xs btn-primary btn-modal" data-href="' . action('PackageController@uploadImg', [$row->id]) . '"  data-container=".uploadImg_modal">upload img</button>';
 
-                        // ->editColumn('status',
-                        // '<span class="weight" data-orig-value="{{$status}}">@if(!empty($status)) {{$status}} @endif  </span>')
-                        ->editColumn('other_field1',
-                        '<span class="other_field1" data-orig-value="{{$other_field1}}">@if(!empty($other_field1)) {{$other_field1}} @endif   </span>')
-                        ->editColumn('other_field2',
-                        '<span class="other_field2" data-orig-value="{{$other_field2}}">@if(!empty($other_field2)) {{$other_field2}} @endif   </span>')
-       
-                       
+                    }
+
+                })
+
+                // ->editColumn('status',
+                // '<span class="weight" data-orig-value="{{$status}}">@if(!empty($status)) {{$status}} @endif  </span>')
+                ->editColumn('other_field1',
+                    '<span class="other_field1" data-orig-value="{{$other_field1}}">@if(!empty($other_field1)) {{$other_field1}} @endif   </span>')
+                ->editColumn('other_field2',
+                    '<span class="other_field2" data-orig-value="{{$other_field2}}">@if(!empty($other_field2)) {{$other_field2}} @endif   </span>')
                 ->editColumn(
                     'payment_status',
                     function ($row) {
@@ -497,20 +493,19 @@ class ThePackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                       ->addColumn('created_at', function ($row) {
+                ->addColumn('created_at', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
-    
-                   ->addColumn('customer_tel', function ($row) {
+                ->addColumn('customer_tel', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                   ->addColumn('longueur', function ($row) {
+                ->addColumn('longueur', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                   ->addColumn('largeur', function ($row) {
+                ->addColumn('largeur', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -518,12 +513,10 @@ class ThePackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-             
                 ->addColumn('weight', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
-
                 ->addColumn('status', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -536,29 +529,23 @@ class ThePackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                  ->addColumn('bar_code', function ($row) {
+                ->addColumn('bar_code', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
-           
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif ')
                 ->editColumn('total_items', '')
-              
-     
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
                     $html = '';
 
                     return $html;
                 })
-         
                 ->filterColumn('status', function ($query, $keyword) {
                     $query->where(function ($q) use ($keyword) {
-                        $q->where( DB::raw(" IF(packages.status = 0, 'entrant', 'sortant')"), 'like', "%{$keyword}%");
+                        $q->where(DB::raw(" IF(packages.status = 0, 'entrant', 'sortant')"), 'like', "%{$keyword}%");
                     });
                 })
-             
                 ->editColumn('so_qty_remaining', '')
-           
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
@@ -568,7 +555,7 @@ class ThePackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','product','created_at','customer_tel','longueur','largeur','bar_code','hauteur','weight','image','status','other_field1','other_field2','action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total', 'product', 'created_at', 'customer_tel', 'longueur', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -594,12 +581,12 @@ class ThePackageController extends Controller
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
         return view('the_package.index')
-            ->with(compact('business_locations','customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
+            ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
 
-       
-            }
 
-     /**
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -608,12 +595,12 @@ class ThePackageController extends Controller
     {
 
         if (request()->ajax()) {
-         
-             $contact = Contact::pluck('name', 'id');
 
-            return response()->json(['url'=>url('/my-package/create'),'package'=>$contact]);
+            $contact = Contact::pluck('name', 'id');
+
+            return response()->json(['url' => url('/my-package/create'), 'package' => $contact]);
         }
-  
+
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
@@ -621,7 +608,7 @@ class ThePackageController extends Controller
         //   if(!empty($barcode)){
         //  $contact = Contact::pluck('name', 'id');
         //   $product_price_setting = ProductPriceSetting::first();
-         
+
 
         // return view('the_package.create', compact('product_price_setting','barcode'));
         //   }
@@ -630,7 +617,7 @@ class ThePackageController extends Controller
         //   }
         $package = Package::pluck('bar_code', 'id');
 
-         return view('the_package.create', compact('package'));
+        return view('the_package.create_tmp', compact('package'));
 
     }
 
@@ -642,69 +629,66 @@ class ThePackageController extends Controller
      */
     public function store(Request $request)
     {
-            $product=$request->input('product');
-            $product=$request->input('product');
-            $packages=$request->input('packages');
-            $arr=array();
-        if($request->has('packages')){
-            foreach($packages as $package){
-                $impl=implode(':', $package);
+        $product = $request->input('product');
+        $product = $request->input('product');
+        $packages = $request->input('packages');
+        $arr = array();
+        if ($request->has('packages')) {
+            foreach ($packages as $package) {
+                $impl = implode(':', $package);
                 array_push($arr, $impl);
                 // dd($package);
 
             }
         }
-            $implod=implode(',',$arr);
+        $implod = implode(',', $arr);
 
-            $patterns='/\r\n/';
-            $replacements=',';
-            $pr=preg_replace($patterns, $replacements, $product);
-            $concat_product=$implod.','.$pr;
+        $patterns = '/\r\n/';
+        $replacements = ',';
+        $pr = preg_replace($patterns, $replacements, $product);
+        $concat_product = $implod . ',' . $pr;
         // dd($concat);
-            // $bar_code=$request->input('bar_code');
-            $customer_name=$request->input('customer_name');
-            $customer_tel=$request->input('customer_tel');
-            $longueur=$request->input('longueur');
-            $largeur=$request->input('largeur');
-            $hauteur=$request->input('hauteur');
-            $volume=$request->input('volume');
-            $image="image";
-            $status=$request->input('status');
-            $weight=$request->input('weight');
-            $other_field1=$request->input('other_field1');
-            $other_field2=$request->input('other_field2');
-            $bar_code='234444';
-       
+        // $bar_code=$request->input('bar_code');
+        $customer_name = $request->input('customer_name');
+        $customer_tel = $request->input('customer_tel');
+        $longueur = $request->input('longueur');
+        $largeur = $request->input('largeur');
+        $hauteur = $request->input('hauteur');
+        $volume = $request->input('volume');
+        $image = "image";
+        $status = $request->input('status');
+        $weight = $request->input('weight');
+        $other_field1 = $request->input('other_field1');
+        $other_field2 = $request->input('other_field2');
+        $bar_code = '234444';
 
-            $package= ThePackage::firstOrCreate(['product'=> $concat_product,'bar_code'=>$bar_code,'customer_tel'=>$customer_tel,'customer_name'=>$customer_name,'longueur'=>$longueur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>$image,'volume'=>$volume,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
 
-       
+        $package = ThePackage::firstOrCreate(['product' => $concat_product, 'bar_code' => $bar_code, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'volume' => $volume, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+
+
         $destinationPath = 'uploads/img/';
-        $array=array();
-        if($request->has('images'))
-        {
-            foreach($request->file('images') as $image)
-            {
-           $original_name=$package->product.'-'.$package->id.'-'.$image->getClientOriginalName();
-           array_push($array, $original_name);
-            $image->move($destinationPath,$original_name);
-               
+        $array = array();
+        if ($request->has('images')) {
+            foreach ($request->file('images') as $image) {
+                $original_name = $package->product . '-' . $package->id . '-' . $image->getClientOriginalName();
+                array_push($array, $original_name);
+                $image->move($destinationPath, $original_name);
+
             }
-            $create_image=Image::create(['product_id'=> $package->id,'image'=>implode('|',$array)]);
-            
+            $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
+
         }
 
-            return redirect()->route('ThePackage.index');
-            
-           
-       
+        return redirect()->route('ThePackage.index');
+
+
     }
 
 
-       /**
+    /**
      * Display the specified resource.
      *
-     * @param  \App\Product  $product
+     * @param \App\Product $product
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -713,13 +697,14 @@ class ThePackageController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $package =  Package::where('packages.id',$id)->first();
+        $package = Package::where('packages.id', $id)->first();
         $contact = Contact::pluck('name', 'id');
-     
-        $image_url=Image::where('product_id',$id)->first();
 
-        return view('the_package.view-modal')->with(compact('package','contact','image_url'));
+        $image_url = Image::where('product_id', $id)->first();
+
+        return view('the_package.view-modal')->with(compact('package', 'contact', 'image_url'));
     }
+
     /**
      * formulaire d'edition
      * @param $id
@@ -728,10 +713,10 @@ class ThePackageController extends Controller
     public function edit($id)
     {
         $product_price_setting = ProductPriceSetting::first();
-        $package =  Package::findOrFail($id);
+        $package = Package::findOrFail($id);
         $contact = Contact::pluck('name', 'id');
 
-        return view('the_package.edit', compact('package','product_price_setting','contact'));
+        return view('the_package.edit', compact('package', 'product_price_setting', 'contact'));
 
     }
 
@@ -745,43 +730,40 @@ class ThePackageController extends Controller
     public function update(Request $request, $id)
     {
 
-        $package=  Package::findOrFail($id);
+        $package = Package::findOrFail($id);
 
-        $image_id=  Image::where('product_id',$id)->first();
-         
-            $product=$request->input('product');
-            $bar_code=$request->input('bar_code');
-            $customer_name=$request->input('customer_name');
-            $customer_tel=$request->input('customer_tel');
-            $longueur=$request->input('longueur');
-            $largeur=$request->input('largeur');
-            $hauteur=$request->input('heuteur');
-            $image='image';
-            $status=$request->input('status');
-            $weight=$request->input('weight');
-            $other_field1=$request->input('other_field1');
-            $other_field2=$request->input('other_field2');
-       
-            $package->update(['product'=> $product,'bar_code'=>$bar_code,'customer_name'=>$customer_name,'customer_tel'=>$customer_tel,'longueur'=>$longueur,'largeur'=>$largeur,'hauteur'=>$hauteur,'weight'=>$weight,'image'=>  $image,'status'=> $status,'other_field1'=> $other_field1,'other_field2'=> $other_field2]);
-            $destinationPath = 'uploads/img/';
-            $array=array();
-            if($request->has('images'))
-            {
-                foreach($request->file('images') as $image)
-                {
-               $original_name=$package->product.'-'.$package->id.'-'.$image->getClientOriginalName();
-               array_push($array, $original_name);
-                $image->move($destinationPath,$original_name);
-                }
-                if(!empty($image_id)){
-                $create_image=$image_id->update(['product_id'=> $package->id,'image'=>implode('|',$array)]);
-                }
-                else{
-                $create_image=Image::create(['product_id'=> $package->id,'image'=>implode('|',$array)]);
-                     
-                }
+        $image_id = Image::where('product_id', $id)->first();
+
+        $product = $request->input('product');
+        $bar_code = $request->input('bar_code');
+        $customer_name = $request->input('customer_name');
+        $customer_tel = $request->input('customer_tel');
+        $longueur = $request->input('longueur');
+        $largeur = $request->input('largeur');
+        $hauteur = $request->input('heuteur');
+        $image = 'image';
+        $status = $request->input('status');
+        $weight = $request->input('weight');
+        $other_field1 = $request->input('other_field1');
+        $other_field2 = $request->input('other_field2');
+
+        $package->update(['product' => $product, 'bar_code' => $bar_code, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $destinationPath = 'uploads/img/';
+        $array = array();
+        if ($request->has('images')) {
+            foreach ($request->file('images') as $image) {
+                $original_name = $package->product . '-' . $package->id . '-' . $image->getClientOriginalName();
+                array_push($array, $original_name);
+                $image->move($destinationPath, $original_name);
             }
-                 
+            if (!empty($image_id)) {
+                $create_image = $image_id->update(['product_id' => $package->id, 'image' => implode('|', $array)]);
+            } else {
+                $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
+
+            }
+        }
+
 
         return redirect()->route('ThePackage.index');
     }
@@ -800,7 +782,7 @@ class ThePackageController extends Controller
 
     }
 
-       /**
+    /**
      * formulaire d'edition
      * @param $id
      * @return view
@@ -808,11 +790,12 @@ class ThePackageController extends Controller
     public function scan()
     {
 
-        return view('the_package.scan-modal');
+        $package = Package::pluck('bar_code', 'id');
+        return view('the_package.scan-modal', compact('package'));
 
     }
 
-         /**
+    /**
      * formulaire d'edition
      * @param $id
      * @return view
@@ -824,67 +807,105 @@ class ThePackageController extends Controller
 
     }
 
-             /**
+    /**
      * formulaire d'edition
      * @param $id
      * @return view
      */
-    public function saveImg(Request $request,$id)
+    public function saveImg(Request $request, $id)
     {
-  
-        $image_id=  Image::where('product_id',$id)->first();
 
-        $package=  Package::findOrFail($id);
+        $image_id = Image::where('product_id', $id)->first();
+
+        $package = Package::findOrFail($id);
 
 
-            $destinationPath = 'uploads/img/';
-            $array=array();
+        $destinationPath = 'uploads/img/';
+        $array = array();
 
-        if($request->has('images'))
-        {
-            foreach($request->file('images') as $image)
-            {
-           $original_name=$package->product.'-'.$id.'-'.$image->getClientOriginalName();
-           array_push($array, $original_name);
-            $image->move($destinationPath,$original_name);
+        if ($request->has('images')) {
+            foreach ($request->file('images') as $image) {
+                $original_name = $package->product . '-' . $id . '-' . $image->getClientOriginalName();
+                array_push($array, $original_name);
+                $image->move($destinationPath, $original_name);
             }
-            if(!empty($image_id)){
-            $create_image=$image_id->update(['product_id'=> $id,'image'=>implode('|',$array)]);
-            }
-            else{
-            $create_image=Image::create(['product_id'=> $id,'image'=>implode('|',$array)]);
-                 
+            if (!empty($image_id)) {
+                $create_image = $image_id->update(['product_id' => $id, 'image' => implode('|', $array)]);
+            } else {
+                $create_image = Image::create(['product_id' => $id, 'image' => implode('|', $array)]);
+
             }
         }
         return redirect()->route('ThePackage.index');
     }
 
-    
-         /**
+
+    /**
      * formulaire d'edition
      * @param $id
      * @return view
      */
     public function getPackage(Request $request)
     {
- //requete ajax
- if (request()->ajax()) {
-    //$centre_villes= CentreVille::pluck('commune', 'id');
- 
-    // if($selectedbrand==1){
-    //     $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
-       
-    // }  
-        
-   $val= $request->get('val',false);
-    // $package=  Package::findOrFail($val);
-    $package =  Package::where('packages.id',$val)->select(
-        'packages.product',
-        'packages.bar_code',
-        'packages.id'
-    )
-    ->first();
-     return $package;
+        //requete ajax
+        if (request()->ajax()) {
+
+            $barcode = $request->get('barcode', false);
+            // $package=  Package::findOrFail($val);
+            $package = Package::where('packages.bar_code', $barcode)->select(
+                'packages.customer_name',
+                'packages.customer_tel',
+                'packages.longueur',
+                'packages.largeur',
+                'packages.hauteur',
+                'packages.volume',
+                'packages.weight',
+                'packages.product',
+                'packages.bar_code',
+                'packages.id'
+            )->first();
+            return $package;
+        }
     }
+
+    /**
+     * Package row
+     * @param $request
+     * @return view
+     */
+    public function getPackageRow(Request $request)
+    {
+        //requete ajax
+        if (request()->ajax()) {
+
+            $barcode = $request->get('barcode', false);
+            // $package=  Package::findOrFail($val);
+            $package = Package::where('packages.bar_code', $barcode)->select(
+                'packages.customer_name',
+                'packages.customer_tel',
+                'packages.longueur',
+                'packages.largeur',
+                'packages.hauteur',
+                'packages.volume',
+                'packages.weight',
+                'packages.product',
+                'packages.bar_code',
+                'packages.id'
+            )->first();
+            $row = '<tr data-id="' . $package['id'] . '">';
+            $row .= '<td>' . $package['bar_code']. '</td>';
+            $row .= '<td>' . $package['customer_name'] . '</td>';
+            $row .= '<td>' . $package['customer_tel']. '</td>';
+            $row .= '<td>' . $package['product']. '</td>';
+            $row .= '<td>' . $package['longueur']. '</td>';
+            $row .= '<td>' . $package['largeur']. '</td>';
+            $row .= '<td>' . $package['hauteur']. '</td>';
+            $row .= '<td>' . $package['volume']. '</td>';
+            $row .= '<td>' . $package['weight']. '</td>';
+            $row .= '<td><button type="button" class="btn btn-danger btn-xs remove_package_row">-</button>
+                    <input type="hidden" class="package_row_index" value="' . $package['id'] . '"></td>';
+            $row .= '</tr>';
+            return $row;
+        }
     }
 }

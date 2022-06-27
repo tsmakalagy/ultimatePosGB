@@ -1,74 +1,81 @@
-<div class="modal-dialog modal-xl" id="my_modal" role="document">
-	<div class="modal-content" id="my_modal_content">
-		<div class="modal-header">
-		    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		      <h4 class="modal-title" id="modalTitle">@lang('lang_v1.package')</h4>
-	    </div>
-	    <div class="modal-body">
+<div class="modal-dialog modal-sm" id="my_modal" role="document">
+    <div class="modal-content" id="my_modal_content">
+        <div class="modal-header">
+            <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="modalTitle">@lang('lang_v1.package')</h4>
+        </div>
+        <div class="modal-body">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12 ">
+{{--                        <div class="form-group ">--}}
+{{--                            <label for="scanner">@lang('lang_v1.scan_barcode')</label>--}}
+{{--                            <input type="text" name="my_barcode" id="scanner" class="form-control"/>--}}
+{{--                        </div>--}}
+                        <div class="form-group">
+                            {!! Form::label('packages', __('lang_v1.package') . ':') !!}
+                            {!! Form::select('packages', $package,null,['class' => 'form-control my-select2',  'id' => 'product_locations','placeholder' => __('messages.please_select'),'required']); !!}
+                            {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
- 
-    {{-- <div class="row">
-      <div class="col-xs-12">
-          <p class="pull-right"><b>@lang('messages.date'):</b> {{ @format_date($sell->transaction_date) }}</p>
-      </div>
-    </div> --}}
-    
-    <div class="row">
-      <div class="container-fluid">     
-      <div class="col-md-8 ">
-        <div class="form-group ">
-          <label for="scanner">@lang('lang_v1.scan_codebar')</label>
-        <input type="text" name="my_barcode" id="scanner" class="form-control" />         
-      </div>
-    </div>
-    </div>
-    </div>
-</div>
-<div class="modal-footer">
+                        </div>
+                    </div>
 
-  <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-default no-print"
+                    data-dismiss="modal">@lang( 'messages.close' )</button>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-   
-     
-       
+
+
+
 <script type="text/javascript">
-  $(document).ready(function(){
-    var element = $('div.modal-xl');
-    __currency_convert_recursively(element);
+    $(document).ready(function () {
 
+        $('.my-select2').on('select2:select', function (e) {
+            var data =  e.params.data;
+            var barcode = data.text;
 
-$('#scanner').val('');  // Input field should be empty on page load
-    $('#scanner').focus();  // Input field should be focused on page load 
-
-    $('html').on('click', function () {
-        $('#scanner').focus();  // Input field should be focused again if you click anywhere
-    });
-
-    $('html').on('blur', function () {
-        $('#scanner').focus();  // Input field should be focused again if you blur
-    });
-
-    $('#scanner').change(function () {
-
-        if ($('#scanner').val() == '') {
-            return;  // Do nothing if input field is empty
-        }
-        var val=$(this).val();
-        $.ajax({
-          type: 'GET',
-          cache:false,
-        url: '/my-package/create',
-         data: {val:val},
-         success: function(response) {
-
-              window.location=response.url+'?barcode='+val;
- 
-         }
+            if (barcode == '') {
+                return;  // Do nothing if input field is empty
+            }
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                url: '/the-package/get-package-row',
+                data: { barcode: barcode },
+                success: function (response) {
+                    $('#my_modal .close').click();
+                    $('#the_package_add_parcel_form_part tbody').append(response);
+                }
+            });
         });
-    });
 
-  });
+        $('.my-select2').select2({
+            minimumResultsForSearch: 2,
+            placeholder: LANG.search,
+        });
+
+
+        $('#the_package_add_parcel_form_part tr').each(function(e) {
+            var id = $(this).data('id');
+            if (id === 'undefined') {
+                return;
+            }
+            $(".my-select2 option").each(function() {
+                var thisOptionValue = $(this).val();
+                if (thisOptionValue == id) {
+                    $(this).prop('disabled', ! $(this).prop('disabled'));
+                    $(".my-select2").select2();
+                }
+            });
+        });
+
+    });
 
 </script>

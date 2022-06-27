@@ -1480,4 +1480,6 @@ return [
     'payment_for_invoice_no' => 'Payment for invoice number',
     'pending_shipments' => 'Pending Shipments',
     'manage_shippers' => 'Manage shippers',
+    'add_box' => 'Add Box',
+    'new_box' => 'New Box',
 ];

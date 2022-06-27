@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', __('lang_v1.edit_package'))
+@section('title', __('lang_v1.edit_the_package'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>@lang('lang_v1.edit_package')
+        <h1>@lang('lang_v1.edit_the_package')
         </h1>
         <!-- <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
@@ -16,89 +16,98 @@
 
     <!-- Main content -->
     <section class="content">
-     {!! Form::open(['action' =>['PackageController@update', $package->id],'files' => true,'enctype' =>'multipart/form-data']) !!}
- 
+     {!! Form::open(['action' =>['ThePackageController@update', $the_package->id],'files' => true,'enctype' =>'multipart/form-data']) !!}
+     @component('components.widget', ['class' => 'box-solid'])                   
+     <div class="container-fluid">
 
-                    <div class="row">   
+                    {{-- <div class="row">   
                      <div class="container-fluid">     
                         <div class="col-md-8 ">    
                             <div class="form-group">
                                 {!! Form::label('bar_code', __('lang_v1.bar_code') . ':') !!}
-                                {!! Form::text('bar_code', $package->bar_code, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::text('bar_code', $the_package->bar_code, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
                     </div>
-                    </div>  
+                    </div>   --}}
         <div class="row">
-            <div class="col-md-12">
-                @component('components.widget', ['class' => 'box-solid'])
-                    <div class="container-fluid">
 
                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('customer_name', __('lang_v1.customer') . ':') !!}
-                                {!! Form::text('customer_name', $package->customer_name, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::text('customer_name', $the_package->customer_name, ['class' => 'form-control', 'rows' => 3]); !!}
                                 
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
-                                {!! Form::label('customer_tel', __('lang_v1.tel') . ':') !!}
-                                {!! Form::text('customer_tel', $package->customer_tel, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::label('customer_tel', __('lang_v1.customer_tel') . ':') !!}
+                                {!! Form::text('customer_tel', $the_package->customer_tel, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
+                    </div>
+                    <div class="row">
 
+                            <div class="col-md-12">
+                            <div class="form-group">
+                                {!! Form::label('product', __('lang_v1.product_list') . '*:') !!}
+                                {!! Form::textarea('product', $the_package->product, ['class' => 'form-control', 'rows' => 3,'required']); !!}
+                            </div>
+                        </div>
+                    </div>
+                    
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    {!! Form::label('longueur', __('lang_v1.length') . ':') !!}
+                                    {!! Form::text('longueur', $the_package->longueur ,['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    {!! Form::label('largeur', __('lang_v1.width') . ':') !!}
+                                    {!! Form::text('largeur',$the_package->largeur, ['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
+                            </div>
+        
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    {!! Form::label('hauteur', __('lang_v1.height') . ':') !!}
+                                    {!! Form::text('hauteur', $the_package->hauteur, ['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('product', __('lang_v1.product_name') . '*:') !!}
-                                {!! Form::text('product', $package->product, ['class' => 'form-control', 'rows' => 3,'required']); !!}
+                                <div class="form-group">
+                                    {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
+                                    {!! Form::text('weight', $the_package->weight, ['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('status', __('lang_v1.status') . ':') !!}
-                                {{-- {!! Form::text('status', $package->status, ['class' => 'form-control', 'rows' => 3]); !!} --}}
-                                {!! Form::select('status', [0 =>'entrant',1 =>'sortant'], 0 ,['class' => 'form-control select2', 'placeholder' => __('messages.please_select'),'required']); !!}
-                                
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
+                                    {!! Form::text('volume', $the_package->volume, ['class' => 'form-control', 'rows' => 3]); !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
-                                {!! Form::text('weight', $package->weight, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('longueur', __('lang_v1.longueur') . ':') !!}
-                                {!! Form::text('longueur', $package->longueur, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('largeur', __('lang_v1.largeur') . ':') !!}
-                                {!! Form::text('largeur', $package->largeur, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('hauteur', __('lang_v1.hauteur') . ':') !!}
-                                {!! Form::text('hauteur', $package->hauteur, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>                
+                        </div>         
+                         
+                        <div class="row">
   
                           <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
-                                {!! Form::text('other_field1', $package->other_field1, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::text('other_field1', $the_package->other_field1, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 {!! Form::label('other_field2', __('lang_v1.other_field2') . ':') !!}
-                                {!! Form::text('other_field2', $package->other_field2, ['class' => 'form-control', 'rows' => 3]); !!}
+                                {!! Form::text('other_field2', $the_package->other_field2, ['class' => 'form-control', 'rows' => 3]); !!}
                             </div>
                         </div>
+                    </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                
@@ -109,6 +118,51 @@
                             </div>
                         </div>
 
+                        <div class="col-sm-12">
+                            <h4>@lang('lang_v1.add_the_package'):
+                                <button type="button" class="btn btn-primary my-btn-modal" id="add_parcel"
+                                        data-action="add"
+                                        data-href="{{ action('ThePackageController@scan') }}"
+                                        data-container=".scan_modal">+
+                                </button>
+                            </h4>
+                        </div>
+                        <div class="col-sm-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered add-parcel-table table-condensed"
+                                       id="the_package_add_parcel_form_part">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-sm">@lang('lang_v1.barcode')</th>
+                                            <th class="col-sm">@lang('lang_v1.customer')</th>
+                                            <th class="col-sm">@lang('lang_v1.customer_tel')</th>
+                                            <th class="col-sm">@lang('lang_v1.product')</th>
+                                            <th class="col-sm">@lang('lang_v1.length')</th>
+                                            <th class="col-sm">@lang('lang_v1.width')</th>
+                                            <th class="col-sm">@lang('lang_v1.height')</th>
+                                            <th class="col-sm">@lang('lang_v1.volume')</th>
+                                            <th class="col-sm">@lang('lang_v1.weight')</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+        {{--                            @if($action == 'add')--}}
+        {{--                                @include('product.partials.product_variation_row', ['row_index' => 0])--}}
+        {{--                            @else--}}
+        
+        {{--                                @forelse ($product_variations as $product_variation)--}}
+        {{--                                    @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index])--}}
+        {{--                                @empty--}}
+        {{--                                    @include('product.partials.product_variation_row', ['row_index' => 0])--}}
+        {{--                                @endforelse--}}
+        
+        {{--                            @endif--}}
+        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
                         <!-- Submit Button -->
                         <div class="form-group">
                             <div class="col-lg-10 col-lg-offset-2">
@@ -116,12 +170,13 @@
                             </div>
                         </div>
 
-                        </div>
-                         @endcomponent
-                        </div>
                     </div>
+                    @endcomponent
                      {!! Form::close()  !!}
-
+                     
+                     <div class="modal scan_modal" id="scan_modal" role="dialog"
+                     aria-labelledby="gridSystemModalLabel">
+                </div>
 
     </section>
     <!-- /.content -->
@@ -142,6 +197,25 @@
 			$('form').bind('submit', function () {
 				$('#status').prop('disabled', false);
     });
+
+    $(document).on('click', '.my-btn-modal', function(e) {
+                $('#the_package_add_parcel_form_part').on('click', '.remove_package_row', function () {
+                    $(this).closest('tr').fadeOut(300, function() { $(this).remove(); });
+                });
+
+                e.preventDefault();
+                var container = $(this).data('container');
+
+                $.ajax({
+                    url: $(this).data('href'),
+                    dataType: 'html',
+                    success: function(result) {
+                        $(container)
+                            .html(result)
+                            .modal('show');
+                    },
+                });
+            });
     });
     
     </script>

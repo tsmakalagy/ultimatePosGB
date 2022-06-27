@@ -40,4 +40,8 @@ class Package extends Model
         return $image_path;
     }
 
+    //    public function package_thepackage()
+    // {
+    //     return $this->belongsToMany(\App\ThePackage::class, 'thePackage_packages', 'package_id', 'the_package_id');
+    // }
 }

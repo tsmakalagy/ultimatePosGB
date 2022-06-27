@@ -56,8 +56,13 @@ return [
     'filter_price' => 'Filtrage du prix',
     'max' => 'Max',
     'min' => 'Min',
+    'edit_the_package' => 'Editer carton',
+
+    'the_package' => 'carton',
     'list_package_out' => 'List colis sortant',
     'add_package_out' => 'Ajouter colis sortant',
+    'edit_package' => 'Editer colis',
+
     'maximum' => 'Maximum',
     'minimum' => 'Minimum',
     'scan_barcode' => 'Scanner code-barres',

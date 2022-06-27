@@ -153,130 +153,7 @@
                 </div>
 
 
-                <div class="hidden">
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('customer_tel', __('lang_v1.customer_tel') . ':') !!}
-                            {!! Form::text('customer_tel', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-8 col-md-offset-2">
-                            <div class="form-group">
-                                {!! Form::label('packages', __('lang_v1.package') . ':') !!}
-                                {!! Form::select('packages', $package, null, ['class' => 'form-control select2',  'id' => 'product_locations','placeholder' => __('messages.please_select'),'required']); !!}
-                                {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
-
-                            </div>
-                        </div>
-                    </div>
-                    {{--
-                    <div class="row col-sm-8 " style="min-height: 0">
-                        <div class="the_package">
-                        </div>
-                    </div>
-                    --}}
-
-                    <div class="row" style="min-height: 0">
-                        <div class="table-responsive">
-                            <div class="col-md-8 col-md-offset-2">
-                                <table class="table table-condensed table-bordered table-striped table-responsive"
-                                       id="pos_table">
-                                    <thead>
-                                    <tr>
-                                        <th class="text-center">
-                                            @lang('sale.product')
-                                        </th>
-                                        <th class="text-center">
-                                            @lang('sale.qty')
-                                        </th>
-                                        <th class="text-center"><i class="fas fa-times" id="close"
-                                                                   onclick="Remove()" aria-hidden="true"></i></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="my_tbody"></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                {!! Form::label('product', __('lang_v1.product_list') . ' ('.__('lang_v1.qty') .'):') !!}
-                                {!! Form::textarea('product', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('longeur', __('lang_v1.length') . ':') !!}
-                                {!! Form::text('longueur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('largeur', __('lang_v1.width') . ':') !!}
-                                {!! Form::text('largeur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                {!! Form::label('hauteur', __('lang_v1.height') . ':') !!}
-                                {!! Form::text('hauteur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
-                                {!! Form::text('weight', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
-                                {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
-                            {!! Form::text('other_field1', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('other_field2', __('lang_v1.other_field2') . ':') !!}
-                            {!! Form::text('other_field2', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
-                            {{-- {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!} --}}
-
-                            <input type="file" id="upload_ima" name="images[]" accept="image/*" multiple>
-                            <!-- Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); -->
-                            <small>
-                                <p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)])
-                                    <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p></small>
-                        </div>
-
-                    </div>
-
+            
                     <!-- Submit Button -->
                     <div class="form-group">
                         <div class="col-lg-10 col-lg-offset-2">
@@ -285,7 +162,7 @@
 
                         </div>
                     </div>
-                </div>
+                
 
             </div>
         @endcomponent

@@ -44,24 +44,25 @@
               
               <th>{{ __('lang_v1.customer') }}</th>
               <th>{{ __('lang_v1.customer_tel') }}</th>
-              <th>{{ __('lang_v1.product_name') }}</th>
-              <th>{{ __('lang_v1.longueur') }}</th>
-              <th>{{ __('lang_v1.largeur') }}</th>
-              <th>{{ __('lang_v1.hauteur') }}</th>
+              <th>{{ __('lang_v1.product') }}</th>
+              <th>{{ __('lang_v1.length') }}</th>
+              <th>{{ __('lang_v1.width') }}</th>
+              <th>{{ __('lang_v1.height') }}</th>
               <th>{{ __('lang_v1.weight') }}</th>         
-              <th>{{ __('lang_v1.status') }}</th>
+              <th>{{ __('lang_v1.volume') }}</th>         
             </tr>
 
               <tr>
                  <td>{{$package->bar_code }} </td>
                 <td>{{ ucfirst($package->customer_name) }}</td>
                 <td>{{$package->customer_tel }}</td>
-                <td>{{ ucfirst($package->product) }}</td>
+                <td>{{ $package->product.','.$other_product }}</td>
                 <td>{{$package->longueur }}</td>
                 <td>{{$package->largeur }}</td>
                 <td>{{$package->hauteur }}</td>
                 <td>{{$package->weight }}</td>              
-                <td>{{$package->status }} </td>
+                <td>{{$package->volume }}</td>              
+
 
               </tr>
 

@@ -1,17 +1,17 @@
 @extends('layouts.app')
-@section('title', __( 'lang_v1.package'))
+@section('title', __( 'lang_v1.the_package'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header no-print">
-        <h1>@lang( 'lang_v1.package')
+        <h1>@lang( 'lang_v1.the_package')
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content no-print">
-        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.package') ])
+        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.the_package') ])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
             @slot('tool')
          

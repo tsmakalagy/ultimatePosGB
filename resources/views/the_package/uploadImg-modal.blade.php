@@ -1,6 +1,6 @@
 <div class="modal-dialog modal-xl" id="my_modal" role="document">
 	<div class="modal-content" id="my_modal_content">
-     {!! Form::open(['action' =>['PackageController@saveImg', $id],'files' => true,'enctype' =>'multipart/form-data']) !!}
+     {!! Form::open(['action' =>['ThePackageController@saveImg', $id],'files' => true,'enctype' =>'multipart/form-data']) !!}
 		<div class="modal-header">
 		    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 		      <h4 class="modal-title" id="modalTitle">@lang('lang_v1.package')</h4>

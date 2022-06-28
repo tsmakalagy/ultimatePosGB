@@ -82,7 +82,7 @@ class ThePackageController extends Controller
 
     public function index()
     {
-        
+
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
@@ -414,10 +414,10 @@ class ThePackageController extends Controller
                 ->editColumn('product',
                     // '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
                     function ($row) {
-                      $span='<span class="tel"> '. $row->thepackage_package->implode('product', ',').'</span><br><span class="tel"> '. $row->product.'</span><br>';
+                        $span = '<span class="tel"> ' . $row->thepackage_package->implode('product', ',') . '</span><br><span class="tel"> ' . $row->product . '</span><br>';
                         return $span;
                     })
-                    ->editColumn('bar_code',
+                ->editColumn('bar_code',
                     '<span class="product_spec" data-orig-value="{{$bar_code}}">@if(!empty($bar_code)) {{$bar_code}} @endif   </span>')
                 // ->editColumn('customer_name',
                 // '<span class="china_price" data-orig-value="{{customer_name}}">@if(!empty($customer_name)) {{$customer_name}} @endif   </span>')
@@ -633,9 +633,8 @@ class ThePackageController extends Controller
      */
     public function store(Request $request)
     {
-    
 
-      
+
         $customer_name = $request->input('customer_name');
         $customer_tel = $request->input('customer_tel');
         $product = $request->input('product');
@@ -658,7 +657,7 @@ class ThePackageController extends Controller
         $array = array();
         if ($request->has('images')) {
             foreach ($request->file('images') as $image) {
-                $original_name ='the_packages'. $package->id . '-' . $image->getClientOriginalName();
+                $original_name = 'the_packages' . $package->id . '-' . $image->getClientOriginalName();
                 // $original_name = $package->product . '-' . $package->id . '-' . $image->getClientOriginalName();
                 array_push($array, $original_name);
                 $image->move($destinationPath, $original_name);
@@ -671,9 +670,9 @@ class ThePackageController extends Controller
         if (!empty($packages)) {
             $package->thepackage_package()->sync($packages);
         }
-        $created_at=$package->created_at->format('Y-m-d H:i');
-        $id=str_pad($package->id, 4, '0', STR_PAD_LEFT);
-        $barcode='pack-'.$id.'-'.$created_at;
+        $created_at = $package->created_at->format('Y-m-d H:i');
+        $id = str_pad($package->id, 4, '0', STR_PAD_LEFT);
+        $barcode = 'pack-' . $id . '-' . $created_at;
         $package->update(['bar_code' => $barcode]);
 
         return redirect()->route('ThePackage.index');
@@ -696,13 +695,13 @@ class ThePackageController extends Controller
 
         $package = ThePackage::where('the_packages.id', $id)->first();
         $contact = Contact::pluck('name', 'id');
-        $other_product=$package->thepackage_package->implode('product', ',');
+        $other_product = $package->thepackage_package->implode('product', ',');
         // dd($other_product);
         // $span='<span class="tel"> '. $row->thepackage_package->implode('product', ',').'</span><br><span class="tel"> '. $row->product.'</span><br>';
 
         $image_url = Image::where('product_id', $id)->first();
 
-        return view('the_package.view-modal')->with(compact('package', 'other_product','contact', 'image_url'));
+        return view('the_package.view-modal')->with(compact('package', 'other_product', 'contact', 'image_url'));
     }
 
     /**
@@ -712,12 +711,12 @@ class ThePackageController extends Controller
      */
     public function edit($id)
     {
-      
+
         $package = Package::findOrFail($id);
         $the_package = ThePackage::findOrFail($id);
         $contact = Contact::pluck('name', 'id');
 
-        return view('the_package.edit', compact('the_package','contact'));
+        return view('the_package.edit', compact('the_package', 'contact'));
 
     }
 
@@ -753,7 +752,7 @@ class ThePackageController extends Controller
         $array = array();
         if ($request->has('images')) {
             foreach ($request->file('images') as $image) {
-                $original_name = 'the_package'.md5(microtime()) . '_' . $package->id . '.' . $image->getClientOriginalExtension();           
+                $original_name = 'the_package' . md5(microtime()) . '_' . $package->id . '.' . $image->getClientOriginalExtension();
                 // $original_name = $package->product . '-' . $package->id . '-' . $image->getClientOriginalName();
                 array_push($array, $original_name);
                 $image->move($destinationPath, $original_name);
@@ -765,9 +764,9 @@ class ThePackageController extends Controller
 
             }
         }
-    
+
         $packages = !empty($request->input('packages')) ?
-        $request->input('packages') : [];
+            $request->input('packages') : [];
         $package->thepackage_package()->sync($packages);
 
         return redirect()->route('ThePackage.index');
@@ -830,7 +829,7 @@ class ThePackageController extends Controller
 
         if ($request->has('images')) {
             foreach ($request->file('images') as $image) {
-                $original_name ='the_packages'. $package->id . '-' . $image->getClientOriginalName();              
+                $original_name = 'the_packages' . $package->id . '-' . $image->getClientOriginalName();
                 // $original_name = $package->product . '-' . $id . '-' . $image->getClientOriginalName();
                 array_push($array, $original_name);
                 $image->move($destinationPath, $original_name);
@@ -899,15 +898,15 @@ class ThePackageController extends Controller
                 'packages.id'
             )->first();
             $row = '<tr data-id="' . $package['id'] . '">';
-            $row .= '<td>' . $package['bar_code']. '</td>';
+            $row .= '<td>' . $package['bar_code'] . '</td>';
             $row .= '<td>' . $package['customer_name'] . '</td>';
-            $row .= '<td>' . $package['customer_tel']. '</td>';
-            $row .= '<td>' . $package['product']. '</td>';
-            $row .= '<td>' . $package['longueur']. '</td>';
-            $row .= '<td>' . $package['largeur']. '</td>';
-            $row .= '<td>' . $package['hauteur']. '</td>';
-            $row .= '<td>' . $package['volume']. '</td>';
-            $row .= '<td>' . $package['weight']. '</td>';
+            $row .= '<td>' . $package['customer_tel'] . '</td>';
+            $row .= '<td>' . $package['product'] . '</td>';
+            $row .= '<td>' . $package['longueur'] . '</td>';
+            $row .= '<td>' . $package['largeur'] . '</td>';
+            $row .= '<td>' . $package['hauteur'] . '</td>';
+            $row .= '<td>' . $package['volume'] . '</td>';
+            $row .= '<td>' . $package['weight'] . '</td>';
             $row .= '<td><button type="button" class="btn btn-danger btn-xs remove_package_row">-</button>
                     <input type="hidden" name="packages[]" class="package_row_index" value="' . $package['id'] . '"></td>';
             $row .= '</tr>';

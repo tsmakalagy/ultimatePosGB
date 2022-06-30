@@ -27,20 +27,10 @@
                     <thead class="text-center">
                     <tr>
                         <th>@lang('messages.action')</th>
-                        <th>&nbsp;</th>
                         <th width="75px">@lang('lang_v1.date_envoi')</th>
                         <th width="75px">@lang('lang_v1.the_package')</th>
-                        <th>@lang('lang_v1.customer')</th>
-                        <th>@lang('lang_v1.customer_tel')</th>
-                        <th>@lang('lang_v1.length')</th>
-                        <th>@lang('lang_v1.width')</th>
-                        <th>@lang('lang_v1.height')</th>
-                        <th>@lang('lang_v1.weight')</th>
-                        <th>@lang('lang_v1.volume')</th>
-                        <th>@lang('lang_v1.mode_transport')</th>
 
-                        <th>@lang('lang_v1.other_field1')</th>
-                        <th>@lang('lang_v1.other_field2')</th>
+                        <th>@lang('lang_v1.mode_transport')</th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -125,20 +115,11 @@ aria-labelledby="gridSystemModalLabel">
                 scrollCollapse: true,
                 columns: [
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
-                    {data: 'image', name: 'image'},
 
                     {data: 'date_envoi', name: 'date_envoi'},
                     {data: 'the_package', name: 'the_package'},
-                    {data: 'customer_name', name: 'customer_name'},
-                    {data: 'customer_tel', name: 'customer_tel'},
-                    {data: 'longueur', name: 'longueur'},
-                    {data: 'largeur', name: 'largeur'},
-                    {data: 'hauteur', name: 'hauteur'},
-                    {data: 'weight', name: 'weight'},
-                    {data: 'volume', name: 'volume'},
+
                     {data: 'mode_transport', name: 'mode_transport'},
-                    {data: 'other_field1', name: 'other_field1'},
-                    {data: 'other_field2', name: 'other_field2'}
 
                 ],
                 "fnDrawCallback": function (oSettings) {

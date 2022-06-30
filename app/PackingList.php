@@ -44,4 +44,8 @@ class PackingList extends Model
     {
         return $this->belongsToMany(\App\ThePackage::class, 'packinglist_thepackages', 'packinglist_id', 'thepackage_id');
     }
+    public function packinglist_lines()
+    {
+        return $this->hasMany(\App\PackingListLine::class);
+    }
 }

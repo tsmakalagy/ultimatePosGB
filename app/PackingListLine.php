@@ -8,12 +8,12 @@ class PackingListLine extends Model
 {
     protected $guarded = ['id'];
     
-    public function transaction()
+    public function packinglist()
     {
-        return $this->belongsTo(\App\PackingList::class, 'packing_list_id');
+        return $this->belongsTo(\App\PackingList::class);
     }
 
-    public function product()
+    public function thepackage()
     {
         return $this->belongsTo(\App\ThePackage::class, 'the_package_id');
     }

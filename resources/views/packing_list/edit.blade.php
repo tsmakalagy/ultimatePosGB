@@ -21,124 +21,87 @@
      <div class="container-fluid">
 
 
+        <div class="row">
+                
+            <div class="col-md-6 ">
+                <div class="form-group">
+                    {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
+                    {!! Form::select('mode_transport', [0 =>'bateau',1 =>'avion'],$package->mode_transport,['class' => 'form-control select2',  'id' => 'product_locations','placeholder' => __('messages.please_select'),'required']); !!}
+                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
-                    <div class="row">
+                </div>
+            </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                {!! Form::label('date_envoi', __('lang_v1.date_envoi') . ':') !!}
+                <div class="input-group">
+                    <span class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </span>
+                    {!! Form::text('date_envoi', $package->mode_transport, ['class' => 'form-control calendar']); !!}
+                </div>
+            </div>
+        </div>
+    </div>
 
-                            <div class="col-md-12">
-                            <div class="form-group">
-                                {!! Form::label('product', __('lang_v1.product_list') . '*:') !!}
-                                {!! Form::textarea('product', $the_package->product, ['class' => 'form-control', 'rows' => 3,'required']); !!}
-                            </div>
-                        </div>
+
+
+        <div class="row">
+        <div class="col-sm-10 col-sm-offset-1">
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-btn">
+                        <button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal" data-target="#configure_search_modal" title="{{__('lang_v1.configure_product_search')}}"><i class="fas fa-search-plus"></i></button>
                     </div>
+                    {!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder')
                     
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    {!! Form::label('longueur', __('lang_v1.length') . ':') !!}
-                                    {!! Form::text('longueur', $the_package->longueur ,['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-        
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    {!! Form::label('largeur', __('lang_v1.width') . ':') !!}
-                                    {!! Form::text('largeur',$the_package->largeur, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-        
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    {!! Form::label('hauteur', __('lang_v1.height') . ':') !!}
-                                    {!! Form::text('hauteur', $the_package->hauteur, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
-                                    {!! Form::text('weight', $the_package->weight, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
-                                    {!! Form::text('volume', $the_package->volume, ['class' => 'form-control', 'rows' => 3]); !!}
-                                </div>
-                            </div>
-                        </div>         
-                         
-                        
-                            {!! Form::hidden('bar_code', $the_package->bar_code, ['class' => 'form-control', 'rows' => 3]); !!}
-                    <div class="row">
-                          <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
-                                {!! Form::text('other_field1', $the_package->other_field1, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                {!! Form::label('other_field2', __('lang_v1.other_field2') . ':') !!}
-                                {!! Form::text('other_field2', $the_package->other_field2, ['class' => 'form-control', 'rows' => 3]); !!}
-                            </div>
-                        </div>
-                    </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                               
-                                {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
-                               <input type="file" id="upload_ima" name="images[]" accept="image/*" multiple>
-                              <!-- Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); -->
-                                <small><p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)]) <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p></small>
-                            </div>
-                        </div>
+                    ]); !!}
+                    
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product" data-href="{{action('ProductController@quickAdd')}}" data-container=".quick_add_product_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                    </span>
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="product_row col-sm-10 col-sm-offset-1"></div>
+   
+        <div class="col-sm-12">
+            <div class="table-responsive">
+                <table class="table table-bordered add-parcel-table table-condensed"
+                       id="the_package_add_parcel_form_part">
+                    <thead>
+                        <tr>
+                            <th class="col-sm">@lang('lang_v1.barcode')</th>
+           
+                            <th class="col-sm">@lang('lang_v1.length')</th>
+                            <th class="col-sm">@lang('lang_v1.width')</th>
+                            <th class="col-sm">@lang('lang_v1.height')</th>
+                            <th class="col-sm">@lang('lang_v1.volume')</th>
+                            <th class="col-sm">@lang('lang_v1.weight')</th>
+                            <th class="col-sm">@lang('qte')</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+{{--                            @if($action == 'add')--}}
+{{--                                @include('product.partials.product_variation_row', ['row_index' => 0])--}}
+{{--                            @else--}}
 
-                        <div class="col-sm-12">
-                            <h4>@lang('lang_v1.add_the_package'):
-                                <button type="button" class="btn btn-primary my-btn-modal" id="add_parcel"
-                                        data-action="add"
-                                        data-href="{{ action('ThePackageController@scan') }}"
-                                        data-container=".scan_modal">+
-                                </button>
-                            </h4>
-                        </div>
-                        <div class="col-sm-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered add-parcel-table table-condensed"
-                                       id="the_package_add_parcel_form_part">
-                                    <thead>
-                                        <tr>
-                                            <th class="col-sm">@lang('lang_v1.barcode')</th>
-                                            <th class="col-sm">@lang('lang_v1.customer')</th>
-                                            <th class="col-sm">@lang('lang_v1.customer_tel')</th>
-                                            <th class="col-sm">@lang('lang_v1.product')</th>
-                                            <th class="col-sm">@lang('lang_v1.length')</th>
-                                            <th class="col-sm">@lang('lang_v1.width')</th>
-                                            <th class="col-sm">@lang('lang_v1.height')</th>
-                                            <th class="col-sm">@lang('lang_v1.volume')</th>
-                                            <th class="col-sm">@lang('lang_v1.weight')</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-        {{--                            @if($action == 'add')--}}
-        {{--                                @include('product.partials.product_variation_row', ['row_index' => 0])--}}
-        {{--                            @else--}}
+{{--                                @forelse ($product_variations as $product_variation)--}}
+{{--                                    @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index])--}}
+{{--                                @empty--}}
+{{--                                    @include('product.partials.product_variation_row', ['row_index' => 0])--}}
+{{--                                @endforelse--}}
+
+{{--                            @endif--}}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
         
-        {{--                                @forelse ($product_variations as $product_variation)--}}
-        {{--                                    @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index])--}}
-        {{--                                @empty--}}
-        {{--                                    @include('product.partials.product_variation_row', ['row_index' => 0])--}}
-        {{--                                @endforelse--}}
-        
-        {{--                            @endif--}}
-        
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
 
                         <!-- Submit Button -->
                         <div class="form-group">
@@ -169,30 +132,73 @@
 <script type="text/javascript">
     $(document).ready(function(){
     
-        $('#bar_code').prop('readonly', true);
-        $('#status').prop('disabled',true);
-			$('form').bind('submit', function () {
-				$('#status').prop('disabled', false);
-    });
+        function delay(callback, ms) {
+        var timer = 0;
+        return function() {
+            var context = this, args = arguments;
+            clearTimeout(timer);
+            timer = setTimeout(function () {
+            callback.apply(context, args);
+            }, ms || 0);
+        };
+        }
 
-    $(document).on('click', '.my-btn-modal', function(e) {
-                $('#the_package_add_parcel_form_part').on('click', '.remove_package_row', function () {
+
+        // Example usage:
+
+        $('#search_product').keyup(delay(function (e) {
+            
+               
+            // $('.product_row').closest('ul').fadeOut(300, function() { $('.product_row').remove(); });
+           $('.list').remove();
+            if (this.value.length > 2) {
+            var val=$(this).val();
+        // alert(val);
+        $.ajax({
+                type: 'GET',
+                cache: false,
+                url: '/packing-list/get-the-package-row',
+                data: { val: val },
+                success: function (response) {
+                    console.log(response);
+                    // $('#my_modal .close').click();
+                     $('.product_row').append(response);
+                }
+            });
+            // $(this).val('');
+        }
+        }, 
+        1000));
+
+
+            $('.calendar').datetimepicker({
+                format: moment_date_format + ' ' + moment_time_format,
+                ignoreReadonly: true,
+            });
+            $('.product_row').on('click', '.remove_package_row', function () {
+                var id = $(this).find(':hidden').val();
+                
+                // alert('hello');
+                $.ajax({
+                type: 'GET',
+                cache: false,
+                url: '/packing-list/get-package-row',
+                data: { id:id },
+                success: function (response) {
+                    console.log(response);
+                    // $('#my_modal .close').click();
+                    $('#the_package_add_parcel_form_part tbody').append(response);
+                }
+                });
+            $('#search_product').val('');
+                    $(this).closest('ul').fadeOut(300, function() { $(this).remove(); });
+                });
+
+                $('#the_package_add_parcel_form_part').on('click', '.move_packages_row', function () {
                     $(this).closest('tr').fadeOut(300, function() { $(this).remove(); });
                 });
-
-                e.preventDefault();
-                var container = $(this).data('container');
-
-                $.ajax({
-                    url: $(this).data('href'),
-                    dataType: 'html',
-                    success: function(result) {
-                        $(container)
-                            .html(result)
-                            .modal('show');
-                    },
-                });
-            });
+          
+    
     });
     
     </script>

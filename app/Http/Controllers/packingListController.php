@@ -208,15 +208,6 @@ class packingListController extends Controller
                     '<span class="type" data-orig-value=""> </span>')
                 ->editColumn('tel',
                     '<span class="tel">   </span>')
-                // ->editColumn('product',
-                //     // '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
-                //     function ($row) {
-                //         $span = '<span class="tel"> ' . $row->thepackage_package->implode('product', ',') . '</span><br><span class="tel"> ' . $row->product . '</span><br>';
-                //         return $span;
-                //     })
-              
-                // ->editColumn('customer_name',
-                // '<span class="china_price" data-orig-value="{{customer_name}}">@if(!empty($customer_name)) {{$customer_name}} @endif   </span>')
                 ->editColumn('customer_tel',
                 '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
                 ->editColumn('longueur',
@@ -230,7 +221,39 @@ class packingListController extends Controller
                 ->editColumn('mode_transport',
                     '<span class="size" data-orig-value="{{$mode_transport}}">@if(!empty($mode_transport)) {{$mode_transport}} @endif   </span>')
                  ->editColumn('the_package',
-                    '<span class="size" data-orig-value="">@if(!empty($the_package)) {{$the_package}} @endif   </span>')
+                 function ($row) {
+                    $arr=array();
+                    $arr2=array();
+                    $pack_listlines=$row->packinglist_lines;
+                    $val='';
+                 
+                     foreach($pack_listlines as $packinglistlines){
+                        // return($packinglistlines);
+                        $sku=$packinglistlines->thepackage->sku;
+                        $qte=$packinglistlines->qte;
+                        $product=$packinglistlines->thepackage->product;  
+                        $packing=$packinglistlines->thepackage->thepackage_package;
+                         $val.='<span class="date_paid_on">'.$sku.'('.$qte.')'.'</span><br>';
+                        //  return $product.'('.$sku.')';
+                        // return $packing;
+                        // foreach($packing as $pack){
+                        //      $prod=$pack->product;
+                        //      array_push($arr,$prod);
+                        //     //  return $packing;
+                        // }
+                        // $ar=implode(',', $arr);
+                        // $new_arr=$sku.$product.$ar;
+                        // array_push($arr2,$new_arr);
+                        // $val=$sku.'('.$qte.')';
+                        // array_push($arr,$val);
+                        // return $packinglistlines->thepackage->product.','.$product.'('.$sku.')';
+                    }
+            
+            
+                    
+                     return $val;
+                })
+                    // '<span class="size" data-orig-value="">@if(!empty($the_package)) {{$the_package}} @endif   </span>')
  
                 ->editColumn(
                         'date_envoi',
@@ -452,54 +475,19 @@ class packingListController extends Controller
 
 // ->format('m/d/Y H:i:s')
         $date_env = $request->input('date_envoi');
-        $date_envoi=date('m/d/Y H:i:s',strtotime($date_env));
-        $longueur = $request->input('longueur');
-        $largeur = $request->input('largeur');
-        $customer_tel = $request->input('customer_tel');
-        $customer_name = $request->input('customer_name');
-        $hauteur = $request->input('hauteur');
-        $volume = $request->input('volume');
+        $date_envoi=date('Y-m-d H:i:s',strtotime($date_env));
+ 
         $mode_transport = $request->input('mode_transport');
-        $image = "image";
-        // $status = $request->input('status');
-        $weight = $request->input('weight');
-        $other_field1 = $request->input('other_field1');
-        $other_field2 = $request->input('other_field2');
-        $bar_code = '234444';
+
+        $package = PackingList::create(['date_envoi' => $date_envoi, 'mode_transport' => $mode_transport]);
 
 
-        $package = PackingList::firstOrCreate(['date_envoi' => $date_envoi,'customer_tel' => $customer_tel,'customer_name' => $customer_name, 'bar_code' => $bar_code, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'volume' => $volume, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
-
-
-        $destinationPath = 'uploads/img/';
-        $array = array();
-        if ($request->has('images')) {
-            foreach ($request->file('images') as $image) {
-                $original_name = 'the_packages' . $package->id . '-' . $image->getClientOriginalName();
-                // $original_name = $package->product . '-' . $package->id . '-' . $image->getClientOriginalName();
-                array_push($array, $original_name);
-                $image->move($destinationPath, $original_name);
-
-            }
-            $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
-
-        }
-        // $packages = $request->input('packages');
-        // if (!empty($packages)) {
-        //     $package->thepackage_package()->sync($packages);
-
-        // }
-    
         $packages=$request->input('packages');
         $arr = array();
        if ($request->has('packages')) {
            foreach ($packages as $packet) {
-            //    $impl = implode(':', $package);
-            //    array_push($arr, $package);
-               // dd($package);
-               
-                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);
-               
+ 
+                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
 
            }
        }
@@ -526,15 +514,11 @@ class packingListController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $package = ThePackage::where('the_packages.id', $id)->first();
+        $package = PackingList::findOrFail($id);
         $contact = Contact::pluck('name', 'id');
-        $other_product = $package->thepackage_package->implode('product', ',');
-        // dd($other_product);
-        // $span='<span class="tel"> '. $row->thepackage_package->implode('product', ',').'</span><br><span class="tel"> '. $row->product.'</span><br>';
+        // $other_product = $package->thepackage_package->implode('product', ',');
 
-        $image_url = Image::where('product_id', $id)->first();
-
-        return view('packing_list.view-modal')->with(compact('package', 'other_product', 'contact', 'image_url'));
+        return view('packing_list.view-modal')->with(compact('package'));
     }
 
     /**
@@ -545,11 +529,11 @@ class packingListController extends Controller
     public function edit($id)
     {
 
-        $package = Package::findOrFail($id);
+        $package = PackingList::findOrFail($id);
         $the_package = ThePackage::findOrFail($id);
-        $contact = Contact::pluck('name', 'id');
 
-        return view('packing_list.edit', compact('the_package', 'contact'));
+
+        return view('packing_list.edit', compact('the_package', 'package'));
 
     }
 
@@ -562,44 +546,28 @@ class packingListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request);
-        $package = ThePackage::findOrFail($id);
+        
+        $package = PackingList::findOrFail($id);
+        $packinglistline = PackingListLine::where('packing_list_lines.packing_list_id',$id)->get();
 
-        $image_id = Image::where('product_id', $id)->first();
+        $date_env = $request->input('date_envoi');
+        $date_envoi=date('m/d/Y H:i:s',strtotime($date_env));
+     
+        $mode_transport = $request->input('mode_transport');
 
-        $product = $request->input('product');
-        $bar_code = $request->input('bar_code');;
+        $package->update([ 'date_envoi' => $date_envoi, 'mode_transport' => $mode_transport]);
+     
+        $packages=$request->input('packages');
+        $arr = array();
+        if ($request->has('packages')) {
+            foreach($packinglistline as $packinglistlines){
+           foreach ($packages as $packet) {
+ 
+                $pl= $packinglistlines->update(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
+           }
+           }
+       }
 
-        $longueur = $request->input('longueur');
-        $largeur = $request->input('largeur');
-        $hauteur = $request->input('heuteur');
-        $image = 'image';
-        $status = $request->input('status');
-        $weight = $request->input('weight');
-        $other_field1 = $request->input('other_field1');
-        $other_field2 = $request->input('other_field2');
-
-        $package->update(['product' => $product, 'bar_code' => $bar_code, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
-        $destinationPath = 'uploads/img/';
-        $array = array();
-        if ($request->has('images')) {
-            foreach ($request->file('images') as $image) {
-                $original_name = 'the_package' . md5(microtime()) . '_' . $package->id . '.' . $image->getClientOriginalExtension();
-                // $original_name = $package->product . '-' . $package->id . '-' . $image->getClientOriginalName();
-                array_push($array, $original_name);
-                $image->move($destinationPath, $original_name);
-            }
-            if (!empty($image_id)) {
-                $create_image = $image_id->update(['product_id' => $package->id, 'image' => implode('|', $array)]);
-            } else {
-                $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
-
-            }
-        }
-
-        $packages = !empty($request->input('packages')) ?
-            $request->input('packages') : [];
-        $package->thepackage_package()->sync($packages);
 
         return redirect()->route('packingList.index');
     }
@@ -736,8 +704,8 @@ class packingListController extends Controller
             $row .= '<td>' . $package['hauteur'] . '</td>';
             $row .= '<td>' . $package['volume'] . '</td>';
             $row .= '<td>' . $package['weight'] . '</td>';
-            $row .= '<td ><input type="text" name="packages['.$package['id'].'][qte]" style="width:50px;" /> </td>';
-            $row .= '<td><button type="button" class="btn btn-danger btn-xs remove_package_row">-</button>
+            $row .= '<td ><input type="text" name="packages['.$package['id'].'][qte]" required style="width:50px;" /> </td>';
+            $row .= '<td><button type="button" class="btn btn-danger btn-xs move_packages_row">-</button>
                     <input type="hidden" name="packages['.$package['id'].'][id]" class="package_row_index" value="' . $package['id'] . '"></td>';
             $row .= '</tr>';
             return $row;
@@ -789,7 +757,7 @@ class packingListController extends Controller
             if(!empty($package)){
             $row = '<ul class="list">';
             foreach($package as $packages){
-            $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="'.$packages['id'].'">'  . $packages['product'] . $packages['bar_code'] . '('.$packages['sku'].')'. '<input type="hidden" name="my_input" value="'.$packages['id'].'"/></li></button><br>';
+            $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="'.$packages['id'].'">'  . $packages['product'] . $packages['bar_code'] . '('.$packages['sku'].')'. '<input type="hidden" name="my_input"  value="'.$packages['id'].'"/></li></button><br>';
 
            
             }

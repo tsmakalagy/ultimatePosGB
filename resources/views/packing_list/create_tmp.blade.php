@@ -14,57 +14,7 @@
         @component('components.widget', ['class' => 'box-solid'])
             <div class="container-fluid">
     
-              
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('customer_name', __('lang_v1.customer') . ':') !!}
-                            {!! Form::text('customer_name', $value= null, ['class' => 'form-control', 'rows' => 3,'required']); !!}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('customer_tel', __('lang_v1.customer_tel') . ':') !!}
-                            {!! Form::text('customer_tel', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {!! Form::label('longueur', __('lang_v1.length') . ':') !!}
-                            {!! Form::text('longueur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {!! Form::label('largeur', __('lang_v1.width') . ':') !!}
-                            {!! Form::text('largeur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {!! Form::label('hauteur', __('lang_v1.height') . ':') !!}
-                            {!! Form::text('hauteur', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('weight', __('lang_v1.weight') . ':') !!}
-                            {!! Form::text('weight', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('volume', __('lang_v1.volume') . ':') !!}
-                            {!! Form::text('volume', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-                </div>
+     
                 <div class="row">
                 
                     <div class="col-md-6 ">
@@ -77,47 +27,18 @@
                     </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('shipping_date', __('lang_v1.shipping_date') . ':*') !!}
+                        {!! Form::label('date_envoi', __('lang_v1.date_envoi') . ':') !!}
                         <div class="input-group">
                             <span class="input-group-addon">
                                 <i class="fa fa-calendar"></i>
                             </span>
-                            {!! Form::text('shipping_date', $carbon, ['class' => 'form-control calendar']); !!}
+                            {!! Form::text('date_envoi', $carbon, ['class' => 'form-control calendar']); !!}
                         </div>
                     </div>
                 </div>
             </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
-                            {!! Form::text('other_field1', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
 
-
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            {!! Form::label('other_field2', __('lang_v1.other_field2') . ':') !!}
-                            {!! Form::text('other_field2', $value= null, ['class' => 'form-control', 'rows' => 3]); !!}
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            {!! Form::label('image', __('lang_v1.image') . ':') !!}
-                            {{-- {!! Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); !!} --}}
-
-                            <input type="file" id="upload_ima" name="images[]" accept="image/*" multiple>
-                            <!-- Form::file('image', ['id' => 'upload_image', 'accept' => 'image/*']); -->
-                            <small>
-                                <p class="help-block">@lang('purchase.max_file_size', ['size' => (config('constants.document_size_limit') / 1000000)])
-                                    <br> @lang('lang_v1.aspect_ratio_should_be_1_1')</p></small>
-                        </div>
-
-                    </div>
-                </div>
+    
 
                 <div class="row">
                 <div class="col-sm-10 col-sm-offset-1">
@@ -233,7 +154,7 @@
             
                
             // $('.product_row').closest('ul').fadeOut(300, function() { $('.product_row').remove(); });
-           $('div ul').remove();
+           $('.list').remove();
             if (this.value.length > 2) {
             var val=$(this).val();
         // alert(val);
@@ -277,7 +198,9 @@
                     $(this).closest('ul').fadeOut(300, function() { $(this).remove(); });
                 });
 
-
+                $('#the_package_add_parcel_form_part').on('click', '.move_packages_row', function () {
+                    $(this).closest('tr').fadeOut(300, function() { $(this).remove(); });
+                });
           
     
         });

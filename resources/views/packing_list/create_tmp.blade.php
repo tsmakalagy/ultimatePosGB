@@ -182,6 +182,7 @@
             $('.product_row').on('click', '.remove_package_row', function () {
                 var id = $(this).find(':hidden').val();
                 
+                
                 // alert('hello');
                 $.ajax({
                 type: 'GET',

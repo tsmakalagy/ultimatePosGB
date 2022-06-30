@@ -5313,7 +5313,7 @@ class TransactionUtil extends Util
         'packing_lists.other_field2',
        // 'ct.mobile',
        // 'ct.name',
-        DB::raw(" IF(packing_lists.mode_transport = 1, 'avion', 'bateau') as mode_transport"),
+        DB::raw(" IF(packing_lists.mode_transport = 1, 'avion', 'bateau') as mode_transport")
         // DB::raw("CONCAT(COALESCE(tp.sku, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
     );
     //->where('ct.type','customer')

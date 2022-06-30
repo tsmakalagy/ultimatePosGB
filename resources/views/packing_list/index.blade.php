@@ -1,26 +1,24 @@
 @extends('layouts.app')
-@section('title', __( 'lang_v1.price_product'))
+@section('title', __( 'lang_v1.packing_list'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header no-print">
-        <h1>@lang( 'lang_v1.price_product')
+        <h1>@lang( 'lang_v1.packing_list')
         </h1>
     </section>
 
     <!-- Main content -->
     <section class="content no-print">
-        @component('components.widget', ['class' => 'box-primary', 'title' => __( 'lang_v1.price_product') ])
+        @component('components.widget', ['class' => 'box-primary'])
             @if(auth()->user()->can('supplier.create') || auth()->user()->can('customer.create') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
                 @slot('tool')
-                <div class="box-tools">
-                    <button type="button" class="btn btn-block btn-primary btn-modal"
-                    data-href="{{action('PackageController@create')}}"
-                    data-container=".package_modal">
 
-                <i class="fa fa-plus"></i> @lang('messages.add')</button>
-                </div>
+                    <div class="box-tools">
+                        <a class="btn btn-block btn-primary" href="{{action('packingListController@create')}}">
+                            <i class="fa fa-plus"></i> @lang('messages.add')</a>
+                    </div>
                 @endslot
             @endif
             @if(auth()->user()->can('supplier.view') || auth()->user()->can('customer.view') || auth()->user()->can('supplier.view_own') || auth()->user()->can('customer.view_own'))
@@ -28,19 +26,19 @@
                        style="min-width: 100% ">
                     <thead class="text-center">
                     <tr>
-                       
-
                         <th>@lang('messages.action')</th>
-                        <th>@lang('lang_v1.product_name')</th>
-                        
-                        <th>@lang('lang_v1.customer')</th>
-                        <th>@lang('lang_v1.mobile')</th>
-                        <th>@lang('lang_v1.volume')</th>
-                        <th>@lang('lang_v1.weight')</th>
                         <th>&nbsp;</th>
-                        <th>@lang('lang_v1.status')</th>                 
-                        
-                        <th>@lang('lang_v1.barcode')</th>
+                        <th width="75px">@lang('lang_v1.date_envoi')</th>
+                        <th width="75px">@lang('lang_v1.the_package')</th>
+                        <th>@lang('lang_v1.customer')</th>
+                        <th>@lang('lang_v1.customer_tel')</th>
+                        <th>@lang('lang_v1.length')</th>
+                        <th>@lang('lang_v1.width')</th>
+                        <th>@lang('lang_v1.height')</th>
+                        <th>@lang('lang_v1.weight')</th>
+                        <th>@lang('lang_v1.volume')</th>
+                        <th>@lang('lang_v1.mode_transport')</th>
+
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
                     </tr>
@@ -49,8 +47,30 @@
                 </table>
             @endif
         @endcomponent
-            <div class="modal fade package_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
-            </div>
+        {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle">
+        </div> --}}
+        {{-- <div class="modal fade package_modal" tabindex="-1" role="dialog"
+aria-labelledby="gridSystemModalLabel">
+</div>
+
+<div class="modal fade" id="view_package_modal" tabindex="-1" role="dialog"
+aria-labelledby="gridSystemModalLabel">
+</div>
+--}}
+        <div class="modal product_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
+
+        <div class="modal " id="view_product_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
+        <div class="modal scan_modal" id="scan_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
+        <div class="modal uploadImg_modal" id="uploadImg_modal" tabindex="-1" role="dialog"
+             aria-labelledby="gridSystemModalLabel">
+        </div>
+
     </section>
     <!-- /.content -->
 
@@ -61,10 +81,13 @@
 @stop
 
 @section('javascript')
- @php $asset_v = env('APP_VERSION'); @endphp
-  <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+    @php $asset_v = env('APP_VERSION'); @endphp
+    <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            $('#myModal').on('shown.bs.modal', function () {
+                $('#my_barcode').focus();
+            });
 
 
             shipper_table = $('#shipper_table').DataTable({
@@ -72,7 +95,7 @@
                 serverSide: true,
                 aaSorting: [[1, 'desc']],
                 "ajax": {
-                    "url": "/package",
+                    "url": "/packing-list",
                     "data": function (d) {
                         if ($('#sell_list_filter_date_range').val()) {
                             var start = $('#sell_list_filter_date_range').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -101,21 +124,21 @@
                 scrollX: true,
                 scrollCollapse: true,
                 columns: [
-                    
-
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
-                    {data: 'product', name: 'product'},         
-                    
-                    {data: 'customer', name: 'customer'},
-                    {data: 'mobile', name: 'mobile'},
-                    {data: 'volume', name: 'volume'},
+                    {data: 'image', name: 'image'},
+
+                    {data: 'date_envoi', name: 'date_envoi'},
+                    {data: 'the_package', name: 'the_package'},
+                    {data: 'customer_name', name: 'customer_name'},
+                    {data: 'customer_tel', name: 'customer_tel'},
+                    {data: 'longueur', name: 'longueur'},
+                    {data: 'largeur', name: 'largeur'},
+                    {data: 'hauteur', name: 'hauteur'},
                     {data: 'weight', name: 'weight'},
-                    {data: 'image', name: 'packages.image'},
-                    {data: 'status', name: 'status'}, 
-                    {data: 'bar_code', name: 'bar_code'},                 
+                    {data: 'volume', name: 'volume'},
+                    {data: 'mode_transport', name: 'mode_transport'},
                     {data: 'other_field1', name: 'other_field1'},
-                    {data: 'other_field2', name: 'other_field2'},
-                   
+                    {data: 'other_field2', name: 'other_field2'}
 
                 ],
                 "fnDrawCallback": function (oSettings) {
@@ -133,12 +156,12 @@
         });
     </script>
     <script type="text/javascript">
-        $(document).on('shown.bs.modal', '.shipper_modal', function(e) {
+        $(document).on('shown.bs.modal', '.shipper_modal', function (e) {
             // initAutocomplete();
         });
     </script>
     <script src="{{ asset('js/payment.js?v=' . $asset_v) }}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/5.0.6/jquery.inputmask.min.js"></script>
 
 
 @endsection

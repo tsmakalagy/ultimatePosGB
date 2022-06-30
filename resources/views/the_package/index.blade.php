@@ -28,11 +28,7 @@
                     <tr>
                         <th>@lang('messages.action')</th>
                         <th>&nbsp;</th>
-                        <th width="75px">@lang('lang_v1.date')</th>
-                        <th>@lang('lang_v1.customer')</th>
-                        <th>@lang('lang_v1.customer_tel')</th>
-
-                        <th>@lang('lang_v1.barcode')</th>
+                        <th>@lang('SKU')</th>
                         <th>@lang('lang_v1.product')</th>
                         <th>@lang('lang_v1.length')</th>
                         <th>@lang('lang_v1.width')</th>
@@ -127,10 +123,8 @@ aria-labelledby="gridSystemModalLabel">
                 columns: [
                     {data: 'action', name: 'action', orderable: false, "searchable": false},
                     {data: 'image', name: 'image'},
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'customer_name', name: 'customer_name'},
-                    {data: 'customer_tel', name: 'customer_tel'},
-                    {data: 'bar_code', name: 'bar_code'},
+                    {data: 'sku', name: 'sku'},
+
                     {data: 'product', name: 'product'},
                     {data: 'longueur', name: 'longueur'},
                     {data: 'largeur', name: 'largeur'},

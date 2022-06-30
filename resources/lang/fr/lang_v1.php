@@ -57,6 +57,11 @@ return [
     'max' => 'Max',
     'min' => 'Min',
     'edit_the_package' => 'Editer carton',
+    'add_packing_list' => 'Ajouter list colis',
+    'edit_packing_list' => 'Editer list colis',
+    'mode_transport' => 'Mode transport',
+    'date_envoi' => 'Date envoi',
+    'packing_list' => 'List colis',
 
     'the_package' => 'Carton',
     'list_package_out' => 'List colis sortant',

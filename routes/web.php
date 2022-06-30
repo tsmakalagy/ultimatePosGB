@@ -460,6 +460,22 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('the-package/get-package', 'ThePackageController@getPackage')->name('ThePackage.get_package');
     Route::get('the-package/get-package-row', 'ThePackageController@getPackageRow')->name('ThePackage.get_package_row');
 
+      //route for packing_list
+      Route::get('packing-list', 'packingListController@index')->name('packingList.index');
+      Route::get('packing-list/create', 'packingListController@create')->name('packingList.create');
+      Route::post('packing-list/store', 'packingListController@store')->name('packingList.store');
+      Route::get('packing-list/edit/{id}', 'packingListController@edit')->name('packingList.edit');
+      Route::post('packing-list/update/{id}', 'packingListController@update')->name('packingList.update');
+      Route::get('packing-list/delete/{id}', 'packingListController@delete')->name('packingList.delete');
+      Route::get('packing-list/show/{id}', 'packingListController@show')->name('packingList.show');
+      Route::get('packing-list/scan', 'packingListController@scan')->name('packingList.scan');
+      Route::get('packing-list/upload-img/{id}', 'packingListController@uploadImg')->name('packingList.upload_img');
+      Route::post('packing-list/save-img/{id}', 'packingListController@saveImg')->name('packingList.save_img');
+      Route::get('packing-list/get-package', 'packingListController@getPackage')->name('packingList.get_package');
+      Route::get('packing-list/get-package-row', 'packingListController@getPackageRow')->name('packingList.get_package_row');
+      Route::get('packing-list/get-the-package-row', 'packingListController@getThePackageRow')->name('packingList.get_the_package_row');
+  
+
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');
 //    Route::get('test/{id}','ProductSellController@test');

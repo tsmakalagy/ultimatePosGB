@@ -9,6 +9,7 @@ use App\Contact;
 use App\Currency;
 use App\Package;
 use App\ThePackage;
+use App\PackingList;
 use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentDeleted;
 use App\Events\TransactionPaymentUpdated;
@@ -5249,6 +5250,7 @@ class TransactionUtil extends Util
         'the_packages.bar_code',
         // 'the_packages.client',
         'the_packages.volume',
+        'the_packages.sku',
         'the_packages.product',
         'the_packages.weight',
         'the_packages.longueur',
@@ -5261,9 +5263,59 @@ class TransactionUtil extends Util
         // 'the_packages.status',
         'the_packages.other_field1',
         'the_packages.other_field2',
+ 
+        DB::raw(" IF(the_packages.status = 1, 'sortant', 'entrant') as status"));
+
+    
+        return $the_package;
+    }
+   
+
+
+
+     /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getPackingList()
+    {   $the_package= PackingList::join(
+                'packing_list_lines as pll',
+                'pll.packing_list_id',
+                '=',
+                'packing_lists.id'
+            )
+            ->join(
+                'the_packages as tp',
+                'pll.the_package_id',
+                '=',
+                'tp.id'
+            )
+        ->select(
+        'packing_lists.id',
+        'packing_lists.the_package_id',
+        'packing_lists.bar_code',
+        // 'the_packages.client',
+        'packing_lists.volume',
+        'packing_lists.date_envoi',
+        'packing_lists.weight',
+        'packing_lists.longueur',
+        'packing_lists.largeur',
+        'packing_lists.hauteur',
+        'packing_lists.created_at',
+        'packing_lists.customer_tel',
+        'packing_lists.customer_name',
+        'packing_lists.image',
+        'tp.sku',
+        // 'the_packages.status',
+        'packing_lists.other_field1',
+        'packing_lists.other_field2',
        // 'ct.mobile',
        // 'ct.name',
-        DB::raw(" IF(the_packages.status = 1, 'sortant', 'entrant') as status"));
+        DB::raw(" IF(packing_lists.mode_transport = 1, 'avion', 'bateau') as mode_transport"),
+        // DB::raw("CONCAT(COALESCE(tp.sku, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
+    );
     //->where('ct.type','customer')
     
         return $the_package;

@@ -22,8 +22,10 @@ use App\InvoiceScheme;
 use App\SellingPriceGroup;
 use App\TaxRate;
 use App\Transaction;
-use App\package;
+use App\Package;
+use App\PackingListLine;
 use App\ThePackage;
+use App\PackingList;
 use App\TransactionSellLine;
 use App\TypesOfService;
 use App\User;
@@ -42,7 +44,7 @@ use App\Media;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Validation\Rule;
 
-class ThePackageController extends Controller
+class packingListController extends Controller
 {
     /**
      * All Utils instance.
@@ -81,8 +83,9 @@ class ThePackageController extends Controller
     }
 
     public function index()
+    
     {
-
+      
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
@@ -104,6 +107,7 @@ class ThePackageController extends Controller
 
             $package = $this->transactionUtil->getPackage();
             $the_package = $this->transactionUtil->getThePackage();
+            $packing_list = $this->transactionUtil->getPackingList();
 
 
             $permitted_locations = auth()->user()->permitted_locations();
@@ -122,7 +126,7 @@ class ThePackageController extends Controller
             }
 
         
-            $datatable = Datatables::of($the_package)
+            $datatable = Datatables::of($packing_list)
                 ->addColumn(
                     'action',
                     function ($row) use ($only_shipments, $is_admin, $sale_type) {
@@ -137,17 +141,17 @@ class ThePackageController extends Controller
 
                         if (auth()->user()->can('sell.delete')) {
                             $html .=
-                                '<li><a href="' . action('ThePackageController@show', [$row->id]) . '" class="view-product"><i class="fa fa-eye"></i> ' . __("messages.view") . '</a></li>';
+                                '<li><a href="' . action('packingListController@show', [$row->id]) . '" class="view-product"><i class="fa fa-eye"></i> ' . __("messages.view") . '</a></li>';
                         }
 
 
                         if (auth()->user()->can('product.update')) {
                             $html .=
-                                '<li><a target="_blank" href="' . action('ThePackageController@edit', [$row->id]) . '"><i class="glyphicon glyphicon-edit"></i> ' . __("messages.edit") . '</a></li>';
+                                '<li><a target="_blank" href="' . action('packingListController@edit', [$row->id]) . '"><i class="glyphicon glyphicon-edit"></i> ' . __("messages.edit") . '</a></li>';
                         }
                         if (auth()->user()->can('sell.delete')) {
                             $html .=
-                                '<li><a href="' . action('ThePackageController@delete', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
+                                '<li><a href="' . action('packingListController@delete', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
                         }
 
 
@@ -194,6 +198,7 @@ class ThePackageController extends Controller
                     'discount_amount',
                     function ($row) {
 
+
                         return '<span class="total-discount" data-orig-value=""> </span>';
                     }
                 )
@@ -203,13 +208,17 @@ class ThePackageController extends Controller
                     '<span class="type" data-orig-value=""> </span>')
                 ->editColumn('tel',
                     '<span class="tel">   </span>')
-                ->editColumn('product',
-                    // '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
-                    function ($row) {
-                        $span = '<span class="tel"> ' . $row->thepackage_package->implode('product', ',') . '</span><br><span class="tel"> ' . $row->product . '</span><br>';
-                        return $span;
-                    })
+                // ->editColumn('product',
+                //     // '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
+                //     function ($row) {
+                //         $span = '<span class="tel"> ' . $row->thepackage_package->implode('product', ',') . '</span><br><span class="tel"> ' . $row->product . '</span><br>';
+                //         return $span;
+                //     })
               
+                // ->editColumn('customer_name',
+                // '<span class="china_price" data-orig-value="{{customer_name}}">@if(!empty($customer_name)) {{$customer_name}} @endif   </span>')
+                ->editColumn('customer_tel',
+                '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
                 ->editColumn('longueur',
                     '<span class="china_price" data-orig-value="{{$longueur}}">@if(!empty($longueur)) {{$longueur}} @endif   </span>')
                 ->editColumn('largeur',
@@ -218,9 +227,21 @@ class ThePackageController extends Controller
                     '<span class="china_price" data-orig-value="{{$hauteur}}">@if(!empty($hauteur)) {{$hauteur}} @endif   </span>')
                 ->editColumn('weight',
                     '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
-                ->editColumn('sku',
-                    '<span class="size" data-orig-value="{{$sku}}">@if(!empty($sku)) {{$sku}} @endif   </span>')
+                ->editColumn('mode_transport',
+                    '<span class="size" data-orig-value="{{$mode_transport}}">@if(!empty($mode_transport)) {{$mode_transport}} @endif   </span>')
+                 ->editColumn('the_package',
+                    '<span class="size" data-orig-value="">@if(!empty($the_package)) {{$the_package}} @endif   </span>')
  
+                ->editColumn(
+                        'date_envoi',
+                         function ($row) {
+                        //     $created_at = $row->date_envoi ? $row->date_envoi->format('Y-m-d') : '';
+                        //     $data_order = $row->date_envoi ? $row->date_envoi->format('Y-m-d H:i', strtotime($row->date_envoi)) : '';
+                        //     $format_date = preg_replace('/[\s]+/mu', '', $created_at);
+                            return '<span data-order="" class="total-discount" data-orig-value="">' . $row->date_envoi . '</span>';
+                        }
+                    )
+                    
                 ->editColumn('image', function ($row) {
                     $image_url = Image::where('product_id', $row->id)->first();
 
@@ -259,6 +280,21 @@ class ThePackageController extends Controller
 
                     return $total_remaining;
                 })
+                ->addColumn('date_envoi', function ($row) {
+                    $total_remaining = '';
+
+                    return $total_remaining;
+                })
+                ->addColumn('mode_transport', function ($row) {
+                    $total_remaining = '';
+
+                    return $total_remaining;
+                })
+                ->addColumn('customer_tel', function ($row) {
+                    $total_remaining = '';
+
+                    return $total_remaining;
+                })
                 ->addColumn('return_due', function ($row) {
                     $return_due_html = '';
 
@@ -279,13 +315,13 @@ class ThePackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-                ->addColumn('sku', function ($row) {
-                    $total_remaining = '';
-                    return $total_remaining;
-                })
       
 
                 ->addColumn('longueur', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('the_package', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -336,7 +372,7 @@ class ThePackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'product', 'sku','longueur', 'largeur',  'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total','mode_transport','the_package', 'customer_tel','date_envoi', 'longueur', 'largeur',  'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -361,7 +397,7 @@ class ThePackageController extends Controller
 
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
-        return view('the_package.index')
+        return view('packing_list.index')
             ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses'));
 
 
@@ -396,9 +432,12 @@ class ThePackageController extends Controller
         //   else{
         //     return redirect()->route('ThePackage.index');
         //   }
+        $carbon = \Carbon::now()->format('m/d/Y H:i:s');
+        $now=\Carbon::today()->format('Y-m-d');
+        // dd($now);
         $package = Package::pluck('bar_code', 'id');
 
-        return view('the_package.create_tmp', compact('package'));
+        return view('packing_list.create_tmp', compact('package','now','carbon'));
 
     }
 
@@ -411,22 +450,25 @@ class ThePackageController extends Controller
     public function store(Request $request)
     {
 
-
-
-        $product = $request->input('product');
+// ->format('m/d/Y H:i:s')
+        $date_env = $request->input('date_envoi');
+        $date_envoi=date('m/d/Y H:i:s',strtotime($date_env));
         $longueur = $request->input('longueur');
         $largeur = $request->input('largeur');
+        $customer_tel = $request->input('customer_tel');
+        $customer_name = $request->input('customer_name');
         $hauteur = $request->input('hauteur');
         $volume = $request->input('volume');
+        $mode_transport = $request->input('mode_transport');
         $image = "image";
-        $status = $request->input('status');
+        // $status = $request->input('status');
         $weight = $request->input('weight');
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
         $bar_code = '234444';
 
 
-        $package = ThePackage::firstOrCreate(['product' => $product, 'bar_code' => $bar_code, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'volume' => $volume, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package = PackingList::firstOrCreate(['date_envoi' => $date_envoi,'customer_tel' => $customer_tel,'customer_name' => $customer_name, 'bar_code' => $bar_code, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'volume' => $volume, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
 
 
         $destinationPath = 'uploads/img/';
@@ -442,16 +484,31 @@ class ThePackageController extends Controller
             $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
 
         }
-        $packages = $request->input('packages');
-        if (!empty($packages)) {
-            $package->thepackage_package()->sync($packages);
-        }
-        $created_at = $package->created_at->format('ymd');
-        $id = str_pad($package->id, 3, '0', STR_PAD_LEFT);
-        $sku =  $created_at.$id ;
-        $package->update(['sku' => $sku]);
+        // $packages = $request->input('packages');
+        // if (!empty($packages)) {
+        //     $package->thepackage_package()->sync($packages);
 
-        return redirect()->route('ThePackage.index');
+        // }
+    
+        $packages=$request->input('packages');
+        $arr = array();
+       if ($request->has('packages')) {
+           foreach ($packages as $packet) {
+            //    $impl = implode(':', $package);
+            //    array_push($arr, $package);
+               // dd($package);
+               
+                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);
+               
+
+           }
+       }
+        // $created_at = $package->created_at->format('Y-m-d H:i');
+        // $id = str_pad($package->id, 4, '0', STR_PAD_LEFT);
+        // $barcode = 'pack-' . $id . '-' . $created_at;
+        // $package->update(['bar_code' => $barcode]);
+
+        return redirect()->route('packingList.index');
 
 
     }
@@ -477,7 +534,7 @@ class ThePackageController extends Controller
 
         $image_url = Image::where('product_id', $id)->first();
 
-        return view('the_package.view-modal')->with(compact('package', 'other_product', 'contact', 'image_url'));
+        return view('packing_list.view-modal')->with(compact('package', 'other_product', 'contact', 'image_url'));
     }
 
     /**
@@ -492,7 +549,7 @@ class ThePackageController extends Controller
         $the_package = ThePackage::findOrFail($id);
         $contact = Contact::pluck('name', 'id');
 
-        return view('the_package.edit', compact('the_package', 'contact'));
+        return view('packing_list.edit', compact('the_package', 'contact'));
 
     }
 
@@ -505,7 +562,7 @@ class ThePackageController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+        dd($request);
         $package = ThePackage::findOrFail($id);
 
         $image_id = Image::where('product_id', $id)->first();
@@ -544,7 +601,7 @@ class ThePackageController extends Controller
             $request->input('packages') : [];
         $package->thepackage_package()->sync($packages);
 
-        return redirect()->route('ThePackage.index');
+        return redirect()->route('packingList.index');
     }
 
     /**
@@ -557,7 +614,7 @@ class ThePackageController extends Controller
 
         $package = ThePackage::findOrFail($id);
         $package->delete();
-        return redirect()->route('ThePackage.index');
+        return redirect()->route('packingList.index');
 
     }
 
@@ -569,8 +626,8 @@ class ThePackageController extends Controller
     public function scan()
     {
 
-        $package = Package::pluck('bar_code', 'id');
-        return view('the_package.scan-modal', compact('package'));
+        $the_package = ThePackage::pluck('bar_code', 'id');
+        return view('packing_list.scan-modal', compact('the_package'));
 
     }
 
@@ -582,7 +639,7 @@ class ThePackageController extends Controller
     public function uploadImg($id)
     {
 
-        return view('the_package.uploadImg-modal', compact('id'));
+        return view('packing_list.uploadImg-modal', compact('id'));
 
     }
 
@@ -616,7 +673,7 @@ class ThePackageController extends Controller
 
             }
         }
-        return redirect()->route('ThePackage.index');
+        return redirect()->route('packingList.index');
     }
 
 
@@ -658,34 +715,91 @@ class ThePackageController extends Controller
         //requete ajax
         if (request()->ajax()) {
 
-            $barcode = $request->get('barcode', false);
+            $id = $request->get('id', false);
             // $package=  Package::findOrFail($val);
-            $package = Package::where('packages.bar_code', $barcode)->select(
-                'packages.customer_name',
-                'packages.customer_tel',
-                'packages.longueur',
-                'packages.largeur',
-                'packages.hauteur',
-                'packages.volume',
-                'packages.weight',
-                'packages.product',
-                'packages.bar_code',
-                'packages.id'
+            $package = ThePackage::where('the_packages.id', $id)->select(
+              
+                'the_packages.longueur',
+                'the_packages.largeur',
+                'the_packages.hauteur',
+                'the_packages.volume',
+                'the_packages.weight',
+                
+                'the_packages.bar_code',
+                'the_packages.id'
             )->first();
             $row = '<tr data-id="' . $package['id'] . '">';
             $row .= '<td>' . $package['bar_code'] . '</td>';
-            $row .= '<td>' . $package['customer_name'] . '</td>';
-            $row .= '<td>' . $package['customer_tel'] . '</td>';
-            $row .= '<td>' . $package['product'] . '</td>';
+
             $row .= '<td>' . $package['longueur'] . '</td>';
             $row .= '<td>' . $package['largeur'] . '</td>';
             $row .= '<td>' . $package['hauteur'] . '</td>';
             $row .= '<td>' . $package['volume'] . '</td>';
             $row .= '<td>' . $package['weight'] . '</td>';
+            $row .= '<td ><input type="text" name="packages['.$package['id'].'][qte]" style="width:50px;" /> </td>';
             $row .= '<td><button type="button" class="btn btn-danger btn-xs remove_package_row">-</button>
-                    <input type="hidden" name="packages[]" class="package_row_index" value="' . $package['id'] . '"></td>';
+                    <input type="hidden" name="packages['.$package['id'].'][id]" class="package_row_index" value="' . $package['id'] . '"></td>';
             $row .= '</tr>';
             return $row;
+        }
+    }
+
+    /**
+     * ThePackage row
+     * @param $request
+     * @return view
+     */
+    public function getThePackageRow(Request $request)
+    {
+        //requete ajax
+        if (request()->ajax()) {
+
+            $value = $request->get('val', false);
+            // $package=  Package::findOrFail($val);
+            $package = ThePackage::join(
+                'thepackage_packages AS tpack',
+                'tpack.the_package_id',
+                '=',
+                'the_packages.id'
+            )->join(
+                'packages AS pack',
+                'tpack.package_id',
+                '=',
+                'pack.id'
+            )
+         
+            ->where('the_packages.product', 'like', '%' . $value .'%')
+             ->orWhere('the_packages.sku','like', '%' . $value .'%')
+            
+            ->orWhere('pack.bar_code', 'like', '%' . $value .'%')
+            ->select(
+              
+                'the_packages.sku',
+                'the_packages.largeur',
+                'the_packages.hauteur',
+                'the_packages.volume',
+                'the_packages.weight',
+                
+                'pack.bar_code',
+                'the_packages.id',
+                'the_packages.product'
+            )
+            ->groupby('the_packages.id')
+            ->get();
+            if(!empty($package)){
+            $row = '<ul class="list">';
+            foreach($package as $packages){
+            $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="'.$packages['id'].'">'  . $packages['product'] . $packages['bar_code'] . '('.$packages['sku'].')'. '<input type="hidden" name="my_input" value="'.$packages['id'].'"/></li></button><br>';
+
+           
+            }
+             $row .= '</ul>';
+           
+    
+            return $row;
+            }
+            
+          
         }
     }
 }

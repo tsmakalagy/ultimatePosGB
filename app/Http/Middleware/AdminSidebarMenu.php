@@ -244,6 +244,20 @@ class AdminSidebarMenu
                                  ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'products' && request()->segment(2) == 'create']
                              );
                          }
+                                 if (auth()->user()->can('product.view')) {
+                             $sub->url(
+                                 action('packingListController@index'),
+                                 __('lang_v1.packing_list'),
+                                 ['icon' => 'fa fas fa-list', 'active' => request()->segment(1) == 'products' && request()->segment(2) == '']
+                             );
+                         }
+                         if (auth()->user()->can('product.create')) {
+                             $sub->url(
+                                 action('packingListController@create'),
+                                 __('lang_v1.add_packing_list'),
+                                 ['icon' => 'fa fas fa-plus-circle', 'active' => request()->segment(1) == 'products' && request()->segment(2) == 'create']
+                             );
+                         }
                  
                  
                       

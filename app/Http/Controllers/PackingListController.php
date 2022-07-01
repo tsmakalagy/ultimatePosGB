@@ -723,43 +723,26 @@ class packingListController extends Controller
         if (request()->ajax()) {
 
             $value = $request->get('val', false);
-            // $package=  Package::findOrFail($val);
-            $package = ThePackage::join(
-                'thepackage_packages AS tpack',
-                'tpack.the_package_id',
-                '=',
-                'the_packages.id'
-            )->join(
-                'packages AS pack',
-                'tpack.package_id',
-                '=',
-                'pack.id'
-            )
-         
-            ->where('the_packages.product', 'like', '%' . $value .'%')
-             ->orWhere('the_packages.sku','like', '%' . $value .'%')
-            
-            ->orWhere('pack.bar_code', 'like', '%' . $value .'%')
-            ->select(
-              
-                'the_packages.sku',
-                'the_packages.largeur',
-                'the_packages.hauteur',
-                'the_packages.volume',
-                'the_packages.weight',
-                
-                'pack.bar_code',
-                'the_packages.id',
-                'the_packages.product'
-            )
-            ->groupby('the_packages.id')
-            ->get();
-            if(!empty($package)){
-            $row = '<ul class="list">';
-            foreach($package as $packages){
-            $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="'.$packages['id'].'">'  . $packages['product'] . $packages['bar_code'] . '('.$packages['sku'].')'. '<input type="hidden" name="my_input"  value="'.$packages['id'].'"/></li></button><br>';
 
-           
+            $packingLines = ThePackage::query()
+                ->where('product', 'LIKE', '%'.$value.'%')
+                ->orWhere('sku', 'LIKE', '%'.$value.'%')
+                ->orWhereHas('thepackage_package', function($q) use ($value) {
+                    $q->where('bar_code', 'LIKE', '%'.$value.'%')
+                    ->orWhere('product', 'LIKE', '%'.$value.'%');
+                })->get();
+            if (!empty($packingLines)) {
+                $row = '<ul class="list">';
+                foreach ($packingLines as $packingLine) {
+                    $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="' . $packingLine->id . '">' . $packingLine->product . ' (' . $packingLine->sku . ')' . '<input type="hidden" name="my_input"  value="' . $packingLine->id . '"/></li></button><br>';
+
+
+                }
+                $row .= '</ul>';
+
+
+                return $row;
+
             }
              $row .= '</ul>';
            

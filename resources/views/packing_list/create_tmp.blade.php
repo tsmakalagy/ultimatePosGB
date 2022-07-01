@@ -203,6 +203,7 @@
                     $(this).closest('tr').fadeOut(300, function() { $(this).remove(); });
                 });
           
+          
     
         });
 

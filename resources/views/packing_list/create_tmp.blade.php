@@ -161,6 +161,7 @@
                     $('.list').remove();
                     if (this.value.length > 2) {
                         var val = $(this).val();
+                        // alert(val);
                         $.ajax({
                             type: 'GET',
                             cache: false,
@@ -184,6 +185,7 @@
             });
             $('.product_row').on('click', '.remove_package_row', function () {
                 var id = $(this).find(':hidden').val();
+
 
                 // alert('hello');
                 $.ajax({

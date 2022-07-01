@@ -5295,7 +5295,6 @@ class TransactionUtil extends Util
                 'packing_lists.bar_code',
                 // 'the_packages.client',
                 'packing_lists.volume',
-                'packing_lists.date_envoi',
                 'packing_lists.weight',
                 'packing_lists.longueur',
                 'packing_lists.largeur',
@@ -5310,10 +5309,13 @@ class TransactionUtil extends Util
                 'packing_lists.other_field2',
                 // 'ct.mobile',
                 // 'ct.name',
-                DB::raw(" IF(packing_lists.mode_transport = 1, 'avion', 'bateau') as mode_transport")
-            // DB::raw("CONCAT(COALESCE(tp.sku, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
-            );
-        //->where('ct.type','customer')
+                DB::raw(" IF(packing_lists.mode_transport = 1, 'avion', 'bateau') as mode_transport"),
+                DB::raw('DATE_FORMAT(packing_lists.date_envoi, "%Y/%m/%d") as date_envoi')
+           
+            )
+            ->orderBy('packing_lists.date_envoi', 'desc')
+            ->groupBy('packing_lists.id');
+      
 
         return $the_package;
     }

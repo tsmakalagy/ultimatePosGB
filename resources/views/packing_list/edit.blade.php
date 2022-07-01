@@ -16,7 +16,7 @@
 
     <!-- Main content -->
     <section class="content">
-     {!! Form::open(['action' =>['ThePackageController@update', $the_package->id],'files' => true,'enctype' =>'multipart/form-data']) !!}
+     {!! Form::open(['action' =>['packingListController@update', $package->id],'files' => true,'enctype' =>'multipart/form-data']) !!}
      @component('components.widget', ['class' => 'box-solid'])                   
      <div class="container-fluid">
 
@@ -38,7 +38,7 @@
                     <span class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </span>
-                    {!! Form::text('date_envoi', $package->mode_transport, ['class' => 'form-control calendar']); !!}
+                    {!! Form::text('date_envoi', $date, ['class' => 'form-control calendar']); !!}
                 </div>
             </div>
         </div>

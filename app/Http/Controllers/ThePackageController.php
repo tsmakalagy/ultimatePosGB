@@ -330,7 +330,7 @@ class ThePackageController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
-                            return action('PackageController@show', [$row->id]);
+                            return action('ThePackageController@show', [$row->id]);
                         } else {
                             return '';
                         }

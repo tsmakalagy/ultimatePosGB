@@ -389,7 +389,7 @@ class packingListController extends Controller
                 ->setRowAttr([
                     'data-href' => function ($row) {
                         if (auth()->user()->can("sell.view") || auth()->user()->can("view_own_sell_only")) {
-                            return action('PackageController@show', [$row->id]);
+                            return action('packingListController@show', [$row->id]);
                         } else {
                             return '';
                         }
@@ -487,7 +487,7 @@ class packingListController extends Controller
        if ($request->has('packages')) {
            foreach ($packages as $packet) {
  
-                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
+                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'] ]);              
 
            }
        }
@@ -532,8 +532,11 @@ class packingListController extends Controller
         $package = PackingList::findOrFail($id);
         $the_package = ThePackage::findOrFail($id);
 
+        $date=date('m/d/Y H:i:s', strtotime($package->date_envoi));
 
-        return view('packing_list.edit', compact('the_package', 'package'));
+        // $date_envoi = $package->date_envoi->format('m/d/Y H:i:s');
+
+        return view('packing_list.edit', compact('the_package', 'package','date'));
 
     }
 
@@ -546,12 +549,13 @@ class packingListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
         $package = PackingList::findOrFail($id);
-        $packinglistline = PackingListLine::where('packing_list_lines.packing_list_id',$id)->get();
-
+        $packinglistline = PackingListLine::where('packing_list_lines.packing_list_id',$id);
+        // dd($packinglistline);
+        $packinglistline->delete();
+        
         $date_env = $request->input('date_envoi');
-        $date_envoi=date('m/d/Y H:i:s',strtotime($date_env));
+        $date_envoi=date('Y-m-d H:i:s',strtotime($date_env));
      
         $mode_transport = $request->input('mode_transport');
 
@@ -560,12 +564,18 @@ class packingListController extends Controller
         $packages=$request->input('packages');
         $arr = array();
         if ($request->has('packages')) {
-            foreach($packinglistline as $packinglistlines){
-           foreach ($packages as $packet) {
+            foreach ($packages as $packet) {
  
-                $pl= $packinglistlines->update(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
+                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'] ]);              
+
            }
-           }
+        //     foreach($packinglistline as $packinglistlines){
+        //         $packinglistlines->update
+        // //    foreach ($packages as $packet) {
+ 
+        // //         $pl= $packinglistlines->update(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
+        // //    }
+        //    }
        }
 
 
@@ -744,12 +754,7 @@ class packingListController extends Controller
                 return $row;
 
             }
-             $row .= '</ul>';
-           
     
-            return $row;
-            }
-            
           
         }
     }

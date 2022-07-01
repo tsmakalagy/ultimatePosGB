@@ -44,7 +44,7 @@ use App\Media;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Validation\Rule;
 
-class packingListController extends Controller
+class PackingListController extends Controller
 {
     /**
      * All Utils instance.
@@ -83,9 +83,9 @@ class packingListController extends Controller
     }
 
     public function index()
-    
+
     {
-      
+
         $is_admin = $this->businessUtil->is_admin(auth()->user());
 
         if (!$is_admin && !auth()->user()->hasAnyPermission(['sell.view', 'sell.create', 'direct_sell.access', 'direct_sell.view', 'view_own_sell_only', 'view_commission_agent_sell', 'access_shipping', 'access_own_shipping', 'access_commission_agent_shipping', 'so.view_all', 'so.view_own'])) {
@@ -115,7 +115,7 @@ class packingListController extends Controller
                 $sells->whereIn('transactions.location_id', $permitted_locations);
             }
 
-        
+
             $only_shipments = request()->only_shipments == 'true' ? true : false;
             if ($only_shipments) {
                 $sells->whereNotNull('transactions.shipping_status');
@@ -125,7 +125,7 @@ class packingListController extends Controller
                 }
             }
 
-        
+
             $datatable = Datatables::of($packing_list)
                 ->addColumn(
                     'action',
@@ -209,7 +209,7 @@ class packingListController extends Controller
                 ->editColumn('tel',
                     '<span class="tel">   </span>')
                 ->editColumn('customer_tel',
-                '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
+                    '<span class="china_price" data-orig-value="{{$customer_tel}}">@if(!empty($customer_tel)) {{$customer_tel}} @endif   </span>')
                 ->editColumn('longueur',
                     '<span class="china_price" data-orig-value="{{$longueur}}">@if(!empty($longueur)) {{$longueur}} @endif   </span>')
                 ->editColumn('largeur',
@@ -220,51 +220,49 @@ class packingListController extends Controller
                     '<span class="size" data-orig-value="{{$weight}}">@if(!empty($weight)) {{$weight}} @endif   </span>')
                 ->editColumn('mode_transport',
                     '<span class="size" data-orig-value="{{$mode_transport}}">@if(!empty($mode_transport)) {{$mode_transport}} @endif   </span>')
-                 ->editColumn('the_package',
-                 function ($row) {
-                    $arr=array();
-                    $arr2=array();
-                    $pack_listlines=$row->packinglist_lines;
-                    $val='';
-                 
-                     foreach($pack_listlines as $packinglistlines){
-                        // return($packinglistlines);
-                        $sku=$packinglistlines->thepackage->sku;
-                        $qte=$packinglistlines->qte;
-                        $product=$packinglistlines->thepackage->product;  
-                        $packing=$packinglistlines->thepackage->thepackage_package;
-                         $val.='<span class="date_paid_on">'.$sku.'('.$qte.')'.'</span><br>';
-                        //  return $product.'('.$sku.')';
-                        // return $packing;
-                        // foreach($packing as $pack){
-                        //      $prod=$pack->product;
-                        //      array_push($arr,$prod);
-                        //     //  return $packing;
-                        // }
-                        // $ar=implode(',', $arr);
-                        // $new_arr=$sku.$product.$ar;
-                        // array_push($arr2,$new_arr);
-                        // $val=$sku.'('.$qte.')';
-                        // array_push($arr,$val);
-                        // return $packinglistlines->thepackage->product.','.$product.'('.$sku.')';
-                    }
-            
-            
-                    
-                     return $val;
-                })
-                    // '<span class="size" data-orig-value="">@if(!empty($the_package)) {{$the_package}} @endif   </span>')
- 
+                ->editColumn('the_package',
+                    function ($row) {
+                        $arr = array();
+                        $arr2 = array();
+                        $pack_listlines = $row->packinglist_lines;
+                        $val = '';
+
+                        foreach ($pack_listlines as $packinglistlines) {
+                            // return($packinglistlines);
+                            $sku = $packinglistlines->thepackage->sku;
+                            $qte = $packinglistlines->qte;
+                            $product = $packinglistlines->thepackage->product;
+                            $packing = $packinglistlines->thepackage->thepackage_package;
+                            $val .= '<span class="date_paid_on">' . $sku . '(' . $qte . ')' . '</span><br>';
+                            //  return $product.'('.$sku.')';
+                            // return $packing;
+                            // foreach($packing as $pack){
+                            //      $prod=$pack->product;
+                            //      array_push($arr,$prod);
+                            //     //  return $packing;
+                            // }
+                            // $ar=implode(',', $arr);
+                            // $new_arr=$sku.$product.$ar;
+                            // array_push($arr2,$new_arr);
+                            // $val=$sku.'('.$qte.')';
+                            // array_push($arr,$val);
+                            // return $packinglistlines->thepackage->product.','.$product.'('.$sku.')';
+                        }
+
+
+                        return $val;
+                    })
+                // '<span class="size" data-orig-value="">@if(!empty($the_package)) {{$the_package}} @endif   </span>')
+
                 ->editColumn(
-                        'date_envoi',
-                         function ($row) {
+                    'date_envoi',
+                    function ($row) {
                         //     $created_at = $row->date_envoi ? $row->date_envoi->format('Y-m-d') : '';
                         //     $data_order = $row->date_envoi ? $row->date_envoi->format('Y-m-d H:i', strtotime($row->date_envoi)) : '';
                         //     $format_date = preg_replace('/[\s]+/mu', '', $created_at);
-                            return '<span data-order="" class="total-discount" data-orig-value="">' . $row->date_envoi . '</span>';
-                        }
-                    )
-                    
+                        return '<span data-order="" class="total-discount" data-orig-value="">' . $row->date_envoi . '</span>';
+                    }
+                )
                 ->editColumn('image', function ($row) {
                     $image_url = Image::where('product_id', $row->id)->first();
 
@@ -338,8 +336,6 @@ class packingListController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-      
-
                 ->addColumn('longueur', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
@@ -372,7 +368,6 @@ class packingListController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
-
                 ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br> @endif ')
                 ->editColumn('total_items', '')
                 ->addColumn('payment_methods', function ($row) use ($payment_types) {
@@ -395,7 +390,7 @@ class packingListController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total','mode_transport','the_package', 'customer_tel','date_envoi', 'longueur', 'largeur',  'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total', 'mode_transport', 'the_package', 'customer_tel', 'date_envoi', 'longueur', 'largeur', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -456,11 +451,11 @@ class packingListController extends Controller
         //     return redirect()->route('ThePackage.index');
         //   }
         $carbon = \Carbon::now()->format('m/d/Y H:i:s');
-        $now=\Carbon::today()->format('Y-m-d');
+        $now = \Carbon::today()->format('Y-m-d');
         // dd($now);
         $package = Package::pluck('bar_code', 'id');
 
-        return view('packing_list.create_tmp', compact('package','now','carbon'));
+        return view('packing_list.create_tmp', compact('package', 'now', 'carbon'));
 
     }
 
@@ -475,22 +470,22 @@ class packingListController extends Controller
 
 // ->format('m/d/Y H:i:s')
         $date_env = $request->input('date_envoi');
-        $date_envoi=date('Y-m-d H:i:s',strtotime($date_env));
- 
+        $date_envoi = date('Y-m-d H:i:s', strtotime($date_env));
+
         $mode_transport = $request->input('mode_transport');
 
         $package = PackingList::create(['date_envoi' => $date_envoi, 'mode_transport' => $mode_transport]);
 
 
-        $packages=$request->input('packages');
+        $packages = $request->input('packages');
         $arr = array();
-       if ($request->has('packages')) {
-           foreach ($packages as $packet) {
- 
-                $pl= PackingListLine::create(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
+        if ($request->has('packages')) {
+            foreach ($packages as $packet) {
 
-           }
-       }
+                $pl = PackingListLine::create(['packing_list_id' => $package->id, 'the_package_id' => $packet['id'], 'qte' => $packet['qte'],]);
+
+            }
+        }
         // $created_at = $package->created_at->format('Y-m-d H:i');
         // $id = str_pad($package->id, 4, '0', STR_PAD_LEFT);
         // $barcode = 'pack-' . $id . '-' . $created_at;
@@ -546,27 +541,27 @@ class packingListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        
+
         $package = PackingList::findOrFail($id);
-        $packinglistline = PackingListLine::where('packing_list_lines.packing_list_id',$id)->get();
+        $packinglistline = PackingListLine::where('packing_list_lines.packing_list_id', $id)->get();
 
         $date_env = $request->input('date_envoi');
-        $date_envoi=date('m/d/Y H:i:s',strtotime($date_env));
-     
+        $date_envoi = date('m/d/Y H:i:s', strtotime($date_env));
+
         $mode_transport = $request->input('mode_transport');
 
-        $package->update([ 'date_envoi' => $date_envoi, 'mode_transport' => $mode_transport]);
-     
-        $packages=$request->input('packages');
+        $package->update(['date_envoi' => $date_envoi, 'mode_transport' => $mode_transport]);
+
+        $packages = $request->input('packages');
         $arr = array();
         if ($request->has('packages')) {
-            foreach($packinglistline as $packinglistlines){
-           foreach ($packages as $packet) {
- 
-                $pl= $packinglistlines->update(['packing_list_id' => $package->id,'the_package_id' => $packet['id'],'qte' => $packet['qte'], ]);              
-           }
-           }
-       }
+            foreach ($packinglistline as $packinglistlines) {
+                foreach ($packages as $packet) {
+
+                    $pl = $packinglistlines->update(['packing_list_id' => $package->id, 'the_package_id' => $packet['id'], 'qte' => $packet['qte'],]);
+                }
+            }
+        }
 
 
         return redirect()->route('packingList.index');
@@ -686,13 +681,13 @@ class packingListController extends Controller
             $id = $request->get('id', false);
             // $package=  Package::findOrFail($val);
             $package = ThePackage::where('the_packages.id', $id)->select(
-              
+
                 'the_packages.longueur',
                 'the_packages.largeur',
                 'the_packages.hauteur',
                 'the_packages.volume',
                 'the_packages.weight',
-                
+
                 'the_packages.bar_code',
                 'the_packages.id'
             )->first();
@@ -704,9 +699,9 @@ class packingListController extends Controller
             $row .= '<td>' . $package['hauteur'] . '</td>';
             $row .= '<td>' . $package['volume'] . '</td>';
             $row .= '<td>' . $package['weight'] . '</td>';
-            $row .= '<td ><input type="text" name="packages['.$package['id'].'][qte]" required style="width:50px;" /> </td>';
+            $row .= '<td ><input type="text" name="packages[' . $package['id'] . '][qte]" required style="width:50px;" /> </td>';
             $row .= '<td><button type="button" class="btn btn-danger btn-xs move_packages_row">-</button>
-                    <input type="hidden" name="packages['.$package['id'].'][id]" class="package_row_index" value="' . $package['id'] . '"></td>';
+                    <input type="hidden" name="packages[' . $package['id'] . '][id]" class="package_row_index" value="' . $package['id'] . '"></td>';
             $row .= '</tr>';
             return $row;
         }
@@ -735,39 +730,37 @@ class packingListController extends Controller
                 '=',
                 'pack.id'
             )
-         
-            ->where('the_packages.product', 'like', '%' . $value .'%')
-             ->orWhere('the_packages.sku','like', '%' . $value .'%')
-            
-            ->orWhere('pack.bar_code', 'like', '%' . $value .'%')
-            ->select(
-              
-                'the_packages.sku',
-                'the_packages.largeur',
-                'the_packages.hauteur',
-                'the_packages.volume',
-                'the_packages.weight',
-                
-                'pack.bar_code',
-                'the_packages.id',
-                'the_packages.product'
-            )
-            ->groupby('the_packages.id')
-            ->get();
-            if(!empty($package)){
-            $row = '<ul class="list">';
-            foreach($package as $packages){
-            $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="'.$packages['id'].'">'  . $packages['product'] . $packages['bar_code'] . '('.$packages['sku'].')'. '<input type="hidden" name="my_input"  value="'.$packages['id'].'"/></li></button><br>';
+                ->where('the_packages.product', 'like', '%' . $value . '%')
+                ->orWhere('the_packages.sku', 'like', '%' . $value . '%')
+                ->orWhere('pack.bar_code', 'like', '%' . $value . '%')
+                ->select(
 
-           
+                    'the_packages.sku',
+                    'the_packages.largeur',
+                    'the_packages.hauteur',
+                    'the_packages.volume',
+                    'the_packages.weight',
+
+                    'pack.bar_code',
+                    'the_packages.id',
+                    'the_packages.product'
+                )
+                ->groupby('the_packages.id')
+                ->get();
+            if (!empty($package)) {
+                $row = '<ul class="list">';
+                foreach ($package as $packages) {
+                    $row .= '<button type="button"  class="btn btn-default btn-xs remove_package_row"><li class="move_package_row" style="list-style-type: none;" data-id="' . $packages['id'] . '">' . $packages['product'] . $packages['bar_code'] . '(' . $packages['sku'] . ')' . '<input type="hidden" name="my_input"  value="' . $packages['id'] . '"/></li></button><br>';
+
+
+                }
+                $row .= '</ul>';
+
+
+                return $row;
             }
-             $row .= '</ul>';
-           
-    
-            return $row;
-            }
-            
-          
+
+
         }
     }
 }

@@ -110,5 +110,6 @@ LANG = {
 "this_year": "Cette année", 
 "last_year": "L'année dernière", 
 "last_financial_year": "Dernier exercice", 
-"this_month_last_year": "Ce mois l'année dernière", 
+"this_month_last_year": "Ce mois l'année dernière",
+    'no_package_found': "Aucun carton correspondant"
 };

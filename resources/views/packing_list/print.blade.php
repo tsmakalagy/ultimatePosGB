@@ -31,7 +31,7 @@
   
     
     <div class="col-xs-12">
-      <div class="table-responsive">
+      <div class="table-responsive table-slim">
         <table class="table bg-gray">
           <tr class="bg-green">
               <th>{{ __('lang_v1.customer') }}</th> 
@@ -74,7 +74,7 @@
                       //  return $packing;
                   }
                   $ar=implode(',', $arr);
-                  $new_arr=$product.$ar;
+                  $new_arr=$product.' '.$ar;
                   array_push($arr2,$new_arr);
                   $result=implode(',', $arr2);
                   $result2=implode(',', $arr3);

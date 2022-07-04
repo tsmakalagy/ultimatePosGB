@@ -1,11 +1,11 @@
 @extends('layouts.app')
-@section('title', __('lang_v1.new_box'))
+@section('title', __('lang_v1.add_packing_list'))
 
 @section('content')
 
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1>@lang('lang_v1.new_box')</h1>
+        <h1>@lang('lang_v1.add_packing_list')</h1>
     </section>
 
     <!-- Main content -->
@@ -85,6 +85,7 @@
                                 <th class="col-sm">Dimension</th>
                                 <th class="col-sm">Product</th>
                                 <th class="col-sm">Client</th>
+                                <th class="col-sm">qte</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -205,7 +206,10 @@
                             if (product == null && p_product != null) {
                                 product = p_product;
                             }
-                            var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + sku + '</td><td>' + dimension + '<td>' + product + '</td><td>' + p_c_name + '</td></tr>';
+                            var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + sku + '</td><td>' + dimension + '<td>' + product + '</td><td>' + p_c_name + '</td>';
+                            tr += '<td ><input type="text" name="packages[' +id+ '][qte]" required style="width:50px;" /> </td>';
+                            tr +='<td><button type="button" class="btn btn-danger btn-xs move_packages_row">-</button>';
+                            tr +='<input type="hidden" name="packages[' +id+ '][id]" class="package_row_index" value="' +id+ '"></td></tr>';
 
                             $('#the_package_add_parcel_form_part tbody').append(tr);
 
@@ -274,7 +278,7 @@
             });
             $('.product_row').on('click', '.remove_package_row', function () {
                 var id = $(this).find(':hidden').val();
-
+                alert(id);
 
                 // alert('hello');
                 $.ajax({

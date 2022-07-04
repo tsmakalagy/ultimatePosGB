@@ -79,7 +79,7 @@
                       //  return $packing;
                   }
                   $ar=implode(',', $arr);
-                  $new_arr=$product.$ar;
+                  $new_arr=$product.' '.$ar;
                   array_push($arr2,$new_arr);
                   $length=count($packing);
                   $result=implode(',', $arr2);

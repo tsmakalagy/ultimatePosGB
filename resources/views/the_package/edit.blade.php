@@ -68,6 +68,7 @@
                                 </div>
                             </div>
                         </div>         
+                        {!! Form::hidden('mybarcode', $impl, ['class' => 'form-control mybarcode', 'rows' => 3]); !!}
                          
                         
                             {!! Form::hidden('bar_code', $the_package->bar_code, ['class' => 'form-control', 'rows' => 3]); !!}
@@ -168,6 +169,27 @@
   <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+
+        var mybarcode=$('.mybarcode').val();
+        
+        if(mybarcode.length){
+            
+            var myarr = mybarcode.split(',');
+             myarr.forEach(thefunction);
+        }
+     
+        function thefunction(item) {
+            $.ajax({
+                type: 'GET',
+                cache: false,
+                url: '/the-package/get-package-row',
+                data: { barcode: item },
+                success: function (response) {
+                    $('#my_modal .close').click();
+                    $('#the_package_add_parcel_form_part tbody').append(response);
+                }
+            });
+        }
     
         $('#bar_code').prop('readonly', true);
         $('#status').prop('disabled',true);

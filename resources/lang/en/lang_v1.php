@@ -127,6 +127,7 @@ return [
     'height' => 'Height',
     'customer_tel' => 'Contact',
     'scan' => 'Scanner',
+    'qte' => 'Qty',
     'scan_barcode' => 'Scanner barcode',
  
     'list_package_out' => 'List package out',

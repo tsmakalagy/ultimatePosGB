@@ -143,7 +143,7 @@ class packingListController extends Controller
                             $html .=
                                 '<li><a href="' . action('packingListController@show', [$row->id]) . '" class="view-product"><i class="fa fa-eye"></i> ' . __("messages.view") . '</a></li>';
                         }
-
+                       
 
                         if (auth()->user()->can('product.update')) {
                             $html .=
@@ -153,6 +153,9 @@ class packingListController extends Controller
                             $html .=
                                 '<li><a href="' . action('packingListController@delete', [$row->id]) . '" class="delete-sell"><i class="fa fa-trash"></i> ' . __("messages.delete") . '</a></li>';
                         }
+                        // $html .=
+                        // '<li><a href="#"  data-href="' . route('packingList.printInvoice', [$row->id]) . '"><i class="fa fa-print"></i> '. __("messages.print") .'</a></li>';
+                       
 
 
                         if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
@@ -530,13 +533,23 @@ class packingListController extends Controller
     {
 
         $package = PackingList::findOrFail($id);
+        $id_tp=$package->packinglist_lines;
+        // dd($id_tp);
+        $arr=array();
+        foreach($id_tp as $id_tps){
+            $result=$id_tps->thepackage->id;
+            array_push($arr,$result);
+        }
+        // dd($arr);
+        $impl=implode(',', $arr);
+        // dd($impl);
         $the_package = ThePackage::findOrFail($id);
-
+        
         $date=date('m/d/Y H:i:s', strtotime($package->date_envoi));
 
         // $date_envoi = $package->date_envoi->format('m/d/Y H:i:s');
 
-        return view('packing_list.edit', compact('the_package', 'package','date'));
+        return view('packing_list.edit', compact('the_package', 'package','date','arr','impl'));
 
     }
 
@@ -757,5 +770,30 @@ class packingListController extends Controller
     
           
         }
+    }
+
+    /**
+     * Checks if ref_number and supplier combination already exists.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function printInvoice($id)
+    {
+        try {
+            $package = PackingList::findOrFail($id);
+
+            $output = ['success' => 1, 'receipt' => []];
+            $output['receipt']['html_content'] = view('packing_list.print',compact('package'))->render();
+         
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            
+            $output = ['success' => 0,
+                            'msg' => __('messages.something_went_wrong')
+                        ];
+        }
+
+        return $output;
     }
 }

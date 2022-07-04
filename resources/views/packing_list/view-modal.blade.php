@@ -2,7 +2,7 @@
 	<div class="modal-content">
 		<div class="modal-header">
 		    <button type="button" class="close no-print" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		      <h4 class="modal-title" id="modalTitle">@lang('lang_v1.package')</h4>
+		      <h4 class="modal-title" id="modalTitle">@lang('lang_v1.packing_list')</h4>
 	    </div>
 	    <div class="modal-body">
 
@@ -16,8 +16,7 @@
     <div class="row">
       <div class="col-sm-9">
         <div class="col-sm-4 invoice-col">
-          <b>@lang('lang_v1.date_envoi'):</b>
-      {{$package->date_envoi }}<br>
+  
       <b>@lang('lang_v1.mode_transport'): </b>
       @if($package->mode_transport ==1)
       <span>avion</span>
@@ -25,80 +24,94 @@
       <span>bateau</span>
       @endif
       <br>
+      <b>@lang('lang_v1.date_envoi'):</b>
+
+      {{date('Y-m-d',strtotime($package->date_envoi)) }}<br>
  
         </div>
         </div>
 
     </div>
-    
+    <br>
     <div class="row">
-      <br>
+      
       <div class="col-md-12">
         <div class="table-responsive">
           <table class="table bg-gray">
             <tr class="bg-green">
-              <th>{{ __('SKU') }}</th>
+              <th>{{ __('lang_v1.customer') }}</th> 
+              <th>{{ __('lang_v1.customer_tel') }}</th> 
+              <th>{{ __('lang_v1.barcode') }}</th> 
               <th>{{ __('lang_v1.product') }}</th>
-              
+              <th>{{ __('lang_v1.qte') }}</th>
               <th>{{ __('lang_v1.length') }}</th>
               <th>{{ __('lang_v1.width') }}</th>
               <th>{{ __('lang_v1.height') }}</th>                    
               <th>{{ __('lang_v1.volume') }}</th> 
               <th>{{ __('lang_v1.weight') }}</th>   
+                
         
             </tr>
-             {{-- @php
-     $arr=array();
-              $arr2=array();
-              $pack_listlines=$package->packinglist_lines;
-           
-               foreach($pack_listlines as $packinglistlines){
-                  // return($packinglistlines);
-                  $sku=$packinglistlines->thepackage->sku;
-                  $product=$packinglistlines->thepackage->product;  
-                  $packing=$packinglistlines->thepackage->thepackage_package;
-                  //  return $product.'('.$sku.')';
-                  // return $packing;
-                  foreach($packing as $pack){
-                       $prod=$pack->product;
-                       array_push($arr,$prod);
-                      //  return $packing;
-                  }
-                  $ar=implode(',', $arr);
-                  $new_arr=$sku.$product.$ar;
-                  array_push($arr2,$new_arr);
-                  // return $packinglistlines->thepackage->product.','.$product.'('.$sku.')';
-              }
-              
-               return $arr2;
-  @endphp --}}
+  
               @foreach ( $package->packinglist_lines as $packinglistlines )
+              @for ($i=0; $i<$packinglistlines->qte; $i++)
+              @php
+                $id = str_pad($i, 2, '0', STR_PAD_LEFT);                      
+                $barcode=$packinglistlines->thepackage->sku.$id;
+              @endphp
+ 
               <tr>
                 @php
                 $arr=array();
               $arr2=array();
+              $arr3=array();
+              $arr4=array();
               $product=$packinglistlines->thepackage->product;  
                  $packing=$packinglistlines->thepackage->thepackage_package;
                  
                  foreach($packing as $pack){
                        $prod=$pack->product;
+                       $prod2=$pack->customer_name;
+                       $prod3=$pack->customer_tel;
                        array_push($arr,$prod);
+                       array_push($arr3,$prod2);
+                       array_push($arr4,$prod3);
                       //  return $packing;
                   }
                   $ar=implode(',', $arr);
                   $new_arr=$product.$ar;
                   array_push($arr2,$new_arr);
+                  $length=count($packing);
                   $result=implode(',', $arr2);
+                  $result2=implode(',', $arr3);
+                  $result3=implode(',', $arr4);
                 @endphp
-                <td>{{$packinglistlines->thepackage->sku}}</td>
+                <td>
+                  <table>
+                    @foreach ( $arr3 as $the_arr3 )
+                    <tr><td>{{$the_arr3}}<td></tr>
+                    @endforeach
+                    </table>
+                </td>
+
+                {{-- <td>{{$length}}</td> --}}
+                <td>
+                  <table>
+                    @foreach ( $arr4 as $the_arr4 )
+                    <tr><td>{{$the_arr4}}<td></tr>
+                    @endforeach
+                    </table>
+                </td>
+                <td>{{$barcode}}</td>
                 <td>{{ $result }}</td>
-        
+                <td>1</td>        
                 <td>{{$packinglistlines->thepackage->longueur }}</td>
                 <td>{{$packinglistlines->thepackage->largeur }}</td>
                 <td>{{$packinglistlines->thepackage->hauteur }}</td>
                 <td>{{$packinglistlines->thepackage->volume }}</td>
                 <td>{{$packinglistlines->thepackage->weight }}</td>
               </tr>
+               @endfor 
               @endforeach
              
           </table>
@@ -106,10 +119,14 @@
       </div>
     </div>
 </div>
-<div class="modal-footer">
+ <div class="modal-footer">
+ 
+    @can('print_invoice')
+      <a href="#" class="print-invoice btn btn-primary" data-href="{{route('packingList.printInvoice', [$package->id])}}"><i class="fa fa-print" aria-hidden="true"></i> @lang("lang_v1.print_invoice")</a>
+    @endcan
+      <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
+    </div>
 
-  <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang( 'messages.close' )</button>
-</div>
 </div>
 </div>
    

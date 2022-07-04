@@ -474,7 +474,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
       Route::get('packing-list/get-package', 'packingListController@getPackage')->name('packingList.get_package');
       Route::get('packing-list/get-package-row', 'packingListController@getPackageRow')->name('packingList.get_package_row');
       Route::get('packing-list/get-the-package-row', 'packingListController@getThePackageRow')->name('packingList.get_the_package_row');
-  
+      Route::get('packing-list/print/{id}', 'packingListController@printInvoice')->name('packingList.printInvoice');
 
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');

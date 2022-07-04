@@ -5262,8 +5262,8 @@ class TransactionUtil extends Util
             'the_packages.other_field1',
             'the_packages.other_field2',
 
-            DB::raw(" IF(the_packages.status = 1, 'sortant', 'entrant') as status"));
-
+            DB::raw(" IF(the_packages.status = 1, 'sortant', 'entrant') as status"))
+       ->orderBy('the_packages.created_at', 'desc');
 
         return $the_package;
     }

@@ -206,7 +206,12 @@ class ThePackageController extends Controller
                 ->editColumn('product',
                     // '<span class="product_name" data-orig-value="{{$product}}">@if(!empty($product)) {{$product}} @endif   </span>')
                     function ($row) {
-                        $span = '<span class="tel"> ' . $row->thepackage_package->implode('product', ',') . '</span><br><span class="tel"> ' . $row->product . '</span><br>';
+                        if(!empty( $row->product)){
+                        $span = '<span class="tel"> ' . $row->product . '</span><br><span class="tel"> ' .  $row->thepackage_package->implode('product', ','). '</span>';
+                        }
+                        else{
+                        $span = '<span class="tel"> '  . $row->thepackage_package->implode('product', ',') . '</span>';  
+                        }
                         return $span;
                     })
               
@@ -490,9 +495,17 @@ class ThePackageController extends Controller
 
         $package = Package::findOrFail($id);
         $the_package = ThePackage::findOrFail($id);
+        $id_tp=$the_package->thepackage_package;
+        $arr=array();
+        foreach($id_tp as $id_tps){
+            $result=$id_tps->bar_code;
+            array_push($arr,$result);
+        }
+        // dd($arr);
+        $impl=implode(',', $arr);
         $contact = Contact::pluck('name', 'id');
 
-        return view('the_package.edit', compact('the_package', 'contact'));
+        return view('the_package.edit', compact('the_package', 'contact','arr','impl'));
 
     }
 

@@ -9,51 +9,47 @@
         <h1>@lang('lang_v1.edit_packing_list')
         </h1>
         <!-- <ol class="breadcrumb">
-            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-            <li class="active">Here</li>
-        </ol> -->
+                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                <li class="active">Here</li>
+            </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
-     {!! Form::open(['action' =>['packingListController@update', $package->id],'files' => true,'enctype' =>'multipart/form-data']) !!}
-     @component('components.widget', ['class' => 'box-solid'])                   
-     <div class="container-fluid">
+        {!! Form::open(['action' => ['packingListController@update', $package->id], 'files' => true, 'enctype' => 'multipart/form-data']) !!}
+        @component('components.widget', ['class' => 'box-solid'])
+            <div class="container-fluid">
 
 
-        <div class="row">
-                
-            <div class="col-md-6 ">
-                <div class="form-group">
-                    {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
-                    {!! Form::select('mode_transport', [0 =>'bateau',1 =>'avion'],$package->mode_transport,['class' => 'form-control select2',  'id' => 'product_locations','placeholder' => __('messages.please_select'),'required']); !!}
-                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
+                <div class="row">
 
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+                            {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
+                            {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select'), 'required']) !!}
+                            {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            {!! Form::label('date_envoi', __('lang_v1.date_envoi') . ':') !!}
+                            <div class="input-group">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </span>
+                                {!! Form::text('date_envoi', $date, ['class' => 'form-control calendar']) !!}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                {!! Form::label('date_envoi', __('lang_v1.date_envoi') . ':') !!}
-                <div class="input-group">
-                    <span class="input-group-addon">
-                        <i class="fa fa-calendar"></i>
-                    </span>
-                    {!! Form::text('date_envoi', $date, ['class' => 'form-control calendar']); !!}
-                </div>
-            </div>
-        </div>
-    </div>
-    {{-- {!! Form::hidden('the_package_id', $impl, ['class' => 'form-control the_package_id', 'rows' => 3]); !!} --}}
+                {{-- {!! Form::hidden('the_package_id', $impl, ['class' => 'form-control the_package_id', 'rows' => 3]); !!} --}}
 
 
-
-    
                 <div class="row">
                     <div class="col-sm-10 col-sm-offset-1">
                         <div class="form-group">
-                        {!! Form::text('my_search_product', null, ['class' => 'form-control mousetrap', 'id' => 'my_search_product', 'placeholder' => __('lang_v1.search_product_placeholder')
-
-                                ]); !!}
+                            {!! Form::text('my_search_product', null, ['class' => 'form-control mousetrap', 'id' => 'my_search_product', 'placeholder' => __('lang_v1.search_product_placeholder')]) !!}
                         </div>
                     </div>
                 </div>
@@ -61,67 +57,66 @@
                 <div class="col-sm-12">
                     <div class="table-responsive">
                         <table class="table table-bordered add-parcel-table table-condensed"
-                               id="the_package_add_parcel_form_part">
+                            id="the_package_add_parcel_form_part">
                             <thead>
-                            <tr>
-                                <th class="col-sm">SKU</th>
-                                <th class="col-sm">Dimension</th>
-                                <th class="col-sm">Product</th>
-                                <th class="col-sm">Client</th>
-                                <th class="col-sm">qte</th>
-                                <th></th>
-                            </tr>
+                                <tr>
+                                    <th class="col-sm">SKU</th>
+                                    <th class="col-sm">Dimension</th>
+                                    <th class="col-sm">Product</th>
+                                    <th class="col-sm">Client</th>
+                                    <th class="col-sm">qte</th>
+                                    <th></th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {{--                            @if($action == 'add')--}}
-                            {{--                                @include('product.partials.product_variation_row', ['row_index' => 0])--}}
-                            {{--                            @else--}}
+                                {{-- @if ($action == 'add') --}}
+                                {{-- @include('product.partials.product_variation_row', ['row_index' => 0]) --}}
+                                {{-- @else --}}
 
-                            {{--                                @forelse ($product_variations as $product_variation)--}}
-                            {{--                                    @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index])--}}
-                            {{--                                @empty--}}
-                            {{--                                    @include('product.partials.product_variation_row', ['row_index' => 0])--}}
-                            {{--                                @endforelse--}}
+                                {{-- @forelse ($product_variations as $product_variation) --}}
+                                {{-- @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index]) --}}
+                                {{-- @empty --}}
+                                {{-- @include('product.partials.product_variation_row', ['row_index' => 0]) --}}
+                                {{-- @endforelse --}}
 
-                            {{--                            @endif--}}
+                                {{-- @endif --}}
 
                             </tbody>
                         </table>
                     </div>
                 </div>
-       
-        {{-- <div class="product_row col-sm-10 col-sm-offset-1"></div> --}}
-   
-      
-{{--                            @if($action == 'add')--}}
-{{--                                @include('product.partials.product_variation_row', ['row_index' => 0])--}}
-{{--                            @else--}}
 
-{{--                                @forelse ($product_variations as $product_variation)--}}
-{{--                                    @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index])--}}
-{{--                                @empty--}}
-{{--                                    @include('product.partials.product_variation_row', ['row_index' => 0])--}}
-{{--                                @endforelse--}}
+                {{-- <div class="product_row col-sm-10 col-sm-offset-1"></div> --}}
 
-{{--                            @endif--}}
 
-             
-        
+                {{-- @if ($action == 'add') --}}
+                {{-- @include('product.partials.product_variation_row', ['row_index' => 0]) --}}
+                {{-- @else --}}
 
-                        <!-- Submit Button -->
-                        <div class="form-group">
-                            <div class="col-lg-10 col-lg-offset-2">
-                                {!! Form::submit(__('messages.update') , ['class' => 'btn btn-primary pull-right'] ) !!}
-                            </div>
-                        </div>
+                {{-- @forelse ($product_variations as $product_variation) --}}
+                {{-- @include('product.partials.edit_product_variation_row', ['row_index' => $action == 'edit' ? $product_variation->id : $loop->index]) --}}
+                {{-- @empty --}}
+                {{-- @include('product.partials.product_variation_row', ['row_index' => 0]) --}}
+                {{-- @endforelse --}}
 
+                {{-- @endif --}}
+
+
+
+
+                <!-- Submit Button -->
+                <div class="form-group">
+                    <div class="col-lg-10 col-lg-offset-2">
+                        {!! Form::submit(__('messages.update'), ['class' => 'btn btn-primary pull-right']) !!}
                     </div>
-                    @endcomponent
-                     {!! Form::close()  !!}
-
-                     <div class="modal scan_modal" id="scan_modal" role="dialog"
-                     aria-labelledby="gridSystemModalLabel">
                 </div>
+
+            </div>
+        @endcomponent
+        {!! Form::close() !!}
+
+        <div class="modal scan_modal" id="scan_modal" role="dialog" aria-labelledby="gridSystemModalLabel">
+        </div>
 
     </section>
     <!-- /.content -->
@@ -132,51 +127,51 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"></script> --}}
 @section('javascript')
- @php $asset_v = env('APP_VERSION'); @endphp
-  <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-        // var id=$('.the_package_id').val();
-        
-        // if(id.length){
-        //     var myarr = id.split(',');
-        //      myarr.forEach(thefunction);
-        // }
-        // function thefunction(item) {
-        //     // alert(item);
-        //     $.ajax({
-        //         type: 'GET',
-        //         cache: false,
-        //         url: '/packing-list/get-package-row',
-        //         data: { id:item },
-        //         success: function (response) {
-        //             console.log(response);
-        //             // $('#my_modal .close').click();
-        //             $('#the_package_add_parcel_form_part tbody').append(response);
-        //         }
-        //         });
-        // }
-       
-        function delay(callback, ms) {
-        var timer = 0;
-        return function() {
-            var context = this, args = arguments;
-            clearTimeout(timer);
-            timer = setTimeout(function () {
-            callback.apply(context, args);
-            }, ms || 0);
-        };
-        }
+    @php $asset_v = env('APP_VERSION'); @endphp
+    <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            // var id=$('.the_package_id').val();
 
-        if ($('#my_search_product').length) {
+            // if(id.length){
+            //     var myarr = id.split(',');
+            //      myarr.forEach(thefunction);
+            // }
+            // function thefunction(item) {
+            //     // alert(item);
+            //     $.ajax({
+            //         type: 'GET',
+            //         cache: false,
+            //         url: '/packing-list/get-package-row',
+            //         data: { id:item },
+            //         success: function (response) {
+            //             console.log(response);
+            //             // $('#my_modal .close').click();
+            //             $('#the_package_add_parcel_form_part tbody').append(response);
+            //         }
+            //         });
+            // }
+
+            function delay(callback, ms) {
+                var timer = 0;
+                return function() {
+                    var context = this,
+                        args = arguments;
+                    clearTimeout(timer);
+                    timer = setTimeout(function() {
+                        callback.apply(context, args);
+                    }, ms || 0);
+                };
+            }
+
+            if ($('#my_search_product').length) {
                 //Add Product
                 $('#my_search_product')
                     .autocomplete({
                         delay: 1000,
                         source: function(request, response) {
                             $.getJSON(
-                                '/packing-list/list-the-package',
-                                {
+                                '/packing-list/list-the-package', {
                                     term: request.term
                                 },
                                 response
@@ -216,10 +211,15 @@
                             if (product == null && p_product != null) {
                                 product = p_product;
                             }
-                            var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + sku + '</td><td>' + dimension + '<td>' + product + '</td><td>' + p_c_name + '</td>';
-                            tr += '<td ><input type="text" name="packages[' +id+ '][qte]" required style="width:50px;" /> </td>';
-                            tr +='<td><button type="button" class="btn btn-danger btn-xs move_packages_row">-</button>';
-                            tr +='<input type="hidden" name="packages[' +id+ '][id]" class="package_row_index" value="' +id+ '"></td></tr>';
+                            var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + sku +
+                                '</td><td>' + dimension + '<td>' + product + '</td><td>' + p_c_name +
+                                '</td>';
+                            tr += '<td ><input type="text" name="packages[' + id +
+                                '][qte]" required style="width:50px;" /> </td>';
+                            tr +=
+                                '<td><button type="button" class="btn btn-danger btn-xs move_packages_row">-</button>';
+                            tr += '<input type="hidden" name="packages[' + id +
+                                '][id]" class="package_row_index" value="' + id + '"></td></tr>';
 
                             $('#the_package_add_parcel_form_part tbody').append(tr);
 
@@ -236,7 +236,7 @@
                     })
                     .autocomplete('instance')._renderItem = function(ul, item) {
                         var row_lists = [];
-                        $('#the_package_add_parcel_form_part tbody').find('.package_row').each( function() {
+                        $('#the_package_add_parcel_form_part tbody').find('.package_row').each(function() {
                             row_lists.push($(this).data('id'));
                         });
 
@@ -256,62 +256,69 @@
 
 
 
-        // Example usage:
+            // Example usage:
 
-        $('#search_product').keyup(delay(function (e) {
-            
-               
-            // $('.product_row').closest('ul').fadeOut(300, function() { $('.product_row').remove(); });
-           $('.list').remove();
-            if (this.value.length > 2) {
-            var val=$(this).val();
-        // alert(val);
-        $.ajax({
-                type: 'GET',
-                cache: false,
-                url: '/packing-list/get-the-package-row',
-                data: { val: val },
-                success: function (response) {
-                    console.log(response);
-                    // $('#my_modal .close').click();
-                     $('.product_row').append(response);
-                }
-            });
-            // $(this).val('');
-        }
-        }, 
-        1000));
+            $('#search_product').keyup(delay(function(e) {
+
+
+                    // $('.product_row').closest('ul').fadeOut(300, function() { $('.product_row').remove(); });
+                    $('.list').remove();
+                    if (this.value.length > 2) {
+                        var val = $(this).val();
+                        // alert(val);
+                        $.ajax({
+                            type: 'GET',
+                            cache: false,
+                            url: '/packing-list/get-the-package-row',
+                            data: {
+                                val: val
+                            },
+                            success: function(response) {
+                                console.log(response);
+                                // $('#my_modal .close').click();
+                                $('.product_row').append(response);
+                            }
+                        });
+                        // $(this).val('');
+                    }
+                },
+                1000));
 
 
             $('.calendar').datetimepicker({
                 format: moment_date_format + ' ' + moment_time_format,
                 ignoreReadonly: true,
             });
-            $('.product_row').on('click', '.remove_package_row', function () {
+            $('.product_row').on('click', '.remove_package_row', function() {
                 var id = $(this).find(':hidden').val();
-                
+
                 // alert('hello');
                 $.ajax({
-                type: 'GET',
-                cache: false,
-                url: '/packing-list/get-package-row',
-                data: { id:id },
-                success: function (response) {
-                    console.log(response);
-                    // $('#my_modal .close').click();
-                    $('#the_package_add_parcel_form_part tbody').append(response);
-                }
+                    type: 'GET',
+                    cache: false,
+                    url: '/packing-list/get-package-row',
+                    data: {
+                        id: id
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        // $('#my_modal .close').click();
+                        $('#the_package_add_parcel_form_part tbody').append(response);
+                    }
                 });
-            $('#search_product').val('');
-                    $(this).closest('ul').fadeOut(300, function() { $(this).remove(); });
+                $('#search_product').val('');
+                $(this).closest('ul').fadeOut(300, function() {
+                    $(this).remove();
                 });
+            });
 
-                $('#the_package_add_parcel_form_part').on('click', '.move_packages_row', function () {
-                    $(this).closest('tr').fadeOut(300, function() { $(this).remove(); });
+            $('#the_package_add_parcel_form_part').on('click', '.move_packages_row', function() {
+                $(this).closest('tr').fadeOut(300, function() {
+                    $(this).remove();
                 });
-          
-    
-    });
-    
+            });
+
+
+        });
     </script>
-    @endsection
+@endsection

@@ -355,7 +355,7 @@ class PackageController extends Controller
         $package = Package::where('packages.id', $id)->first();
         $contact = Contact::pluck('name', 'id');
 
-        $image_url = Image::where('product_id', $id)->first();
+        $image_url = Image::where('product_id', $id)->where('type', 'package')->first();
 
         return view('packages.view-modal')->with(compact('package', 'contact', 'image_url'));
     }

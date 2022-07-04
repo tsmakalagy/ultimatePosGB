@@ -499,7 +499,7 @@ class ThePackageController extends Controller
         // dd($other_product);
         // $span='<span class="tel"> '. $row->thepackage_package->implode('product', ',').'</span><br><span class="tel"> '. $row->product.'</span><br>';
 
-        $image_url = Image::where('product_id', $id)->first();
+        $image_url = Image::where('product_id', $id)->where('type', 'the_package')->first();
 
         return view('the_package.view-modal')->with(compact('package', 'other_product', 'contact', 'image_url'));
     }

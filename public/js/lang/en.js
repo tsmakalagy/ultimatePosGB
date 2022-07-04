@@ -131,4 +131,5 @@ LANG = {
     'settings' : 'Settings',
     'advance_payment_cannot_be_more_than_once': 'Advance payment cannot be selected more than once',
     'not_connected_to_a_network': "You're not connected to a Network",
+    'no_package_found': "No package found"
 };

@@ -42,29 +42,38 @@
                 <div class="row">
                     <div class="col-sm-10 col-sm-offset-1">
                         <div class="form-group">
-                            <div class="input-group">
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal"
-                                            data-target="#configure_search_modal"
-                                            title="{{__('lang_v1.configure_product_search')}}"><i
-                                                class="fas fa-search-plus"></i></button>
-                                </div>
-                                {!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder')
+                        {!! Form::text('my_search_product', null, ['class' => 'form-control mousetrap', 'id' => 'my_search_product', 'placeholder' => __('lang_v1.search_product_placeholder')
 
                                 ]); !!}
-
-                                <span class="input-group-btn">
-								<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product"
-                                        data-href="{{action('ProductController@quickAdd')}}"
-                                        data-container=".quick_add_product_modal"><i
-                                            class="fa fa-plus-circle text-primary fa-lg"></i></button>
-							</span>
-
-                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="product_row col-sm-10 col-sm-offset-1"></div>
+{{--                <div class="row">--}}
+{{--                    <div class="col-sm-10 col-sm-offset-1">--}}
+{{--                        <div class="form-group">--}}
+{{--                            <div class="input-group">--}}
+{{--                                <div class="input-group-btn">--}}
+{{--                                    <button type="button" class="btn btn-default bg-white btn-flat" data-toggle="modal"--}}
+{{--                                            data-target="#configure_search_modal"--}}
+{{--                                            title="{{__('lang_v1.configure_product_search')}}"><i--}}
+{{--                                                class="fas fa-search-plus"></i></button>--}}
+{{--                                </div>--}}
+{{--                                {!! Form::text('search_product', null, ['class' => 'form-control mousetrap', 'id' => 'search_product', 'placeholder' => __('lang_v1.search_product_placeholder')--}}
+
+{{--                                ]); !!}--}}
+
+{{--                                <span class="input-group-btn">--}}
+{{--								<button type="button" class="btn btn-default bg-white btn-flat pos_add_quick_product"--}}
+{{--                                        data-href="{{action('ProductController@quickAdd')}}"--}}
+{{--                                        data-container=".quick_add_product_modal"><i--}}
+{{--                                            class="fa fa-plus-circle text-primary fa-lg"></i></button>--}}
+{{--							</span>--}}
+
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--                <div class="product_row col-sm-10 col-sm-offset-1"></div>--}}
 
                 <div class="col-sm-12">
                     <div class="table-responsive">
@@ -72,14 +81,10 @@
                                id="the_package_add_parcel_form_part">
                             <thead>
                             <tr>
-                                <th class="col-sm">@lang('lang_v1.barcode')</th>
-
-                                <th class="col-sm">@lang('lang_v1.length')</th>
-                                <th class="col-sm">@lang('lang_v1.width')</th>
-                                <th class="col-sm">@lang('lang_v1.height')</th>
-                                <th class="col-sm">@lang('lang_v1.volume')</th>
-                                <th class="col-sm">@lang('lang_v1.weight')</th>
-                                <th class="col-sm">@lang('qte')</th>
+                                <th class="col-sm">SKU</th>
+                                <th class="col-sm">Dimension</th>
+                                <th class="col-sm">Product</th>
+                                <th class="col-sm">Client</th>
                                 <th></th>
                             </tr>
                             </thead>
@@ -149,6 +154,90 @@
                         callback.apply(context, args);
                     }, ms || 0);
                 };
+            }
+
+
+            if ($('#my_search_product').length) {
+                //Add Product
+                $('#my_search_product')
+                    .autocomplete({
+                        delay: 1000,
+                        source: function(request, response) {
+                            $.getJSON(
+                                '/packing-list/list-the-package',
+                                {
+                                    term: request.term
+                                },
+                                response
+                            );
+                        },
+                        minLength: 2,
+                        response: function(event, ui) {
+                            if (ui.content.length == 1) {
+                                // $(this)
+                                //     .data('ui-autocomplete')
+                                //     ._trigger('select', 'autocompleteselect', ui);
+                                // $(this).autocomplete('close');
+                            } else if (ui.content.length == 0) {
+                                toastr.error(LANG.no_package_found);
+                                $('input#my_search_product').select();
+                            }
+                        },
+                        focus: function(event, ui) {
+                            if (ui.item.qty_available <= 0) {
+                                return false;
+                            }
+                        },
+                        select: function(event, ui) {
+                            var item = ui.item;
+                            var id = item.id;
+                            var sku = item.sku;
+                            var product = item.product;
+                            var dimension = item.dimension;
+                            var p_product = '';
+                            var p_c_name = '';
+
+                            if (item.packages.length !== 0) {
+                                var package = item.packages[0];
+                                p_product = package.p;
+                                p_c_name = package.c_name;
+                            }
+                            if (product == null && p_product != null) {
+                                product = p_product;
+                            }
+                            var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + sku + '</td><td>' + dimension + '<td>' + product + '</td><td>' + p_c_name + '</td></tr>';
+
+                            $('#the_package_add_parcel_form_part tbody').append(tr);
+
+                            // if (ui.item.enable_stock != 1 || ui.item.qty_available > 0 || is_overselling_allowed) {
+                            //     $(this).val(null);
+                            //
+                            //     //Pre select lot number only if the searched term is same as the lot number
+                            //     var purchase_line_id = ui.item.purchase_line_id && searched_term == ui.item.lot_number ? ui.item.purchase_line_id : null;
+                            //     pos_product_row(ui.item.variation_id, purchase_line_id);
+                            // } else {
+                            //     alert(LANG.out_of_stock);
+                            // }
+                        },
+                    })
+                    .autocomplete('instance')._renderItem = function(ul, item) {
+                        var row_lists = [];
+                        $('#the_package_add_parcel_form_part tbody').find('.package_row').each( function() {
+                            row_lists.push($(this).data('id'));
+                        });
+
+                        if (row_lists.includes(item.id)) { // DISABLED
+                            var string = '<li class="ui-state-disabled"><div>' + item.displayLine + '</div></li>';
+                            return $(string).appendTo(ul);
+                        } else {
+                            var string = '<div>' + item.displayLine;
+                            string += '</div>';
+
+                            return $('<li>')
+                                .append(string)
+                                .appendTo(ul);
+                        }
+                    };
             }
 
 

@@ -163,7 +163,7 @@ class PackageController extends Controller
                     }
                 )
                 ->editColumn('image', function ($row) {
-                    $image_url = Image::where('product_id', $row->id)->first();
+                    $image_url = Image::where('product_id', $row->id)->where('type','package' )->first();
 
                     if (!empty($image_url)) {
                         $img_src = $image_url->image;
@@ -330,7 +330,7 @@ class PackageController extends Controller
                 $image->move($destinationPath, $original_name);
 
             }
-            $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
+            $create_image = Image::create(['product_id' => $package->id,'type' =>'package', 'image' => implode('|', $array)]);
 
         }
 
@@ -387,7 +387,7 @@ class PackageController extends Controller
 
         $package = Package::findOrFail($id);
 
-        $image_id = Image::where('product_id', $id)->first();
+        $image_id = Image::where('product_id', $id)->where('type', 'package')->first();
 
         $product = $request->input('product');
         $bar_code = $request->input('bar_code');
@@ -413,9 +413,9 @@ class PackageController extends Controller
                 $image->move($destinationPath, $original_name);
             }
             if (!empty($image_id)) {
-                $create_image = $image_id->update(['product_id' => $package->id, 'image' => implode('|', $array)]);
+                $create_image = $image_id->update(['product_id' => $package->id,'type' => 'package', 'image' => implode('|', $array)]);
             } else {
-                $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
+                $create_image = Image::create(['product_id' => $package->id ,'type' => 'package', 'image' => implode('|', $array)]);
 
             }
         }
@@ -470,7 +470,7 @@ class PackageController extends Controller
     public function saveImg(Request $request, $id)
     {
 
-        $image_id = Image::where('product_id', $id)->first();
+        $image_id = Image::where('product_id', $id)->where('type', 'package')->first();
 
         $package = Package::findOrFail($id);
 
@@ -485,9 +485,9 @@ class PackageController extends Controller
                 $image->move($destinationPath, $original_name);
             }
             if (!empty($image_id)) {
-                $create_image = $image_id->update(['product_id' => $id, 'image' => implode('|', $array)]);
+                $create_image = $image_id->update(['product_id' => $id,'type' => 'package', 'image' => implode('|', $array)]);
             } else {
-                $create_image = Image::create(['product_id' => $id, 'image' => implode('|', $array)]);
+                $create_image = Image::create(['product_id' => $id, 'type' => 'package', 'image' => implode('|', $array)]);
 
             }
         }

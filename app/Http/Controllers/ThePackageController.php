@@ -227,7 +227,7 @@ class ThePackageController extends Controller
                     '<span class="size" data-orig-value="{{$sku}}">@if(!empty($sku)) {{$sku}} @endif   </span>')
  
                 ->editColumn('image', function ($row) {
-                    $image_url = Image::where('product_id', $row->id)->first();
+                    $image_url = Image::where('product_id', $row->id)->where('type','the_package' )->first();
 
                     if (!empty($image_url)) {
                         $img_src = $image_url->image;
@@ -270,6 +270,21 @@ class ThePackageController extends Controller
 
                     return $return_due_html;
                 })
+                ->editColumn(
+                    'volume',
+                    function ($row) {
+                        $la = $row->largeur;
+                        $Lo = $row->longueur;
+                        $h = $row->hauteur;
+                        $v = $row->volume;
+                        if (empty($v)) {
+                            if ($la != 0 && $Lo != 0 && $h != 0) {
+                                $v = $la * $Lo * $h * 0.000001;
+                            }
+                        }
+                        return '<span class="china_price" data-orig-value="' . $v . '">' . number_format($v, 4) . '</span>';
+                    }
+                )
                 ->editColumn('invoice_no', function ($row) {
                     $invoice_no = '';
 
@@ -281,6 +296,10 @@ class ThePackageController extends Controller
                     return $status;
                 })
                 ->addColumn('product', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
+                ->addColumn('volume', function ($row) {
                     $total_remaining = '';
                     return $total_remaining;
                 })
@@ -341,7 +360,7 @@ class ThePackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['final_total', 'product', 'sku','longueur', 'largeur',  'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'conatct_name'];
+            $rawColumns = ['final_total', 'product', 'sku','longueur', 'largeur',  'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'type', 'other_details', 'total_paid', 'total_remaining', 'payment_status', 'invoice_no', 'discount_amount', 'tax_amount', 'total_before_tax', 'shipping_status', 'types_of_service_name', 'payment_methods', 'return_due', 'volume','conatct_name'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -444,7 +463,7 @@ class ThePackageController extends Controller
                 $image->move($destinationPath, $original_name);
 
             }
-            $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
+            $create_image = Image::create(['product_id' => $package->id,'type' => 'the_package', 'image' => implode('|', $array)]);
 
         }
         $packages = $request->input('packages');
@@ -521,7 +540,7 @@ class ThePackageController extends Controller
 
         $package = ThePackage::findOrFail($id);
 
-        $image_id = Image::where('product_id', $id)->first();
+        $image_id = Image::where('product_id', $id)->where('type','the_package' )->first();
 
         $product = $request->input('product');
         $bar_code = $request->input('bar_code');;
@@ -546,9 +565,9 @@ class ThePackageController extends Controller
                 $image->move($destinationPath, $original_name);
             }
             if (!empty($image_id)) {
-                $create_image = $image_id->update(['product_id' => $package->id, 'image' => implode('|', $array)]);
+                $create_image = $image_id->update(['product_id' => $package->id,'type' => 'the_package', 'image' => implode('|', $array)]);
             } else {
-                $create_image = Image::create(['product_id' => $package->id, 'image' => implode('|', $array)]);
+                $create_image = Image::create(['product_id' => $package->id, 'type' => 'the_package','image' => implode('|', $array)]);
 
             }
         }
@@ -607,7 +626,7 @@ class ThePackageController extends Controller
     public function saveImg(Request $request, $id)
     {
 
-        $image_id = Image::where('product_id', $id)->first();
+        $image_id = Image::where('product_id', $id)->where('type','the_package' )->first();
 
         $package = ThePackage::findOrFail($id);
 
@@ -623,9 +642,9 @@ class ThePackageController extends Controller
                 $image->move($destinationPath, $original_name);
             }
             if (!empty($image_id)) {
-                $create_image = $image_id->update(['product_id' => $id, 'image' => implode('|', $array)]);
+                $create_image = $image_id->update(['product_id' => $id, 'type' => 'the_package', 'image' => implode('|', $array)]);
             } else {
-                $create_image = Image::create(['product_id' => $id, 'image' => implode('|', $array)]);
+                $create_image = Image::create(['product_id' => $id,'type' => 'the_package', 'image' => implode('|', $array)]);
 
             }
         }

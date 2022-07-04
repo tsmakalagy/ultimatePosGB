@@ -31,8 +31,8 @@
   
     
     <div class="col-xs-12">
-      <div class="table-responsive table-slim">
-        <table class="table bg-gray">
+      <div>
+        <table class="table bg-gray"  style="width:100%;">
           <tr class="bg-green">
               <th>{{ __('lang_v1.customer') }}</th> 
               <th>{{ __('lang_v1.customer_tel') }}</th> 

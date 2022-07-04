@@ -26,9 +26,8 @@
                             $img = asset('/uploads/img/' . rawurlencode($images));
                         @endphp
                         <div class="col-sm-3 col-md-3 invoice-col">
-                            {{-- <div class="thumbnail"> --}}
-                            <img src="{{ $img }}" alt="Product image">
-                            {{-- </div> --}}
+
+                            <img src="{{ $img }}"class="img-thumbnail" style="width:200px;height:180px;">
                         </div>
                     @endforeach
                 @endif

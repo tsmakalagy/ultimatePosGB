@@ -20,7 +20,7 @@ return [
     'view' => 'View',
     'delete' => 'Delete',
     'scan' => 'Scan',
-
+    'export_to excel' => 'Expot to Excel',
     'close' => 'Close',
     'something_went_wrong' => 'Something went wrong, please try again later',
     'required' => 'This field is required',

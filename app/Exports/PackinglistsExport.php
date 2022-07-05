@@ -59,7 +59,7 @@ class PackinglistsExport implements FromQuery, WithHeadings, ShouldAutoSize, Wit
                 $ar = implode(',', $arr);
                 $new_arr = $product . ' ' . $ar;
                 array_push($arr2, $new_arr);
-                $length = count($arr3);
+                $length = count(array_filter($arr3));
                 $result = implode(',', $arr2);
                 if($length > 1 )
                 {

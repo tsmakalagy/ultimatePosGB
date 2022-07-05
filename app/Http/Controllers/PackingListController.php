@@ -171,7 +171,7 @@ class packingListController extends Controller
                         // $html .=
                         // '<li><a href="#"  data-href="' . route('packingList.printInvoice', [$row->id]) . '"><i class="fa fa-print"></i> '. __("messages.print") .'</a></li>';
                        
-                        $html .= '<li><a href="' . action('packingListController@exportToExcel', [$row->id]) . '" class="export-purchase"><i class="fas fa-trash"></i>' . __("export_to excel") . '</a></li>';
+                        $html .= '<li><a href="' . action('packingListController@exportToExcel', [$row->id]) . '" class="export-purchase"><i class="fas fa-trash"></i>' . __("messages.export_to excel") . '</a></li>';
 
                         if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
                             $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';

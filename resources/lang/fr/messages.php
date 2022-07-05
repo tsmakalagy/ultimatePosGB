@@ -15,6 +15,7 @@
 "cancel" => "Annuler",
 "date" => "Date",
 'scan' => 'Scanner',
+'export_to excel' => 'Expoter en Excel',
 
 "filter_by_date" => "Filtrer par date",
 "location" => "Emplacement",

@@ -475,7 +475,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
       Route::get('packing-list/get-package-row', 'packingListController@getPackageRow')->name('packingList.get_package_row');
       Route::get('packing-list/get-the-package-row', 'packingListController@getThePackageRow')->name('packingList.get_the_package_row');
       Route::get('packing-list/print/{id}', 'packingListController@printInvoice')->name('packingList.printInvoice');
-
+      Route::get('/packing-list/export/excel/{id}', 'packingListController@exportToExcel')->name('packingListexport_excel');
       Route::get('packing-list/list-the-package', 'PackingListController@listThePackage')->name('packingList.list_the_package');
   
 

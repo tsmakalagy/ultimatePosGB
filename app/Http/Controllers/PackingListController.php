@@ -7,6 +7,8 @@ use App\PriceProduct;
 use App\ProductPriceSetting;
 use App\ProductPrice;
 use App\Image;
+use App\Exports\PackinglistsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 use App\Account;
 use App\Business;
@@ -43,6 +45,19 @@ use App\Product;
 use App\Media;
 use Spatie\Activitylog\Models\Activity;
 use Illuminate\Validation\Rule;
+
+
+
+
+use App\Exports\CustomPurchaseExport;
+
+use App\Variation;
+
+use App\PurchaseLine;
+;
+use App\AccountTransaction;
+
+use App\Exports\PurchaseExport;
 
 class packingListController extends Controller
 {
@@ -156,7 +171,7 @@ class packingListController extends Controller
                         // $html .=
                         // '<li><a href="#"  data-href="' . route('packingList.printInvoice', [$row->id]) . '"><i class="fa fa-print"></i> '. __("messages.print") .'</a></li>';
                        
-
+                        $html .= '<li><a href="' . action('packingListController@exportToExcel', [$row->id]) . '" class="export-purchase"><i class="fas fa-trash"></i>' . __("export_to excel") . '</a></li>';
 
                         if (config('constants.enable_download_pdf') && auth()->user()->can("print_invoice") && $sale_type != 'sales_order') {
                             $html .= '<li><a href="' . route('sell.downloadPdf', [$row->id]) . '" target="_blank"><i class="fas fa-print" aria-hidden="true"></i> ' . __("lang_v1.download_pdf") . '</a></li>';
@@ -862,4 +877,17 @@ class packingListController extends Controller
 
         return $output;
     }
+
+         /**
+     * Export to Excel.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function exportToExcel($id)
+    { 
+        //return Excel::download(new PurchaseExport, 'purchases.xlsx');
+        return (new PackinglistsExport($id))->download('packing_lists.xlsx');
+    }
+
 }

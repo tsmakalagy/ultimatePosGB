@@ -50,7 +50,7 @@
                         <th>@lang('lang_v1.height')</th>
                         <th>@lang('lang_v1.weight')</th>
                         <th>@lang('lang_v1.volume')</th>
-
+                        <th>@lang('lang_v1.mode_transport')</th>
                         <th>@lang('lang_v1.other_field1')</th>
                         <th>@lang('lang_v1.other_field2')</th>
                     </tr>
@@ -150,6 +150,7 @@
                     {data: 'hauteur', name: 'hauteur'},
                     {data: 'weight', name: 'weight'},
                     {data: 'volume', name: 'volume'},
+                    {data: 'mode_transport', name: 'packages.mode_transport'},
                     {data: 'other_field1', name: 'other_field1'},
                     {data: 'other_field2', name: 'other_field2'}
 

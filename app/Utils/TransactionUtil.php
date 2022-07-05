@@ -5218,6 +5218,7 @@ class TransactionUtil extends Util
             'packages.customer_tel',
             'packages.customer_name',
             'packages.image',
+            // 'packages.mode_transport',
             // 'packages.status',
             'packages.other_field1',
             'packages.other_field2',
@@ -5225,6 +5226,7 @@ class TransactionUtil extends Util
             // 'ct.mobile',
             // 'ct.name',
             DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"),
+            DB::raw(" IF(packages.mode_transport = 0, 'bateau', 'avion') as mode_transport"),
             DB::raw("DATE_FORMAT(packages.created_at, '%Y-%m-%d') as created_at"))
             // DB::raw('packages.created_at as created_at'));
 

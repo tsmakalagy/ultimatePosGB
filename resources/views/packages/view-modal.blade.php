@@ -50,7 +50,8 @@
                                 <th>{{ __('lang_v1.height') }}</th>
                                 <th>{{ __('lang_v1.weight') }}</th>
                                 <th>{{ __('lang_v1.volume') }}</th>
-                                <th>{{ __('lang_v1.status') }}</th>
+                                <th>{{ __('lang_v1.mode_transport') }}</th>
+                                {{-- <th>{{ __('lang_v1.status') }}</th> --}}
                             </tr>
 
                             <tr>
@@ -62,8 +63,27 @@
                                 <td>{{ $package->largeur }}</td>
                                 <td>{{ $package->hauteur }}</td>
                                 <td>{{ $package->weight }}</td>
-                                <td>{{ $package->volume }}</td>
-                                <td>{{ $package->status }} </td>
+                                @php
+                                    $la = $package->largeur;
+                                    $Lo = $package->longueur;
+                                    $h = $package->hauteur;
+                                    $v = $package->volume;
+                                    if (empty($v)) {
+                                        if ($la != 0 && $Lo != 0 && $h != 0) {
+                                            $v = $la * $Lo * $h * 0.000001;
+                                        }
+                                    }
+                                @endphp
+                                <td>{{ number_format($v, 4) }}</td>
+                                @php
+                                    if ($package->mode_transport == 1) {
+                                        $mode_transport="avion";
+                                    } else {
+                                        $mode_transport="bateau";
+                                    }
+                                @endphp
+                                <td>{{ $mode_transport }}</td>
+                                {{-- <td>{{ $package->status }} </td> --}}
 
                             </tr>
 

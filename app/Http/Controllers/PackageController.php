@@ -315,11 +315,12 @@ class PackageController extends Controller
         $volume = $request->input('volume');
         $image = "image";
         $status = $request->input('status');
+        $mode_transport = $request->input('mode_transport');
         $weight = $request->input('weight');
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package = Package::firstOrCreate(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package = Package::firstOrCreate(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
 
         $destinationPath = 'uploads/img/';
         $array = array();
@@ -398,12 +399,13 @@ class PackageController extends Controller
         $hauteur = $request->input('hauteur');
         $image = 'image';
         $status = $request->input('status');
+        $mode_transport = $request->input('mode_transport');
         $weight = $request->input('weight');
         $volume = $request->input('volume');
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package->update(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package->update(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
         $destinationPath = 'uploads/img/';
         $array = array();
         if ($request->has('images')) {

@@ -277,6 +277,7 @@ class PackageController extends Controller
         if (request()->ajax()) {
 
             $contact = Contact::pluck('name', 'id');
+            
 
             return response()->json(['url' => url('/my-package/create'), 'package' => $contact]);
         }
@@ -284,13 +285,20 @@ class PackageController extends Controller
         if (!auth()->user()->can('supplier.create') && !auth()->user()->can('customer.create') && !auth()->user()->can('customer.view_own') && !auth()->user()->can('supplier.view_own')) {
             abort(403, 'Unauthorized action.');
         }
+
+        //commission_agent
+        $all_cmmsn_agnts = User::                        
+        where('is_cmmsn_agnt', 1)
+        ->select('id', DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) as full_name"));
+        $users = $all_cmmsn_agnts->pluck('full_name', 'id');
+        
         $barcode = $request->get('barcode');
         if (!empty($barcode)) {
             $contact = Contact::pluck('name', 'id');
             $product_price_setting = ProductPriceSetting::first();
 
 
-            return view('packages.create', compact('product_price_setting', 'barcode'));
+            return view('packages.create', compact('users','product_price_setting', 'barcode'));
         } else {
             return redirect()->route('Package.index');
         }
@@ -313,6 +321,8 @@ class PackageController extends Controller
         $largeur = $request->input('largeur');
         $hauteur = $request->input('hauteur');
         $volume = $request->input('volume');
+        $commission_agent = $request->input('commission_agent');
+        
         $image = "image";
         $status = $request->input('status');
         $mode_transport = $request->input('mode_transport');
@@ -320,7 +330,7 @@ class PackageController extends Controller
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package = Package::firstOrCreate(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package = Package::create(['product' => $product, 'commission_agent' => $commission_agent, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
 
         $destinationPath = 'uploads/img/';
         $array = array();
@@ -353,7 +363,33 @@ class PackageController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        $package = Package::where('packages.id', $id)->first();
+        $package = Package::leftJoin('users as u', 'packages.commission_agent', '=', 'u.id')
+        ->where('packages.id', $id)
+        ->select(
+            'packages.id',
+            'packages.product',
+            'packages.bar_code',
+            // 'packages.client',
+            'packages.volume',
+            'packages.weight',
+            'packages.longueur',
+            'packages.largeur',
+            'packages.hauteur',
+            'packages.customer_tel',
+            'packages.customer_name',
+            'packages.image',
+            // 'packages.mode_transport',
+            // 'packages.status',
+            'packages.other_field1',
+            'packages.other_field2',
+            // 'packages.created_at',
+            // 'ct.mobile',
+            // 'ct.name',
+                DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as commission_agent"),
+                DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"),
+            DB::raw(" IF(packages.mode_transport = 0, 'bateau', 'avion') as mode_transport"),
+            DB::raw("DATE_FORMAT(packages.created_at, '%Y-%m-%d') as created_at"))
+            ->first();
         $contact = Contact::pluck('name', 'id');
 
         $image_url = Image::where('product_id', $id)->where('type', 'package')->first();
@@ -371,8 +407,14 @@ class PackageController extends Controller
         $product_price_setting = ProductPriceSetting::first();
         $package = Package::findOrFail($id);
         $contact = Contact::pluck('name', 'id');
+         
+        //commission_agent
+        $all_cmmsn_agnts = User::                        
+        where('is_cmmsn_agnt', 1)
+        ->select('id', DB::raw("CONCAT(COALESCE(surname, ''),' ',COALESCE(first_name, ''),' ',COALESCE(last_name,'')) as full_name"));
+        $users = $all_cmmsn_agnts->pluck('full_name', 'id');
 
-        return view('packages.edit', compact('package', 'product_price_setting', 'contact'));
+        return view('packages.edit', compact('package', 'users','product_price_setting', 'contact'));
 
     }
 
@@ -400,12 +442,13 @@ class PackageController extends Controller
         $image = 'image';
         $status = $request->input('status');
         $mode_transport = $request->input('mode_transport');
+        $commission_agent = $request->input('commission_agent');
         $weight = $request->input('weight');
         $volume = $request->input('volume');
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package->update(['product' => $product, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package->update(['product' => $product,'commission_agent' => $commission_agent, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
         $destinationPath = 'uploads/img/';
         $array = array();
         if ($request->has('images')) {

@@ -5205,7 +5205,8 @@ class TransactionUtil extends Util
      */
     public function getPackage()
     {
-        $package = Package::select(
+        $package = Package::leftJoin('users as u', 'packages.commission_agent', '=', 'u.id')
+        ->select(
             'packages.id',
             'packages.product',
             'packages.bar_code',
@@ -5225,9 +5226,11 @@ class TransactionUtil extends Util
             // 'packages.created_at',
             // 'ct.mobile',
             // 'ct.name',
-            DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"),
+                DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as commission_agent"),
+                DB::raw(" IF(packages.status = 0, 'entrant', 'sortant') as status"),
             DB::raw(" IF(packages.mode_transport = 0, 'bateau', 'avion') as mode_transport"),
             DB::raw("DATE_FORMAT(packages.created_at, '%Y-%m-%d') as created_at"))
+            
             // DB::raw('packages.created_at as created_at'));
 
             ->orderBy('created_at', 'DESC');;

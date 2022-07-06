@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddContactIdColumnsToPackagesTable extends Migration
+class AddUserIdColumnToPackagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,9 @@ class AddContactIdColumnsToPackagesTable extends Migration
     public function up()
     {
         Schema::table('packages', function (Blueprint $table) {
-            // $table->unsignedInteger('contact_id')->after('product');
-            // $table->foreign('contact_id')->references('id')->on('contacts')->onDelete('cascade');
+            $table->integer('commission_agent')->unsigned()->after('product')->nullable();
+  
+            $table->foreign('commission_agent')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

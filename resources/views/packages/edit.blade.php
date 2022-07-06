@@ -9,9 +9,9 @@
         <h1>@lang('lang_v1.edit_package')
         </h1>
         <!-- <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                    <li class="active">Here</li>
-                </ol> -->
+                                        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                                        <li class="active">Here</li>
+                                    </ol> -->
     </section>
 
     <!-- Main content -->
@@ -37,7 +37,7 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('customer_name', __('lang_v1.customer') . ':') !!}
-                                    {!! Form::text('customer_name', $package->customer_name, ['class' => 'form-control', 'rows' => 3]) !!}
+                                    {!! Form::text('customer_name', $package->customer_name, ['class' => 'form-control', 'rows' => 3,'required']) !!}
 
                                 </div>
                             </div>
@@ -53,7 +53,7 @@
                                 <div class="form-group">
                                     {!! Form::label('product', __('lang_v1.product_list') . ' (' . __('lang_v1.qty') . '):') !!}
 
-                                    {!! Form::textarea('product', $package->product, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
+                                    {!! Form::textarea('product', $package->product, ['class' => 'form-control', 'rows' => 3]) !!}
                                 </div>
                             </div>
                         </div>
@@ -91,7 +91,26 @@
                                 </div>
                             </div>
                         </div>
+                      
                         <div class="row">
+                            <div class="col-md-6 ">
+                                <div class="form-group">
+                                    {!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
+                                    {!! Form::select('commission_agent', $users, $package->commission_agent, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group">
+                                    {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
+                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
+
+                                </div>
+                            </div>
+                        </div>
+                          <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
@@ -106,14 +125,6 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group">
-                                    {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
-                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select'), 'required']) !!}
-                                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
-
-                                </div>
-                            </div>
                             <div class="col-md-4">
                                 <div class="form-group">
 
@@ -128,16 +139,17 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Submit Button -->
-                        <div class="form-group">
-                            <div class="col-lg-10 col-lg-offset-2">
-                                {!! Form::submit(__('messages.update'), ['class' => 'btn btn-primary pull-right']) !!}
-                            </div>
-                        </div>
-
                     </div>
-                @endcomponent
-            </div>
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            {!! Form::submit(__('messages.update'), ['class' => 'btn btn-primary pull-right']) !!}
+                        </div>
+                    </div>
+
+                </div>
+            @endcomponent
+        </div>
         </div>
         {!! Form::close() !!}
 

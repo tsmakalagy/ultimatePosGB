@@ -21,8 +21,9 @@ class CreatePackagesTable extends Migration
             $table->decimal('weight',20,2);
             $table->string('image')->nullable();
             $table->boolean('status')->default(0);
-            $table->string('other_field1',20,2)->nullable();
+             $table->string('other_field1',20,2)->nullable();
             $table->string('other_field2',20,2)->nullable();
+  
             $table->timestamps();;
         });
     }

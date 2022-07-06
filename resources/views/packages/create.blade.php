@@ -7,9 +7,9 @@
     <section class="content-header">
         <h1>@lang('lang_v1.add_package')</h1>
         <!-- <ol class="breadcrumb">
-                        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                        <li class="active">Here</li>
-                    </ol> -->
+                                                            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                                                            <li class="active">Here</li>
+                                                        </ol> -->
     </section>
 
     <!-- Main content -->
@@ -92,6 +92,24 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-6 ">
+                                <div class="form-group">
+                                    {!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
+                                    {!! Form::select('commission_agent', $users, null, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
+
+                                </div>
+                            </div>
+                            <div class="col-md-6 ">
+                                <div class="form-group">
+                                    {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
+                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], null, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
+
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="row">
                             <div class="col-md-6">
@@ -109,15 +127,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-md-6 ">
-                                <div class="form-group">
-                                    {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
-                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], null, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select'), 'required']) !!}
-                                    {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
-                                </div>
-                            </div>
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('image', __('lang_v1.product_image') . ':') !!}
@@ -131,22 +142,23 @@
                                         </p>
                                     </small>
                                 </div>
-
                             </div>
+
                         </div>
-
-                        <!-- Submit Button -->
-                        <div class="form-group">
-                            <div class="col-lg-10 col-lg-offset-2">
-                                <button type="submit" id="submit-sell"
-                                    class="btn btn-primary pull-right">@lang('messages.save')</button>
-
-                            </div>
-                        </div>
-
                     </div>
-                @endcomponent
-            </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <div class="col-lg-10 col-lg-offset-2">
+                            <button type="submit" id="submit-sell"
+                                class="btn btn-primary pull-right">@lang('messages.save')</button>
+
+                        </div>
+                    </div>
+
+                </div>
+            @endcomponent
+        </div>
         </div>
 
         {{-- @include('layouts.partials.module_form_part') --}}

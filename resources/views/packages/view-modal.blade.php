@@ -51,6 +51,7 @@
                                 <th>{{ __('lang_v1.weight') }}</th>
                                 <th>{{ __('lang_v1.volume') }}</th>
                                 <th>{{ __('lang_v1.mode_transport') }}</th>
+                                <th>{{ __('lang_v1.commission_agent') }}</th>
                                 {{-- <th>{{ __('lang_v1.status') }}</th> --}}
                             </tr>
 
@@ -75,14 +76,15 @@
                                     }
                                 @endphp
                                 <td>{{ number_format($v, 4) }}</td>
-                                @php
+                                {{-- @php
                                     if ($package->mode_transport == 1) {
                                         $mode_transport="avion";
                                     } else {
                                         $mode_transport="bateau";
                                     }
-                                @endphp
-                                <td>{{ $mode_transport }}</td>
+                                @endphp --}}
+                                <td>{{ $package->mode_transport }}</td>
+                                <td>{{ $package->commission_agent }}</td>
                                 {{-- <td>{{ $package->status }} </td> --}}
 
                             </tr>

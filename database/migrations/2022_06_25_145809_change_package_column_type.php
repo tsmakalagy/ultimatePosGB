@@ -15,7 +15,7 @@ class ChangePackageColumnType extends Migration
     {
         //
         DB::statement('ALTER TABLE `packages` MODIFY `volume` DECIMAL(20,4) NULL;');
-        DB::statement('ALTER TABLE `packages` CHANGE COLUMN `longeur` `longueur` DECIMAL(20,2) NULL;');
+        // DB::statement('ALTER TABLE `packages` CHANGE COLUMN `longeur` `longueur` DECIMAL(20,2) NULL;');
     }
 
     /**

@@ -9,14 +9,18 @@
         <h1>@lang('lang_v1.edit_package')
         </h1>
         <!-- <ol class="breadcrumb">
-                                        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                                        <li class="active">Here</li>
-                                    </ol> -->
+                                                        <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                                                        <li class="active">Here</li>
+                                                    </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
-        {!! Form::open(['action' => ['PackageController@update', $package->id], 'files' => true, 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open([
+            'action' => ['PackageController@update', $package->id],
+            'files' => true,
+            'enctype' => 'multipart/form-data',
+        ]) !!}
 
 
         <div class="row d-flex justify-content-center">
@@ -34,7 +38,30 @@
                 @component('components.widget', ['class' => 'box-solid'])
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    {!! Form::label('customer', __('contact.customer') . ':') !!}
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                        <input type="hidden" id="default_customer_id"
+                                            value="{{ !empty($package->customer) ? $package->customer->id : '' }}">
+                                        <input type="hidden" id="default_customer_name"
+                                            value="{{ !empty($package->customer) ? $package->customer->name : '' }}">
+                                        {!! Form::select('customer', [], null, [
+                                            'class' => 'form-control mousetrap',
+                                            'id' => 'customer',
+                                            'placeholder' => 'Enter Customer name / phone',
+                                        ]) !!}
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default bg-white btn-flat add_new_customer"
+                                                data-name=""><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('customer_name', __('lang_v1.customer') . ':') !!}
                                     {!! Form::text('customer_name', $package->customer_name, ['class' => 'form-control', 'rows' => 3,'required']) !!}
@@ -46,7 +73,7 @@
                                     {!! Form::label('customer_tel', __('lang_v1.customer_tel') . ':') !!}
                                     {!! Form::text('customer_tel', $package->customer_tel, ['class' => 'form-control', 'rows' => 3]) !!}
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="row">
                             <div class="col-md-12">
@@ -91,12 +118,16 @@
                                 </div>
                             </div>
                         </div>
-                      
+
                         <div class="row">
                             <div class="col-md-6 ">
                                 <div class="form-group">
                                     {!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
-                                    {!! Form::select('commission_agent', $users, $package->commission_agent, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {!! Form::select('commission_agent', $users, $package->commission_agent, [
+                                        'class' => 'form-control select2',
+                                        'id' => 'product_locations',
+                                        'placeholder' => __('messages.please_select'),
+                                    ]) !!}
                                     {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
                                 </div>
@@ -104,13 +135,17 @@
                             <div class="col-md-6 ">
                                 <div class="form-group">
                                     {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
-                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, [
+                                        'class' => 'form-control select2',
+                                        'id' => 'product_locations',
+                                        'placeholder' => __('messages.please_select'),
+                                    ]) !!}
                                     {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
                                 </div>
                             </div>
                         </div>
-                          <div class="row">
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('other_field1', __('lang_v1.other_field1') . ':') !!}
@@ -165,6 +200,8 @@
 @section('javascript')
     @php $asset_v = env('APP_VERSION'); @endphp
     <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+    <script src="{{ asset('js/shipment.js?v=' . $asset_v) }}"></script>
+
     <script type="text/javascript">
         $(document).ready(function() {
 

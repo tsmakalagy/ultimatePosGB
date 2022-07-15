@@ -50,7 +50,7 @@
 
                             <tr>
 
-                                <td>{{ $package->product . ',' . $other_product }}</td>
+                                <td>{{ $package->product . ' ' . $other_product }}</td>
                                 <td>{{ $package->longueur }}</td>
                                 <td>{{ $package->largeur }}</td>
                                 <td>{{ $package->hauteur }}</td>

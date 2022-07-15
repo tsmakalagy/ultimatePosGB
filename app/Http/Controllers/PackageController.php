@@ -9,6 +9,7 @@ use App\ProductPrice;
 use App\Image;
 
 use App\Account;
+use App\ShippingFee;
 use App\Business;
 use App\BusinessLocation;
 use App\Contact;
@@ -162,6 +163,14 @@ class PackageController extends Controller
                         return '<span data-order="' . $data_order  . '" class="total-discount" data-orig-value="">' . $created_at . '</span>';
                     }
                 )
+                      ->editColumn('customer', function($row) {
+                if ($row->customer_id !== null || !empty($row->customer_id)) {
+                    $customer = Contact::select('name', 'mobile')->where('id', $row->customer_id)->first();
+                    $name_and_mobile = $customer->name . ' (' . $customer->mobile . ')';
+                    return $name_and_mobile;
+                }
+                return '';
+            })
                 ->editColumn('image', function ($row) {
                     $image_url = Image::where('product_id', $row->id)->where('type','package' )->first();
 
@@ -215,6 +224,10 @@ class PackageController extends Controller
                     $total_remaining = '';
                     return $total_remaining;
                 })
+                    ->addColumn('customer', function ($row) {
+                    $total_remaining = '';
+                    return $total_remaining;
+                })
 //                ->addColumn('status', function ($row) {
 //                    $total_remaining = '';
 //                    return $total_remaining;
@@ -250,7 +263,7 @@ class PackageController extends Controller
                         }
                     }]);
 
-            $rawColumns = ['created_at', 'product', 'customer_tel', 'longueur', 'volume', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel'];
+            $rawColumns = ['created_at', 'product', 'customer','customer_tel', 'longueur', 'volume', 'largeur', 'bar_code', 'hauteur', 'weight', 'image', 'status', 'other_field1', 'other_field2', 'action', 'tel'];
 
             return $datatable->rawColumns($rawColumns)
                 ->make(true);
@@ -273,6 +286,21 @@ class PackageController extends Controller
      */
     public function create(Request $request)
     {
+        $sale_type = request()->get('sale_type', '');
+
+        if ($sale_type == 'sales_order') {
+            if (!auth()->user()->can('so.create')) {
+                abort(403, 'Unauthorized action.');
+            }
+        } else {
+            if (!auth()->user()->can('direct_sell.access')) {
+                abort(403, 'Unauthorized action.');
+            }
+        }
+
+     
+
+        $business_id = request()->session()->get('user.business_id');
 
         if (request()->ajax()) {
 
@@ -293,12 +321,26 @@ class PackageController extends Controller
         $users = $all_cmmsn_agnts->pluck('full_name', 'id');
         
         $barcode = $request->get('barcode');
+        $customer_groups = CustomerGroup::forDropdown($business_id);
+        $types = [];
+        if (auth()->user()->can('supplier.create')) {
+            $types['supplier'] = __('report.supplier');
+        }
+        if (auth()->user()->can('customer.create')) {
+            $types['customer'] = __('report.customer');
+        }
+        if (auth()->user()->can('supplier.create') && auth()->user()->can('customer.create')) {
+            $types['both'] = __('lang_v1.both_supplier_customer');
+        }
+
+        // $shipping_fee = ShippingFee::pluck('name', 'id');
+
         if (!empty($barcode)) {
             $contact = Contact::pluck('name', 'id');
             $product_price_setting = ProductPriceSetting::first();
 
 
-            return view('packages.create', compact('users','product_price_setting', 'barcode'));
+            return view('packages.create', compact('users','sale_type','types','customer_groups','product_price_setting', 'barcode'));
         } else {
             return redirect()->route('Package.index');
         }
@@ -315,22 +357,53 @@ class PackageController extends Controller
 
         $product = $request->input('product');
         $bar_code = $request->input('bar_code');
-        $customer_name = $request->input('customer_name');
-        $customer_tel = $request->input('customer_tel');
+        //$customer_name = $request->input('customer_name');
+       // $customer_tel = $request->input('customer_tel');
+        $customer_id = $request->input('customer');
         $longueur = $request->input('longueur');
         $largeur = $request->input('largeur');
         $hauteur = $request->input('hauteur');
+        $weight = $request->input('weight');
         $volume = $request->input('volume');
         $commission_agent = $request->input('commission_agent');
         
         $image = "image";
         $status = $request->input('status');
         $mode_transport = $request->input('mode_transport');
-        $weight = $request->input('weight');
+
+        $ship_fee=ShippingFee::where('type',$mode_transport)
+        ->select(
+            'price'
+        )
+        ->first();
+
+        $int_price=null;
+        if(!empty($ship_fee)){
+        $price_md=$ship_fee->price;
+        $int_price= (int) $price_md;
+        }
+        // dd($int_price);
+        $price=0;
+               
+        if($mode_transport == 0 && !empty($weight)){
+            $price=$int_price * $weight;
+        }
+        elseif($mode_transport ==1 ){
+        if(empty($volume)){
+         if($largeur != 0 && $longueur != 0 && $hauteur != 0 ){
+            $v = $largeur * $longueur * $hauteur * 0.000001;
+            $price=$int_price * $v;
+        }    
+    }
+    else{
+        $price=$int_price* $volume;
+    }
+}
+// dd($price);
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package = Package::create(['product' => $product, 'commission_agent' => $commission_agent, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_tel' => $customer_tel, 'customer_name' => $customer_name, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package = Package::create(['product' => $product,'customer_id' => $customer_id, 'commission_agent' => $commission_agent, 'bar_code' => $bar_code, 'volume' => $volume, 'price' => $price, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
 
         $destinationPath = 'uploads/img/';
         $array = array();
@@ -368,6 +441,7 @@ class PackageController extends Controller
         ->select(
             'packages.id',
             'packages.product',
+            'packages.customer_id',
             'packages.bar_code',
             // 'packages.client',
             'packages.volume',
@@ -391,10 +465,14 @@ class PackageController extends Controller
             DB::raw("DATE_FORMAT(packages.created_at, '%Y-%m-%d') as created_at"))
             ->first();
         $contact = Contact::pluck('name', 'id');
+        // dd($package->customer_id);
+        $customer = Contact::select('name', 'mobile')->where('id', $package->customer_id)->first();
+        $name_and_mobile = $customer->name . ' (' . $customer->mobile . ')';
+
 
         $image_url = Image::where('product_id', $id)->where('type', 'package')->first();
 
-        return view('packages.view-modal')->with(compact('package', 'contact', 'image_url'));
+        return view('packages.view-modal')->with(compact('package','name_and_mobile','customer','contact', 'image_url'));
     }
 
     /**
@@ -434,8 +512,9 @@ class PackageController extends Controller
 
         $product = $request->input('product');
         $bar_code = $request->input('bar_code');
-        $customer_name = $request->input('customer_name');
-        $customer_tel = $request->input('customer_tel');
+        // $customer_name = $request->input('customer_name');
+        // $customer_tel = $request->input('customer_tel');
+        $customer_id = $request->input('customer');
         $longueur = $request->input('longueur');
         $largeur = $request->input('largeur');
         $hauteur = $request->input('hauteur');
@@ -445,10 +524,40 @@ class PackageController extends Controller
         $commission_agent = $request->input('commission_agent');
         $weight = $request->input('weight');
         $volume = $request->input('volume');
+
+        $ship_fee=ShippingFee::where('type',$mode_transport)
+        ->select(
+            'price'
+        )
+        ->first();
+
+        $int_price=null;
+        if(!empty($ship_fee)){
+        $price_md=$ship_fee->price;
+        $int_price= (int) $price_md;
+        }
+        // dd($int_price);
+        $price=0;
+               
+        if($mode_transport == 0 && !empty($weight)){
+            $price=$int_price * $weight;
+        }
+        elseif($mode_transport ==1 ){
+        if(empty($volume)){
+         if($largeur != 0 && $longueur != 0 && $hauteur != 0 ){
+            $v = $largeur * $longueur * $hauteur * 0.000001;
+            $price=$int_price * $v;
+        }    
+    }
+    else{
+        $price=$int_price* $volume;
+    }
+}
+
         $other_field1 = $request->input('other_field1');
         $other_field2 = $request->input('other_field2');
 
-        $package->update(['product' => $product,'commission_agent' => $commission_agent, 'bar_code' => $bar_code, 'volume' => $volume, 'customer_name' => $customer_name, 'customer_tel' => $customer_tel, 'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
+        $package->update(['product' => $product,'customer_id' => $customer_id,'commission_agent' => $commission_agent, 'bar_code' => $bar_code,'price' => $price, 'volume' => $volume,'longueur' => $longueur, 'largeur' => $largeur, 'hauteur' => $hauteur, 'weight' => $weight, 'image' => $image, 'status' => $status, 'mode_transport' => $mode_transport, 'other_field1' => $other_field1, 'other_field2' => $other_field2]);
         $destinationPath = 'uploads/img/';
         $array = array();
         if ($request->has('images')) {

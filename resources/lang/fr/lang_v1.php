@@ -878,6 +878,9 @@ return [
     'total_paid' => 'Total payé',
     'Seller' => 'Vendeur',
     "type_user" => "Type d'utilisateurs",
+    "shipping_fee" => "Frais d'expedition",
+    "shipping_fee_add" => "Ajouter rais d'expedition",
+    "shipping_fee_edit" => "Editer Frais d'expedition",
 
 
     'Cash' => 'En espèces',

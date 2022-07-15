@@ -881,7 +881,8 @@ class SellController extends Controller
         }
 
         $sell = $query->firstOrFail();
-// dd($sell);
+        // dd($sell);
+        // dd($sell);
         //shipper
         $shipper = Shipper::join(
             'transactions',
@@ -902,6 +903,7 @@ class SellController extends Controller
             ->with(['causer', 'subject'])
             ->latest()
             ->get();
+            // dd($activities);
 
         $line_taxes = [];
         foreach ($sell->sell_lines as $key => $value) {

@@ -15,11 +15,11 @@
                     <i class="fas fa-money-bill-alt"></i>
                 </span>
                 {!! Form::text("payment[$row_index][amount]", @num_format($payment_line['amount']), [
-                    'class' => 'form-control payment-amount input_number',
+                    'class' => 'form-control  input_number',
                     'required',
-                    'id' => "amount_$row_index",
+                    'id' => 'amount',
                     'placeholder' => __('sale.amount'),
-                    'readonly' => $readonly,
+                    'readonly' => 'readonly',
                 ]) !!}
             </div>
         </div>
@@ -93,7 +93,7 @@
         </div>
     @endif
     <div class="clearfix"></div>
-    @include('sale_pos.partials.payment_type_details')
+    @include('sell_transaction.partials.payment_type_details')
     <div class="col-md-12">
         <div class="form-group">
             {!! Form::label("note_$row_index", __('sale.payment_note') . ':') !!}

@@ -25,6 +25,11 @@ class Package extends Model
         return $image_url;
     }
 
+    public function customer()
+    {
+        return $this->belongsTo(\App\Contact::class, 'customer_id');
+    }
+
     /**
     * Get the products image path.
     *

@@ -129,7 +129,10 @@ return [
     'scan' => 'Scanner',
     'qte' => 'Qty',
     'scan_barcode' => 'Scanner barcode',
- 
+  "shipping_fee" => "Shipping fee",
+    "shipping_fee_add" => "Add shipping fee",
+    "shipping_fee_edit" => "Edit shipping fee",
+    
     'list_package_out' => 'List package out',
     'add_package_out' => 'Add package out',
     'edit_package' => 'Edit package',

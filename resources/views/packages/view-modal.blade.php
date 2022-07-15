@@ -43,7 +43,7 @@
                                 <th>{{ __('lang_v1.barcode') }}</th>
 
                                 <th>{{ __('lang_v1.customer') }}</th>
-                                <th>{{ __('lang_v1.customer_tel') }}</th>
+
                                 <th>{{ __('lang_v1.product') }}</th>
                                 <th>{{ __('lang_v1.length') }}</th>
                                 <th>{{ __('lang_v1.width') }}</th>
@@ -57,8 +57,8 @@
 
                             <tr>
                                 <td>{{ $package->bar_code }} </td>
-                                <td>{{ ucfirst($package->customer_name) }}</td>
-                                <td>{{ $package->customer_tel }}</td>
+                                <td>{{ ucfirst($name_and_mobile) }}</td>
+
                                 <td>{{ ucfirst($package->product) }}</td>
                                 <td>{{ $package->longueur }}</td>
                                 <td>{{ $package->largeur }}</td>

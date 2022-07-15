@@ -7,15 +7,21 @@
     <section class="content-header">
         <h1>@lang('lang_v1.add_package')</h1>
         <!-- <ol class="breadcrumb">
-                                                            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                                                            <li class="active">Here</li>
-                                                        </ol> -->
+                                                                                                                                <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                                                                                                                                <li class="active">Here</li>
+                                                                                                                            </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
 
-        {!! Form::open(['url' => action('PackageController@store'), 'method' => 'post', 'id' => 'package_add_form', 'files' => true, 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open([
+            'url' => action('PackageController@store'),
+            'method' => 'post',
+            'id' => 'package_add_form',
+            'files' => true,
+            'enctype' => 'multipart/form-data',
+        ]) !!}
         <div class="row d-flex justify-content-center">
             <div class="container-fluid">
                 <div class="col-md-4 col-md-offset-4">
@@ -34,16 +40,24 @@
                 @component('components.widget', ['class' => 'box-solid'])
                     <div class="container-fluid">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-sm-6">
                                 <div class="form-group">
-                                    {!! Form::label('customer_name', __('lang_v1.customer') . ':') !!}
-                                    {!! Form::text('customer_name', $value = null, ['class' => 'form-control', 'rows' => 3, 'required']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    {!! Form::label('customer_tel', __('lang_v1.customer_tel') . ':') !!}
-                                    {!! Form::text('customer_tel', $value = null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                    {!! Form::label('customer', __('contact.customer') . ':') !!}
+                                    <div class="input-group">
+                                        <span class="input-group-addon">
+                                            <i class="fa fa-user"></i>
+                                        </span>
+                                        {!! Form::select('customer', [], null, [
+                                            'class' => 'form-control mousetrap',
+                                            'id' => 'customer',
+                                            'placeholder' => __('shipment.customer_name_phone'),
+                                            'required',
+                                        ]) !!}
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default bg-white btn-flat add_new_customer"
+                                                data-name=""><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -96,7 +110,11 @@
                             <div class="col-md-6 ">
                                 <div class="form-group">
                                     {!! Form::label('commission_agent', __('lang_v1.commission_agent') . ':') !!}
-                                    {!! Form::select('commission_agent', $users, null, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {!! Form::select('commission_agent', $users, null, [
+                                        'class' => 'form-control select2',
+                                        'id' => 'product_locations',
+                                        'placeholder' => __('messages.please_select'),
+                                    ]) !!}
                                     {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
                                 </div>
@@ -104,7 +122,11 @@
                             <div class="col-md-6 ">
                                 <div class="form-group">
                                     {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
-                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], null, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select')]) !!}
+                                    {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], null, [
+                                        'class' => 'form-control select2',
+                                        'id' => 'product_locations',
+                                        'placeholder' => __('messages.please_select'),
+                                    ]) !!}
                                     {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
                                 </div>
@@ -167,12 +189,17 @@
 
     </section>
     <!-- /.content -->
+    <div class="modal fade contact_modal" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+        @include('contact.create', ['quick_add' => true])
+    </div>
 
-@endsection
+@stop
 
 @section('javascript')
     @php $asset_v = env('APP_VERSION'); @endphp
-    <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+    {{-- <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
+    <script src="{{ asset('js/pos.js?v=' . $asset_v) }}"></script> --}}
+
 
     {{-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
@@ -180,7 +207,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css"></script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script> --}}
-
+    <script src="{{ asset('js/shipment.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
 

@@ -478,7 +478,30 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
       Route::get('/packing-list/export/excel/{id}', 'packingListController@exportToExcel')->name('packingListexport_excel');
       Route::get('packing-list/list-the-package', 'PackingListController@listThePackage')->name('packingList.list_the_package');
   
+    //route for shipping_fee
+    Route::get('shipping-fee', 'ShippingFeeController@index')->name('Shipping_fee.index');
+    Route::get('shipping-fee/create', 'ShippingFeeController@create')->name('shipping_fee.create');
+    Route::post('shipping-fee/store', 'ShippingFeeController@store')->name('Shipping_fee.store');
+    Route::get('shipping-fee/edit/{id}', 'ShippingFeeController@edit')->name('Shipping_fee.edit');
+    Route::post('shipping-fee/update/{id}', 'ShippingFeeController@update')->name('Shipping_fee.update');
+    Route::get('shipping-fee/delete/{id}', 'ShippingFeeController@delete')->name('Shipping_fee.delete');
+    Route::get('shipping-fee/show/{id}', 'ShippingFeeController@show')->name('Shipping_fee.show');
 
+
+     //route for sell_transaction
+     Route::get('sell-transaction', 'SellTransactionController@index')->name('Sell_transaction.index');
+     Route::get('sell-transaction/create', 'SellTransactionController@create')->name('Sell_transaction.create');
+     Route::post('sell-transaction/store', 'SellTransactionController@store')->name('Sell_transaction.store');
+     Route::get('sell-transaction/edit/{id}', 'SellTransactionController@edit')->name('Sell_transaction.edit');
+     Route::post('sell-transaction/update/{id}', 'SellTransactionController@update')->name('Sell_transaction.update');
+     Route::get('sell-transaction/delete/{id}', 'SellTransactionController@delete')->name('Sell_transaction.delete');
+     Route::get('sell-transaction/show/{id}', 'SellTransactionController@show')->name('Sell_transaction.show');
+    
+     Route::get('sell-transaction/list-the-package', 'SellTransactionController@listThePackage')->name('Sell_transaction.list_the_package');
+     Route::get('sell-transaction/edit-list-the-package', 'SellTransactionController@editListThePackage')->name('Sell_transaction.edit_list_the_package');
+     //  Route::get('sell_transaction/scan', 'PackageController@scan')->name('Package.scan');
+    //  Route::get('sell_transaction/upload-img/{id}', 'PackageController@uploadImg')->name('Package.upload_img');
+    //  Route::post('sell_transaction/save-img/{id}', 'PackageController@saveImg')->name('Package.save_img');
 
     //Route for the products sales
     Route::get('get-product-sales','ProductController@productSell');

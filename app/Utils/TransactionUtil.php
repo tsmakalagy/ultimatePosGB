@@ -9,10 +9,16 @@ use App\Contact;
 use App\Currency;
 use App\Package;
 use App\ThePackage;
+use App\PackageTransactionLine;
+use App\PackageTransaction;
 use App\PackingList;
+use App\ShippingFee;
 use App\Events\TransactionPaymentAdded;
 use App\Events\TransactionPaymentDeleted;
 use App\Events\TransactionPaymentUpdated;
+use App\Events\PackageTransactionPaymentAdded;
+use App\Events\PackageTransactionPaymentDeleted;
+use App\Events\PackageTransactionPaymentUpdated;
 use App\Exceptions\PurchaseSellMismatch;
 use App\Exceptions\AdvanceBalanceNotAvailable;
 use App\InvoiceScheme;
@@ -29,6 +35,7 @@ use App\ProductPrice;
 use App\User;
 use App\ShipperType;
 use App\TransactionPayment;
+use App\PackageTransactionPayment;
 use App\TransactionSellLine;
 use App\TransactionSellLinesPurchaseLines;
 use App\Variation;
@@ -782,6 +789,131 @@ class TransactionUtil extends Util
         return true;
     }
 
+        /**
+     * Add line for payment
+     *
+     * @param object/int $transaction
+     * @param array $payments
+     *
+     * @return boolean
+     */
+    public function createOrUpdatePaymentLines2($transaction, $payments, $business_id = null, $user_id = null, $uf_data = true)
+    {
+        $payments_formatted = [];
+        $edit_ids = [0];
+        $account_transactions = [];
+
+        if (!is_object($transaction)) {
+            $transaction = PackageTransaction::findOrFail($transaction);
+        }
+
+        //If status is draft don't add payment
+        if ($transaction->status == 'draft') {
+            return true;
+        }
+        $c = 0;
+        $prefix_type = 'sell_payment';
+        if ($transaction->type == 'purchase') {
+            $prefix_type = 'purchase_payment';
+        }
+        // $contact_balance = Contact::where('id', $transaction->contact_id)->value('balance');
+        foreach ($payments as $payment) {
+            //Check if transaction_sell_lines_id is set.
+            if (!empty($payment['payment_id'])) {
+                $edit_ids[] = $payment['payment_id'];
+                $this->editPaymentLine2($payment, $transaction, $uf_data);
+            } else {
+                $payment_amount = $uf_data ? $this->num_uf($payment['amount']) : $payment['amount'];
+                if ($payment['method'] == 'advance' && $payment_amount > $contact_balance) {
+                    throw new AdvanceBalanceNotAvailable(__('lang_v1.required_advance_balance_not_available'));
+                }
+                //If amount is 0 then skip.
+                if ($payment_amount != 0) {
+                    $prefix_type = 'sell_payment';
+                    if ($transaction->type == 'purchase') {
+                        $prefix_type = 'purchase_payment';
+                    }
+                    $ref_count = $this->setAndGetReferenceCount($prefix_type, $business_id);
+                    //Generate reference number
+                    $payment_ref_no = $this->generateReferenceNumber($prefix_type, $ref_count, $business_id);
+
+                    //If change return then set account id same as the first payment line account id
+                    if (isset($payment['is_return']) && $payment['is_return'] == 1) {
+                        $payment['account_id'] = !empty($payments[0]['account_id']) ? $payments[0]['account_id'] : null;
+                    }
+
+                    if (!empty($payment['paid_on'])) {
+                        $paid_on = $uf_data ? $this->uf_date($payment['paid_on'], true) : $payment['paid_on'];
+                    } else {
+                        $paid_on = \Carbon::now()->toDateTimeString();
+                    }
+
+                    $payment_data = [
+                        'amount' => $payment_amount,
+                        'method' => $payment['method'],
+                        // 'business_id' => $transaction->business_id,
+                        // 'is_return' => isset($payment['is_return']) ? $payment['is_return'] : 0,
+                        'card_transaction_number' => isset($payment['card_transaction_number']) ? $payment['card_transaction_number'] : null,
+                        'card_number' => isset($payment['card_number']) ? $payment['card_number'] : null,
+                        'card_type' => isset($payment['card_type']) ? $payment['card_type'] : null,
+                        'card_holder_name' => isset($payment['card_holder_name']) ? $payment['card_holder_name'] : null,
+                        'card_month' => isset($payment['card_month']) ? $payment['card_month'] : null,
+                        'card_security' => isset($payment['card_security']) ? $payment['card_security'] : null,
+                        'cheque_number' => isset($payment['cheque_number']) ? $payment['cheque_number'] : null,
+                        'bank_account_number' => isset($payment['bank_account_number']) ? $payment['bank_account_number'] : null,
+                        'note' => isset($payment['note']) ? $payment['note'] : null,
+                        'paid_on' => $paid_on,
+                        'created_by' => empty($user_id) ? auth()->user()->id : $user_id,
+                        // 'payment_for' => $transaction->contact_id,
+                        'payment_ref_no' => $payment_ref_no,
+                        'account_id' => !empty($payment['account_id']) && $payment['method'] != 'advance' ? $payment['account_id'] : null
+                    ];
+
+                    for ($i = 1; $i < 8; $i++) {
+                        if ($payment['method'] == 'custom_pay_' . $i) {
+                            $payment_data['transaction_no'] = $payment["transaction_no_{$i}"];
+                        }
+                    }
+
+                    $payments_formatted[] = new PackageTransactionPayment($payment_data);
+
+                    $account_transactions[$c] = [];
+
+                    //create account transaction
+                    $payment_data['transaction_type'] = $transaction->type;
+                    $account_transactions[$c] = $payment_data;
+
+                    $c++;
+                }
+            }
+        }
+
+        // Delete the payment lines removed.
+        if (!empty($edit_ids)) {
+            $deleted_transaction_payments = $transaction->payment_lines()->whereNotIn('id', $edit_ids)->get();
+
+            $transaction->payment_lines()->whereNotIn('id', $edit_ids)->delete();
+
+            //Fire delete transaction payment event
+            foreach ($deleted_transaction_payments as $deleted_transaction_payment) {
+                event(new PackageTransactionPaymentDeleted($deleted_transaction_payment));
+            }
+        }
+
+        if (!empty($payments_formatted)) {
+            $transaction->payment_lines()->saveMany($payments_formatted);
+
+            foreach ($transaction->payment_lines as $key => $value) {
+                // dd($account_transactions[$key]);
+                if (!empty($account_transactions[$key])) {
+                    event(new PackageTransactionPaymentAdded($value, $account_transactions[$key]));
+                }
+            }
+        }
+
+        return true;
+    }
+
     /**
      * Edit transaction payment line
      *
@@ -820,6 +952,44 @@ class TransactionUtil extends Util
         return true;
     }
 
+       /**
+     * Edit transaction payment line
+     *
+     * @param array $product
+     *
+     * @return boolean
+     */
+    public function editPaymentLine2($payment, $transaction = null, $uf_data = true)
+    {
+        $payment_id = $payment['payment_id'];
+        unset($payment['payment_id']);
+
+        for ($i = 1; $i < 8; $i++) {
+            if ($payment['method'] == 'custom_pay_' . $i) {
+                $payment['transaction_no'] = $payment["transaction_no_{$i}"];
+            }
+            unset($payment["transaction_no_{$i}"]);
+        }
+
+        if (!empty($payment['paid_on'])) {
+            $payment['paid_on'] = $uf_data ? $this->uf_date($payment['paid_on'], true) : $payment['paid_on'];
+        }
+
+        $payment['amount'] = $uf_data ? $this->num_uf($payment['amount']) : $payment['amount'];
+
+        $tp = PackageTransactionPayment::where('id', $payment_id)
+            ->first();
+
+        $transaction_type = !empty($transaction->type) ? $transaction->type : null;
+
+        $tp->update($payment);
+
+        //event
+        event(new PackageTransactionPaymentUpdated($tp, $transaction->type));
+
+        return true;
+    }
+
     /**
      * Get payment line for a transaction
      *
@@ -830,6 +1000,21 @@ class TransactionUtil extends Util
     public function getPaymentDetails($transaction_id)
     {
         $payment_lines = TransactionPayment::where('transaction_id', $transaction_id)
+            ->get()->toArray();
+
+        return $payment_lines;
+    }
+
+      /**
+     * Get payment line for a transaction
+     *
+     * @param int $transaction_id
+     *
+     * @return boolean
+     */
+    public function getPaymentDetails2($transaction_id)
+    {
+        $payment_lines = PackageTransactionPayment::where('transaction_id', $transaction_id)
             ->get()->toArray();
 
         return $payment_lines;
@@ -2764,7 +2949,7 @@ class TransactionUtil extends Util
     public function updatePaymentStatus($transaction_id, $final_amount = null)
     {
         $status = $this->calculatePaymentStatus($transaction_id, $final_amount);
-        Transaction::where('id', $transaction_id)
+        PackageTransaction::where('id', $transaction_id)
             ->update(['payment_status' => $status]);
 
         return $status;
@@ -5197,6 +5382,24 @@ class TransactionUtil extends Util
         return $price_product;
     }
 
+       /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getShippingFee()
+    {
+        $shipping_fee = ShippingFee::select(
+            'shipping_fees.id',
+            'shipping_fees.type',
+            'shipping_fees.price',
+            DB::raw(" IF(shipping_fees.type = 0, 'bateau', 'avion') as type")
+     
+        );
+        return $shipping_fee;
+    }
+
     /**
      * common function to get
      * list price for calculate product
@@ -5218,6 +5421,7 @@ class TransactionUtil extends Util
             'packages.hauteur',
             'packages.customer_tel',
             'packages.customer_name',
+            'packages.customer_id',
             'packages.image',
             // 'packages.mode_transport',
             // 'packages.status',
@@ -5323,6 +5527,67 @@ class TransactionUtil extends Util
       
 
         return $the_package;
+    }
+
+     /**
+     * common function to get
+     * list price for calculate product
+     *
+     * @return object
+     */
+    public function getListPackageTransaction()
+    {
+        $package = PackageTransaction::join(
+            'package_transaction_lines as ptl',
+            'ptl.package_transaction_id',
+            '=',
+            'package_transactions.id'
+        )
+        
+            ->join(
+                'packages as p',
+                'ptl.package_id',
+                '=',
+                'p.id'
+            )
+            ->leftJoin('users as u', 'package_transactions.created_by', '=', 'u.id')
+            ->leftJoin('contacts', 'package_transactions.customer_id', '=', 'contacts.id')
+            ->where('package_transactions.status', 'final')
+            ->select(
+                'package_transactions.id',
+                // 'package_transactions.the_package_id',
+                'package_transactions.status',
+                // 'the_packages.client',
+                'package_transactions.ref_no',
+                'package_transactions.invoice_no',
+                // 'package_transactions.transaction_date',
+                'package_transactions.payment_status',
+                'package_transactions.discount_amount',
+                'package_transactions.final_total',
+                'package_transactions.customer_id',
+                'ptl.price',
+                'ptl.qte',
+                'p.bar_code',
+                'p.product',
+                'p.customer_name',
+                'p.customer_tel',
+
+                // 'packing_lists.other_field1',
+                // 'packing_lists.other_field2',
+                // // 'ct.mobile',
+                // // 'ct.name',
+                // DB::raw(" IF(packing_lists.mode_transport = 1, 'avion', 'bateau') as mode_transport"),
+                 DB::raw('DATE_FORMAT(package_transactions.transaction_date, "%Y/%m/%d") as transaction_date'),
+                 DB::raw('(SELECT SUM(TP.amount) FROM package_transaction_payments AS TP WHERE
+                 TP.transaction_id=package_transactions.id) as total_paid'),
+                DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by")
+
+            )
+            ->orderBy('package_transactions.transaction_date', 'desc')
+            ->groupBy('package_transactions.id');
+      
+
+        return $package;
     }
 
 

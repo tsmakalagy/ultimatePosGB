@@ -9,9 +9,9 @@
         <h1>@lang('lang_v1.edit_packing_list')
         </h1>
         <!-- <ol class="breadcrumb">
-                            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                            <li class="active">Here</li>
-                        </ol> -->
+                                    <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                                    <li class="active">Here</li>
+                                </ol> -->
     </section>
 
     <!-- Main content -->
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                 </div>
-                {{-- {!! Form::hidden('the_package_id', $impl, ['class' => 'form-control the_package_id', 'rows' => 3]); !!} --}}
+                {!! Form::hidden('the_package_id', $impl, ['class' => 'form-control the_package_id', 'rows' => 3]) !!}
 
 
                 <div class="row">
@@ -131,25 +131,28 @@
     <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            // var id=$('.the_package_id').val();
+            // var id = $('.the_package_id').val();
 
-            // if(id.length){
+            // if (id.length) {
             //     var myarr = id.split(',');
-            //      myarr.forEach(thefunction);
+            //     myarr.forEach(thefunction);
             // }
+
             // function thefunction(item) {
             //     // alert(item);
             //     $.ajax({
             //         type: 'GET',
             //         cache: false,
-            //         url: '/packing-list/get-package-row',
-            //         data: { id:item },
-            //         success: function (response) {
+            //         url: '/packing-list/list-the-package',
+            //         data: {
+            //             id: item
+            //         },
+            //         success: function(response) {
             //             console.log(response);
             //             // $('#my_modal .close').click();
             //             $('#the_package_add_parcel_form_part tbody').append(response);
             //         }
-            //         });
+            //     });
             // }
 
             function delay(callback, ms) {

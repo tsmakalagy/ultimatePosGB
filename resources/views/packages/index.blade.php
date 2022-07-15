@@ -28,7 +28,11 @@
                     <div class="col-md-4 col-md-offset-4">
                         <div class="form-group">
                             {!! Form::label('sell_list_filter_date_range', __('report.date_range_filter') . ':') !!}
-                            {!! Form::text('sell_list_filter_date_range', null, ['placeholder' => __('lang_v1.select_a_date_range'), 'class' => 'form-control', 'readonly']) !!}
+                            {!! Form::text('sell_list_filter_date_range', null, [
+                                'placeholder' => __('lang_v1.select_a_date_range'),
+                                'class' => 'form-control',
+                                'readonly',
+                            ]) !!}
                         </div>
                     </div>
                 </div>
@@ -45,7 +49,7 @@
                             <th>&nbsp;</th>
                             <th width="75px">@lang('lang_v1.date')</th>
                             <th>@lang('lang_v1.customer')</th>
-                            <th>@lang('lang_v1.customer_tel')</th>
+
 
                             <th>@lang('lang_v1.barcode')</th>
                             <th>@lang('lang_v1.product')</th>
@@ -80,7 +84,7 @@
 
     <!-- This will be printed -->
     <!-- <section class="invoice print_section" id="receipt_section">
-        </section> -->
+            </section> -->
 
 @stop
 
@@ -159,13 +163,10 @@
                         name: 'created_at'
                     },
                     {
-                        data: 'customer_name',
-                        name: 'customer_name'
+                        data: 'customer',
+                        name: 'customer'
                     },
-                    {
-                        data: 'customer_tel',
-                        name: 'customer_tel'
-                    },
+
                     {
                         data: 'bar_code',
                         name: 'bar_code'

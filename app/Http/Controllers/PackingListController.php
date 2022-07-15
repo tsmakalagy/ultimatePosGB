@@ -544,15 +544,15 @@ class packingListController extends Controller
 
         $package = PackingList::findOrFail($id);
         // dd($package);
-        // $id_tp=$package->packinglist_lines;
-        // // dd($id_tp);
-        // $arr=array();
-        // foreach($id_tp as $id_tps){
-        //     $result=$id_tps->thepackage->id;
-        //     array_push($arr,$result);
-        // }
-        // // dd($arr);
-        // $impl=implode(',', $arr);
+        $id_tp=$package->packinglist_lines;
+        // dd($id_tp);
+        $arr=array();
+        foreach($id_tp as $id_tps){
+            $result=$id_tps->thepackage->id;
+            array_push($arr,$result);
+        }
+        // dd($arr);
+        $impl=implode(',', $arr);
         // // dd($impl);
         // $the_package = ThePackage::findOrFail($id);
 
@@ -561,7 +561,7 @@ class packingListController extends Controller
 
         // $date_envoi = $package->date_envoi->format('m/d/Y H:i:s');
 
-        return view('packing_list.edit', compact( 'package','date'));
+        return view('packing_list.edit', compact( 'package','date','impl'));
 
     }
 

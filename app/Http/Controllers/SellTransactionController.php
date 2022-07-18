@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Account;
 use App\Business;
+use App\Image;
 use App\BusinessLocation;
 use App\Contact;
 use App\Shipper;
@@ -950,778 +951,9 @@ class SellTransactionController extends Controller
             }
             return redirect('sell-transaction')->with('status', $output);
 
-        // try {
-        //     $input = $request->except('_token');
-        //     //status is send as quotation from edit sales screen.
-        //     $input['is_quotation'] = 0;
-        //     if ($input['status'] == 'quotation') {
-        //         $input['status'] = 'draft';
-        //         $input['is_quotation'] = 1;
-        //         $input['sub_status'] = 'quotation';
-        //     } else if ($input['status'] == 'proforma') {
-        //         $input['status'] = 'draft';
-        //         $input['sub_status'] = 'proforma';
-        //         $input['is_quotation'] = 0;
-        //     } else {
-        //         $input['sub_status'] = null;
-        //         $input['is_quotation'] = 0;
-        //     }
-
-        //     $is_direct_sale = false;
-        //     if (!empty($input['products'])) {
-        //         //Get transaction value before updating.
-        //         $transaction_before = Transaction::find($id);
-        //         $status_before =  $transaction_before->status;
-        //         $rp_earned_before = $transaction_before->rp_earned;
-        //         $rp_redeemed_before = $transaction_before->rp_redeemed;
-
-        //         if ($transaction_before->is_direct_sale == 1) {
-        //             $is_direct_sale = true;
-        //         }
-
-        //         $sales_order_ids = $transaction_before->sales_order_ids ?? [];
-
-        //         //Check Customer credit limit
-        //         $is_credit_limit_exeeded = $transaction_before->type == 'sell' ? $this->transactionUtil->isCustomerCreditLimitExeeded($input, $id) : false;
-
-        //         if ($is_credit_limit_exeeded !== false) {
-        //             $credit_limit_amount = $this->transactionUtil->num_f($is_credit_limit_exeeded, true);
-        //             $output = ['success' => 0,
-        //                         'msg' => __('lang_v1.cutomer_credit_limit_exeeded', ['credit_limit' => $credit_limit_amount])
-        //                     ];
-        //             if (!$is_direct_sale) {
-        //                 return $output;
-        //             } else {
-        //                 return redirect()
-        //                     ->action('SellController@index')
-        //                     ->with('status', $output);
-        //             }
-        //         }
-
-        //         //Check if there is a open register, if no then redirect to Create Register screen.
-        //         if (!$is_direct_sale && $this->cashRegisterUtil->countOpenedRegister() == 0) {
-        //             return redirect()->action('CashRegisterController@create');
-        //         }
-
-        //         $business_id = $request->session()->get('user.business_id');
-        //         $user_id = $request->session()->get('user.id');
-        //         $commsn_agnt_setting = $request->session()->get('business.sales_cmsn_agnt');
-
-        //         $discount = ['discount_type' => $input['discount_type'],
-        //                         'discount_amount' => $input['discount_amount']
-        //                     ];
-        //         $invoice_total = $this->productUtil->calculateInvoiceTotal($input['products'], $input['tax_rate_id'], $discount);
-
-        //         if (!empty($request->input('transaction_date'))) {
-        //             $input['transaction_date'] = $this->productUtil->uf_date($request->input('transaction_date'), true);
-        //         }
-
-        //         $input['commission_agent'] = !empty($request->input('commission_agent')) ? $request->input('commission_agent') : null;
-        //         if ($commsn_agnt_setting == 'logged_in_user') {
-        //             $input['commission_agent'] = $user_id;
-        //         }
-
-        //         if (isset($input['exchange_rate']) && $this->transactionUtil->num_uf($input['exchange_rate']) == 0) {
-        //             $input['exchange_rate'] = 1;
-        //         }
-
-        //         //Customer group details
-        //         $contact_id = $request->get('contact_id', null);
-        //         $cg = $this->contactUtil->getCustomerGroup($business_id, $contact_id);
-        //         $input['customer_group_id'] = (empty($cg) || empty($cg->id)) ? null : $cg->id;
-                
-        //         //set selling price group id
-        //         $price_group_id = $request->has('price_group') ? $request->input('price_group') : null;
-
-        //         $input['is_suspend'] = isset($input['is_suspend']) && 1 == $input['is_suspend']  ? 1 : 0;
-        //         if ($input['is_suspend']) {
-        //             $input['sale_note'] = !empty($input['additional_notes']) ? $input['additional_notes'] : null;
-        //         }
-
-        //         if ($status_before == 'draft' && !empty($request->input('invoice_scheme_id'))) {
-        //             $input['invoice_scheme_id'] = $request->input('invoice_scheme_id');
-        //         }
-
-        //         //Types of service
-        //         if ($this->moduleUtil->isModuleEnabled('types_of_service')) {
-        //             $input['types_of_service_id'] = $request->input('types_of_service_id');
-        //             $price_group_id = !empty($request->input('types_of_service_price_group')) ? $request->input('types_of_service_price_group') : $price_group_id;
-        //             $input['packing_charge'] = !empty($request->input('packing_charge')) ?
-        //             $this->transactionUtil->num_uf($request->input('packing_charge')) : 0;
-        //             $input['packing_charge_type'] = $request->input('packing_charge_type');
-        //             $input['service_custom_field_1'] = !empty($request->input('service_custom_field_1')) ?
-        //             $request->input('service_custom_field_1') : null;
-        //             $input['service_custom_field_2'] = !empty($request->input('service_custom_field_2')) ?
-        //             $request->input('service_custom_field_2') : null;
-        //             $input['service_custom_field_3'] = !empty($request->input('service_custom_field_3')) ?
-        //             $request->input('service_custom_field_3') : null;
-        //             $input['service_custom_field_4'] = !empty($request->input('service_custom_field_4')) ?
-        //             $request->input('service_custom_field_4') : null;
-        //             $input['service_custom_field_5'] = !empty($request->input('service_custom_field_5')) ?
-        //             $request->input('service_custom_field_5') : null;
-        //             $input['service_custom_field_6'] = !empty($request->input('service_custom_field_6')) ?
-        //             $request->input('service_custom_field_6') : null;
-        //         }
-
-        //         $input['selling_price_group_id'] = $price_group_id;
-
-        //         if ($this->transactionUtil->isModuleEnabled('tables')) {
-        //             $input['res_table_id'] = request()->get('res_table_id');
-        //         }
-        //         if ($this->transactionUtil->isModuleEnabled('service_staff')) {
-        //             $input['res_waiter_id'] = request()->get('res_waiter_id');
-        //         }
-
-        //         //upload document
-        //         $document_name = $this->transactionUtil->uploadFile($request, 'sell_document', 'documents');
-        //         if (!empty($document_name)) {
-        //             $input['document'] = $document_name;
-        //         }
-
-        //         //Begin transaction
-        //         DB::beginTransaction();
-
-        //         $transaction = $this->transactionUtil->updateSellTransaction($id, $business_id, $input, $invoice_total, $user_id);
-
-        //         //Update Sell lines
-        //         $deleted_lines = $this->transactionUtil->createOrUpdateSellLines($transaction, $input['products'], $input['location_id'], true, $status_before);
-
-        //         //Update update lines
-        //         $is_credit_sale = isset($input['is_credit_sale']) && $input['is_credit_sale'] == 1 ? true : false;
-
-        //         $new_sales_order_ids = $transaction->sales_order_ids ?? [];
-        //         $sales_order_ids =array_unique(array_merge($sales_order_ids, $new_sales_order_ids));
-                
-        //         if (!empty($sales_order_ids)) {
-        //             $this->transactionUtil->updateSalesOrderStatus($sales_order_ids);
-        //         }
-
-        //         if (!$transaction->is_suspend && !$is_credit_sale) {
-        //             //Add change return
-        //             $change_return = $this->dummyPaymentLine;
-        //             $change_return['amount'] = $input['change_return'];
-        //             $change_return['is_return'] = 1;
-        //             if (!empty($input['change_return_id'])) {
-        //                 $change_return['id'] = $input['change_return_id'];
-        //             }
-        //             $input['payment'][] = $change_return;
-        //             $this->transactionUtil->createOrUpdatePaymentLines($transaction, $input['payment']);
-
-        //             //Update cash register
-        //             if (!$is_direct_sale) {
-        //                 $this->cashRegisterUtil->updateSellPayments($status_before, $transaction, $input['payment']);
-        //             }
-        //         }
-
-        //         if ($request->session()->get('business.enable_rp') == 1) {
-        //             $this->transactionUtil->updateCustomerRewardPoints($contact_id, $transaction->rp_earned, $rp_earned_before, $transaction->rp_redeemed, $rp_redeemed_before);
-        //         }
-                
-        //         Media::uploadMedia($business_id, $transaction, $request, 'shipping_documents', false, 'shipping_document');
-
-        //         if ($transaction->type == 'sell') {
-                    
-        //             //Update payment status
-        //             $payment_status = $this->transactionUtil->updatePaymentStatus($transaction->id, $transaction->final_total);
-        //             $transaction->payment_status = $payment_status;
-
-        //             //Update product stock
-        //             $this->productUtil->adjustProductStockForInvoice($status_before, $transaction, $input);
-
-        //             //Allocate the quantity from purchase and add mapping of
-        //             //purchase & sell lines in
-        //             //transaction_sell_lines_purchase_lines table
-        //             $business_details = $this->businessUtil->getDetails($business_id);
-        //             $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
-
-        //             $business = ['id' => $business_id,
-        //                             'accounting_method' => $request->session()->get('business.accounting_method'),
-        //                             'location_id' => $input['location_id'],
-        //                             'pos_settings' => $pos_settings
-        //                         ];
-        //             $this->transactionUtil->adjustMappingPurchaseSell($status_before, $transaction, $business, $deleted_lines);
-        //         }
-                
-        //         $log_properties = [];
-        //         if (isset($input['repair_completed_on'])) {
-        //             $completed_on = !empty($input['repair_completed_on']) ? $this->transactionUtil->uf_date($input['repair_completed_on'], true) : null;
-        //             if ($transaction->repair_completed_on != $completed_on) {
-        //                 $log_properties['completed_on_from'] = $transaction->repair_completed_on;
-        //                 $log_properties['completed_on_to'] = $completed_on;
-        //             }
-        //         }
-
-        //         //Set Module fields
-        //         if (!empty($input['has_module_data'])) {
-        //             $this->moduleUtil->getModuleData('after_sale_saved', ['transaction' => $transaction, 'input' => $input]);
-        //         }
-
-        //         Media::uploadMedia($business_id, $transaction, $request, 'documents');
-
-        //         $this->transactionUtil->activityLog($transaction, 'edited', $transaction_before);
-
-        //         DB::commit();
-
-        //         if ($request->input('is_save_and_print') == 1) {
-        //             $url = $this->transactionUtil->getInvoiceUrl($id, $business_id);
-        //             return redirect()->to($url . '?print_on_load=true');
-        //         }
-                    
-        //         $msg = '';
-        //         $receipt = '';
-        //         $can_print_invoice = auth()->user()->can("print_invoice");
-        //         $invoice_layout_id = $request->input('invoice_layout_id');
-
-        //         if ($input['status'] == 'draft' && $input['is_quotation'] == 0) {
-        //             $msg = trans("sale.draft_added");
-        //         } elseif ($input['status'] == 'draft' && $input['is_quotation'] == 1) {
-        //             $msg = trans("lang_v1.quotation_updated");
-        //             if (!$is_direct_sale && $can_print_invoice) {
-        //                 $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
-        //             } else {
-        //                 $receipt = '';
-        //             }
-        //         } elseif ($input['status'] == 'final') {
-        //             $msg = trans("sale.pos_sale_updated");
-        //             if (!$is_direct_sale && $can_print_invoice) {
-        //                 $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
-        //             } else {
-        //                 $receipt = '';
-        //             }
-        //         }
-
-        //         $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt ];
-        //     } else {
-        //         $output = ['success' => 0,
-        //                     'msg' => trans("messages.something_went_wrong")
-        //                 ];
-        //     }
-        // } catch (\Exception $e) {
-        //     DB::rollBack();
-        //     \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
-        //     $output = ['success' => 0,
-        //                     'msg' => __('messages.something_went_wrong')
-        //                 ];
-        // }
     }
 
-    /**
-     * Display a listing sell drafts.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getDrafts()
-    {
-        if (!auth()->user()->can('draft.view_all') && !auth()->user()->can('draft.view_own')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $business_id = request()->session()->get('user.business_id');
-
-        $business_locations = BusinessLocation::forDropdown($business_id, false);
-        $customers = Contact::customersDropdown($business_id, false);
-
-        $sales_representative = User::forDropdown($business_id, false, false, true);
-
-
-        return view('sale_pos.draft')
-            ->with(compact('business_locations', 'customers', 'sales_representative'));
-    }
-
-    /**
-     * Display a listing sell quotations.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getQuotations()
-    {
-        if (!auth()->user()->can('quotation.view_all') && !auth()->user()->can('quotation.view_own')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $business_id = request()->session()->get('user.business_id');
-
-        $business_locations = BusinessLocation::forDropdown($business_id, false);
-        $customers = Contact::customersDropdown($business_id, false);
-
-        $sales_representative = User::forDropdown($business_id, false, false, true);
-
-        return view('sale_pos.quotations')
-            ->with(compact('business_locations', 'customers', 'sales_representative'));
-    }
-
-    /**
-     * Send the datatable response for draft or quotations.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getDraftDatables()
-    {
-        if (request()->ajax()) {
-            $business_id = request()->session()->get('user.business_id');
-            $is_quotation = request()->input('is_quotation', 0);
-
-            $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
-
-            $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
-                ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
-                ->join(
-                    'business_locations AS bl',
-                    'transactions.location_id',
-                    '=',
-                    'bl.id'
-                )
-                ->leftJoin('transaction_sell_lines as tsl', function ($join) {
-                    $join->on('transactions.id', '=', 'tsl.transaction_id')
-                        ->whereNull('tsl.parent_sell_line_id');
-                })
-                ->where('transactions.business_id', $business_id)
-                ->where('transactions.type', 'sell')
-                ->where('transactions.status', 'draft')
-                ->select(
-                    'transactions.id',
-                    'transaction_date',
-                    'invoice_no',
-                    'contacts.name',
-                    'contacts.mobile',
-                    'contacts.supplier_business_name',
-                    'bl.name as business_location',
-                    'is_direct_sale',
-                    'sub_status',
-                    DB::raw('COUNT( DISTINCT tsl.id) as total_items'),
-                    DB::raw('SUM(tsl.quantity) as total_quantity'),
-                    DB::raw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) as added_by"),
-                    'transactions.is_export'
-                );
-
-            if ($is_quotation == 1) {
-                $sells->where('transactions.sub_status', 'quotation');
-
-                if (!auth()->user()->can('quotation.view_all') && auth()->user()->can('quotation.view_own')) {
-                    $sells->where('transactions.created_by', request()->session()->get('user.id'));
-                }
-
-            } else {
-                if (!auth()->user()->can('draft.view_all') && auth()->user()->can('draft.view_own')) {
-                    $sells->where('transactions.created_by', request()->session()->get('user.id'));
-                }
-            }
-
-
-            $permitted_locations = auth()->user()->permitted_locations();
-            if ($permitted_locations != 'all') {
-                $sells->whereIn('transactions.location_id', $permitted_locations);
-            }
-
-            if (!empty(request()->start_date) && !empty(request()->end_date)) {
-                $start = request()->start_date;
-                $end = request()->end_date;
-                $sells->whereDate('transaction_date', '>=', $start)
-                    ->whereDate('transaction_date', '<=', $end);
-            }
-            if (request()->has('location_id')) {
-                $location_id = request()->get('location_id');
-                if (!empty($location_id)) {
-                    $sells->where('transactions.location_id', $location_id);
-                }
-            }
-
-            if (request()->has('created_by')) {
-                $created_by = request()->get('created_by');
-                if (!empty($created_by)) {
-                    $sells->where('transactions.created_by', $created_by);
-                }
-            }
-
-            if (!empty(request()->customer_id)) {
-                $customer_id = request()->customer_id;
-                $sells->where('contacts.id', $customer_id);
-            }
-
-            if ($is_woocommerce) {
-                $sells->addSelect('transactions.woocommerce_order_id');
-            }
-
-            $sells->groupBy('transactions.id');
-
-            return Datatables::of($sells)
-                ->addColumn(
-                    'action', function ($row) {
-                    $html = '<div class="btn-group">
-                                <button type="button" class="btn btn-info dropdown-toggle btn-xs" 
-                                    data-toggle="dropdown" aria-expanded="false">' .
-                        __("messages.actions") .
-                        '<span class="caret"></span><span class="sr-only">Toggle Dropdown
-                                    </span>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                    <li>
-                                    <a href="#" data-href="' . action('SellController@show', [$row->id]) . '" class="btn-modal" data-container=".view_modal">
-                                        <i class="fas fa-eye" aria-hidden="true"></i>' . __("messages.view") . '
-                                    </a>
-                                    </li>';
-
-                    if (auth()->user()->can('draft.update') || auth()->user()->can('quotation.update')) {
-                        if ($row->is_direct_sale == 1) {
-                            $html .= '<li>
-                                            <a target="_blank" href="' . action('SellController@edit', [$row->id]) . '">
-                                                <i class="fas fa-edit"></i>' . __("messages.edit") . '
-                                            </a>
-                                        </li>';
-                        } else {
-                            $html .= '<li>
-                                            <a target="_blank" href="' . action('SellPosController@edit', [$row->id]) . '">
-                                                <i class="fas fa-edit"></i>' . __("messages.edit") . '
-                                            </a>
-                                        </li>';
-                        }
-                    }
-
-                    $html .= '<li>
-                                    <a href="#" class="print-invoice" data-href="' . route('sell.printInvoice', [$row->id]) . '"><i class="fas fa-print" aria-hidden="true"></i>' . __("messages.print") . '</a>
-                                </li>';
-
-
-                    if (config("constants.enable_download_pdf")) {
-                        $sub_status = $row->sub_status == 'proforma' ? 'proforma' : '';
-                        $html .= '<li>
-                                        <a href="' . route('quotation.downloadPdf', ['id' => $row->id, 'sub_status' => $sub_status]) . '" target="_blank">
-                                            <i class="fas fa-print" aria-hidden="true"></i>' . __("lang_v1.download_pdf") . '
-                                        </a>
-                                    </li>';
-                    }
-
-                    if ((auth()->user()->can("sell.create") || auth()->user()->can("direct_sell.access")) && config("constants.enable_convert_draft_to_invoice")) {
-                        $html .= '<li>
-                                        <a href="' . action('SellPosController@convertToInvoice', [$row->id]) . '" class="convert-draft"><i class="fas fa-sync-alt"></i>' . __("lang_v1.convert_to_invoice") . '</a>
-                                    </li>';
-                    }
-
-                    if ($row->sub_status != "proforma") {
-                        $html .= '<li>
-                                        <a href="' . action('SellPosController@convertToProforma', [$row->id]) . '" class="convert-to-proforma"><i class="fas fa-sync-alt"></i>' . __("lang_v1.convert_to_proforma") . '</a>
-                                    </li>';
-                    }
-
-                    if (auth()->user()->can('draft.delete') || auth()->user()->can('quotation.delete')) {
-                        $html .= '<li>
-                                <a href="' . action('SellPosController@destroy', [$row->id]) . '" class="delete-sale"><i class="fas fa-trash"></i>' . __("messages.delete") . '</a>
-                                </li>';
-                    }
-
-                    if ($row->sub_status == "quotation") {
-                        $html .= '<li>
-                                        <a href="' . action("SellPosController@showInvoiceUrl", [$row->id]) . '" class="view_invoice_url"><i class="fas fa-eye"></i>' . __("lang_v1.view_quote_url") . '</a>
-                                    </li>
-                                    <li>
-                                        <a href="#" data-href="' . action("NotificationController@getTemplate", ["transaction_id" => $row->id, "template_for" => "new_quotation"]) . '" class="btn-modal" data-container=".view_modal"><i class="fa fa-envelope" aria-hidden="true"></i>' . __("lang_v1.new_quotation_notification") . '
-                                        </a>
-                                    </li>';
-                    }
-
-                    $html .= '</ul></div>';
-
-                    return $html;
-
-                })
-                ->removeColumn('id')
-                ->editColumn('invoice_no', function ($row) {
-                    $invoice_no = $row->invoice_no;
-                    if (!empty($row->woocommerce_order_id)) {
-                        $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="' . __('lang_v1.synced_from_woocommerce') . '"></i>';
-                    }
-
-                    if ($row->sub_status == 'proforma') {
-                        $invoice_no .= '<br><span class="label bg-gray">' . __('lang_v1.proforma_invoice') . '</span>';
-                    }
-
-                    if (!empty($row->is_export)) {
-                        $invoice_no .= '</br><small class="label label-default no-print" title="' . __('lang_v1.export') . '">' . __('lang_v1.export') . '</small>';
-                    }
-
-                    return $invoice_no;
-                })
-                ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
-                ->editColumn('total_items', '{{@format_quantity($total_items)}}')
-                ->editColumn('total_quantity', '{{@format_quantity($total_quantity)}}')
-                ->addColumn('conatct_name', '@if(!empty($supplier_business_name)) {{$supplier_business_name}}, <br>@endif {{$name}}')
-                ->filterColumn('conatct_name', function ($query, $keyword) {
-                    $query->where(function ($q) use ($keyword) {
-                        $q->where('contacts.name', 'like', "%{$keyword}%")
-                            ->orWhere('contacts.supplier_business_name', 'like', "%{$keyword}%");
-                    });
-                })
-                ->filterColumn('added_by', function ($query, $keyword) {
-                    $query->whereRaw("CONCAT(COALESCE(u.surname, ''), ' ', COALESCE(u.first_name, ''), ' ', COALESCE(u.last_name, '')) like ?", ["%{$keyword}%"]);
-                })
-                ->setRowAttr([
-                    'data-href' => function ($row) {
-                        if (auth()->user()->can("sell.view")) {
-                            return action('SellController@show', [$row->id]);
-                        } else {
-                            return '';
-                        }
-                    }])
-                ->rawColumns(['action', 'invoice_no', 'transaction_date', 'conatct_name'])
-                ->make(true);
-        }
-    }
-
-    /**
-     * Creates copy of the requested sale.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function duplicateSell($id)
-    {
-        if (!auth()->user()->can('sell.create')) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        try {
-            $business_id = request()->session()->get('user.business_id');
-            $user_id = request()->session()->get('user.id');
-
-            $transaction = Transaction::where('business_id', $business_id)
-                ->where('type', 'sell')
-                ->findorfail($id);
-            $duplicate_transaction_data = [];
-            foreach ($transaction->toArray() as $key => $value) {
-                if (!in_array($key, ['id', 'created_at', 'updated_at'])) {
-                    $duplicate_transaction_data[$key] = $value;
-                }
-            }
-            $duplicate_transaction_data['status'] = 'draft';
-            $duplicate_transaction_data['payment_status'] = null;
-            $duplicate_transaction_data['transaction_date'] = \Carbon::now();
-            $duplicate_transaction_data['created_by'] = $user_id;
-            $duplicate_transaction_data['invoice_token'] = null;
-
-            DB::beginTransaction();
-            $duplicate_transaction_data['invoice_no'] = $this->transactionUtil->getInvoiceNumber($business_id, 'draft', $duplicate_transaction_data['location_id']);
-
-            //Create duplicate transaction
-            $duplicate_transaction = Transaction::create($duplicate_transaction_data);
-
-            //Create duplicate transaction sell lines
-            $duplicate_sell_lines_data = [];
-
-            foreach ($transaction->sell_lines as $sell_line) {
-                $new_sell_line = [];
-                foreach ($sell_line->toArray() as $key => $value) {
-                    if (!in_array($key, ['id', 'transaction_id', 'created_at', 'updated_at', 'lot_no_line_id'])) {
-                        $new_sell_line[$key] = $value;
-                    }
-                }
-
-                $duplicate_sell_lines_data[] = $new_sell_line;
-            }
-
-            $duplicate_transaction->sell_lines()->createMany($duplicate_sell_lines_data);
-
-            DB::commit();
-
-            $output = ['success' => 0,
-                'msg' => trans("lang_v1.duplicate_sell_created_successfully")
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-
-            $output = ['success' => 0,
-                'msg' => trans("messages.something_went_wrong")
-            ];
-        }
-
-        if (!empty($duplicate_transaction)) {
-            if ($duplicate_transaction->is_direct_sale == 1) {
-                return redirect()->action('SellController@edit', [$duplicate_transaction->id])->with(['status', $output]);
-            } else {
-                return redirect()->action('SellPosController@edit', [$duplicate_transaction->id])->with(['status', $output]);
-            }
-        } else {
-            abort(404, 'Not Found.');
-        }
-    }
-
-    /**
-     * Shows modal to edit shipping details.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function editShipping($id,Request $request)
-    {
-        $is_admin = $this->businessUtil->is_admin(auth()->user());
-
-        if (!$is_admin && !auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $type_id=$id;
-        $address = Address::join(
-            'transactions',
-            'addresses.id',
-            '=',
-            'transactions.address_id'
-        )->where('transactions.id', $type_id)->first();    
-
-        $all_address= Address::All();
-        //requete ajax
-        if (request()->ajax()) {
-            //$centre_villes= CentreVille::pluck('commune', 'id');
-            $selectedbrand= $request->get('selectedbrand',false);
-            if($selectedbrand==1){
-                $addresses= Address::where('id_indication',1)->select(['id','nom'])->get();
-                return $addresses;
-            }
-
-           if($selectedbrand==2){
-                $addresses= Address::where('id_indication',2)->select(['id','nom'])->get();
-                return $addresses;
-            }
-            if($selectedbrand==3){
-               
-                return $all_address;
-            }
-      
-          
-        }
-
-        $business_id = request()->session()->get('user.business_id');
-
-        $transaction = Transaction::where('business_id', $business_id)
-            ->with(['media', 'media.uploaded_by_user'])
-            ->findorfail($id);
-        $shipping_statuses = $this->transactionUtil->shipping_statuses();
-
-        $shipper = Shipper::join(
-            'transactions',
-            'shippers.id',
-            '=',
-            'transactions.shipper_id'
-        )->where('transactions.id', $id)->first();
-
-//dd($shipper->shipper_id);
-
-        $shippers = Shipper::pluck('shipper_name', 'id');
-
-        $activities = Activity::forSubject($transaction)
-            ->with(['causer', 'subject'])
-            ->where('activity_log.description', 'shipping_edited')
-            ->latest()
-            ->get();
-        $carbon = \Carbon::now();
-        return view('sell.partials.edit_shipping')
-            ->with(compact('transaction', 'shippers', 'shipper', 'shipping_statuses', 'activities', 'carbon','all_address','address','type_id'));
-    }
-
-    /**
-     * Update shipping.
-     *
-     * @param Request $request , int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function updateShipping(Request $request, $id)
-    {
-        $is_admin = $this->businessUtil->is_admin(auth()->user());
-
-        if (!$is_admin && !auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        try {
-            $input = $request->only([
-                'shipping_details', 'shipping_date', 'shipping_charges', 'address_id', 'shipper_id',
-                'shipping_status', 'delivered_to', 'shipping_custom_field_1', 'shipping_custom_field_2', 'shipping_custom_field_3', 'shipping_custom_field_4', 'shipping_custom_field_5'
-            ]);
-
-            $business_id = $request->session()->get('user.business_id');
-
-
-            $transaction = Transaction::where('business_id', $business_id)
-                ->findOrFail($id);
-
-            $transaction_before = $transaction->replicate();
-
-            $transaction->update($input);
-
-            $activity_property = ['update_note' => $request->input('shipping_note', '')];
-            $this->transactionUtil->activityLog($transaction, 'shipping_edited', $transaction_before, $activity_property);
-
-            $output = ['success' => 1,
-                'msg' => trans("lang_v1.updated_success")
-            ];
-        } catch (\Exception $e) {
-            \Log::emergency("File:" . $e->getFile() . "Line:" . $e->getLine() . "Message:" . $e->getMessage());
-
-            $output = ['success' => 0,
-                'msg' => trans("messages.something_went_wrong")
-            ];
-        }
-
-        return $output;
-    }
-
-    /**
-     * Display list of shipments.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function shipments()
-    {
-        $is_admin = $this->businessUtil->is_admin(auth()->user());
-
-        if (!$is_admin && !auth()->user()->hasAnyPermission(['access_shipping', 'access_own_shipping', 'access_commission_agent_shipping'])) {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $shipping_statuses = $this->transactionUtil->shipping_statuses();
-
-        $business_id = request()->session()->get('user.business_id');
-
-        $business_locations = BusinessLocation::forDropdown($business_id, false);
-        $customers = Contact::customersDropdown($business_id, false);
-
-        $sales_representative = User::forDropdown($business_id, false, false, true);
-
-        $is_service_staff_enabled = $this->transactionUtil->isModuleEnabled('service_staff');
-
-        //Service staff filter
-        $service_staffs = null;
-        if ($this->productUtil->isModuleEnabled('service_staff')) {
-            $service_staffs = $this->productUtil->serviceStaffDropdown($business_id);
-        }
-
-        $shippers = Shipper::pluck('shipper_name', 'id');
-
-        return view('sell.shipments')->with(compact('shipping_statuses'))
-            ->with(compact('business_locations', 'customers', 'sales_representative', 'is_service_staff_enabled', 'service_staffs', 'shippers'));
-    }
-
-    public function viewMedia($model_id)
-    {
-        if (request()->ajax()) {
-            $model_type = request()->input('model_type');
-            $business_id = request()->session()->get('user.business_id');
-
-            $query = Media::where('business_id', $business_id)
-                ->where('model_id', $model_id)
-                ->where('model_type', $model_type);
-
-            $title = __('lang_v1.attachments');
-            if (!empty(request()->input('model_media_type'))) {
-                $query->where('model_media_type', request()->input('model_media_type'));
-                $title = __('lang_v1.shipping_documents');
-            }
-
-            $medias = $query->get();
-
-            return view('sell.view_media')->with(compact('medias', 'title'));
-        }
-    }
-
+ 
     
     /**
      * List of ThePackage
@@ -1825,6 +1057,92 @@ class SellTransactionController extends Controller
 
         }
         }
+
+        
+    /**
+     * Checks if ref_number and supplier combination already exists.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function printInvoice($id)
+    {
+        try {
+            $package = PackageTransaction::findOrFail($id);
+            // foreach ($package->package_transaction_line as $pack_line){
+            $image_url = Image::where('type','package' )->first();
+
+            // }
+
+            // $package = PackageTransaction::findOrFail($id);
+            $customer = Contact::select('name', 'mobile')->where('id', $package->customer_id)->first();
+            $name_and_mobile = $customer->name . ' (' . $customer->mobile . ')';
+            // dd($name_and_mobile);
+                // dd($package);
+                $commission_agent=$package->leftJoin('users as u', 'package_transactions.created_by', '=', 'u.id')
+                ->select(
+                    DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by")
+    
+                )->first();
+                $added_by=$commission_agent->added_by;
+             $packages = PackageTransaction::join(
+                'package_transaction_lines as ptl',
+                'ptl.package_transaction_id',
+                '=',
+                'package_transactions.id'
+            )
+                ->join(
+                    'packages as p',
+                    'ptl.package_id',
+                    '=',
+                    'p.id'
+                )
+                ->select(
+                    'package_transactions.id',
+                    // 'package_transactions.the_package_id',
+                    'package_transactions.status',
+                    // 'the_packages.client',
+                    'package_transactions.ref_no',
+                    'package_transactions.invoice_no',
+                    // 'package_transactions.transaction_date',
+                    'package_transactions.payment_status',
+                    'package_transactions.discount_amount',
+                    'package_transactions.final_total',
+                    'ptl.price',
+                    'ptl.qte',
+                    'p.bar_code',
+                    'p.product',
+                    'p.customer_name',
+                    'p.customer_tel')
+                    ->where('package_transactions.id', $id);
+                    $activities = Activity::forSubject($package)
+                    ->with(['causer', 'subject'])
+                    ->latest()
+                    ->get();
+
+
+
+
+            $output = ['success' => 1, 'receipt' => []];
+            $output['receipt']['html_content'] = view('sell_transaction.print',compact(
+            'name_and_mobile',
+            'package',
+            'activities',
+            'customer',
+            'image_url',
+            'added_by'
+)           )->render();
+         
+        } catch (\Exception $e) {
+            \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
+            
+            $output = ['success' => 0,
+                            'msg' => __('messages.something_went_wrong')
+                        ];
+        }
+
+        return $output;
+    }
             
 
 }

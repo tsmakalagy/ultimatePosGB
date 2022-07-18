@@ -499,6 +499,8 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     
      Route::get('sell-transaction/list-the-package', 'SellTransactionController@listThePackage')->name('Sell_transaction.list_the_package');
      Route::get('sell-transaction/edit-list-the-package', 'SellTransactionController@editListThePackage')->name('Sell_transaction.edit_list_the_package');
+     Route::get('sell-transaction/print/{id}', 'SellTransactionController@printInvoice')->name('Sell_transaction.printInvoice');
+     
      //  Route::get('sell_transaction/scan', 'PackageController@scan')->name('Package.scan');
     //  Route::get('sell_transaction/upload-img/{id}', 'PackageController@uploadImg')->name('Package.upload_img');
     //  Route::post('sell_transaction/save-img/{id}', 'PackageController@saveImg')->name('Package.save_img');

@@ -94,7 +94,7 @@
                                 <th>{{ __('lang_v1.weight') }}</th>
                                 <th>{{ __('lang_v1.volume') }}</th>
 
-                                <th>{{ __('lang_v1.price') }}</th>
+                                <th class="text-right">{{ __('lang_v1.price') }}</th>
 
                             </tr>
                             @php
@@ -121,37 +121,15 @@
                                     <td>{{ $pack_line->package->weight }}</td>
                                     <td>{{ $pack_line->package->volume }}</td>
 
-                                    <td>{{ $pack_line->package->price }}</td>
+                                    <td><span class="display_currency pull-right"
+                                            data-currency_symbol="true">{{ $pack_line->package->price }}</span></td>
 
                                 </tr>
                             @endforeach
 
                         </table>
 
-                        <!-- Creates the bootstrap modal where the image will appear -->
-                        {{-- <div class="modal fade" id="imagemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-                        <div class="modal-dialog" >
-                          <div class="modal-content" >
-                            <div class="modal-header">
-                              <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                              <h4 class="modal-title" id="myModalLabel">{{ $sell_line->product->name }}</h4>
-                            </div>
-                            <div class="modal-body">
-                              <img src="" id="imagepreview" style="width: 400px; height: 364px;" >
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div> --}}
-                        {{-- <script type="text/javascript">
-                      $("#pop").on("click", function() {
-                       $('#imagepreview').attr('src', $('#imageresource').attr('src')); // here asign the image to the modal when the user click the enlarge link
-                       $('#imagemodal').modal('show'); // imagemodal is the id attribute assigned to the bootstrap modal, then i use the show function
-                    });
-                        </script> --}}
-                        {{-- @include('sale_pos.partials.sale_line_details') --}}
+
                     </div>
                 </div>
             </div>
@@ -289,9 +267,10 @@
                         data-href="{{ route('sell.printInvoice', [$package->id]) }}?package_slip=true"><i
                             class="fas fa-file-alt" aria-hidden="true"></i> @lang('lang_v1.packing_slip')</a>
                 @endif --}}
+
             @can('print_invoice')
                 <a href="#" class="print-invoice btn btn-primary"
-                    data-href="{{ route('sell.printInvoice', [$package->id]) }}"><i class="fa fa-print"
+                    data-href="{{ route('Sell_transaction.printInvoice', [$package->id]) }}"><i class="fa fa-print"
                         aria-hidden="true"></i> @lang('lang_v1.print_invoice')</a>
             @endcan
             <button type="button" class="btn btn-default no-print" data-dismiss="modal">@lang('messages.close')</button>

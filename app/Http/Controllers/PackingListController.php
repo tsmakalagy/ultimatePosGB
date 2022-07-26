@@ -853,6 +853,66 @@ class packingListController extends Controller
         }
     }
 
+  /**
+     * List of ThePackage
+     * @return JSON
+     */
+    public function editListThePackage(Request $request)
+    {
+        //requete ajax
+        if (request()->ajax()) {
+
+            $my_arr = array();
+            $id = $request->get('id', false);
+            // $customer = $request()->input('customer', '');
+            // $val = explode("|", $term);
+             $packingLines = ThePackage::findOrFail($id);
+             $product = $packingLines->product;
+             $sku = $packingLines->sku;
+             $packages = $packingLines->thepackage_package;
+
+             $length = number_format($packingLines->longueur);
+             $width = number_format($packingLines->largeur);
+             $height = number_format($packingLines->hauteur);
+             $dimension = "";
+             if ($length > 0 && $width > 0 && $height > 0) {
+                 $dimension = '(' . $length . 'x' . $width . 'x' . $height . 'cm)';
+             }
+             $array_of_package = array();
+
+             $displayLine = $sku . ' - ' . $dimension;
+             if (!empty($product)) {
+                 $displayLine .= ' - ' . $product;
+             }
+             if (!empty($packages)) {
+                 foreach ($packages as $package) {
+                     $p_product = $package->product;
+                     $p_barcode = $package->bar_code;
+                  
+                     $displayLine .= ' - ' . $p_product . '(' . $package->customer_name . ')';
+                     array_push($array_of_package, array(
+                         'p' => $p_product,
+                         'bc' => $p_barcode,
+                         'c_name' => $package->customer_name,
+                         'c_contact' => $package->customer_tel
+                     ));
+                 }
+             }
+
+             array_push($array_of_box, array(
+                 'id' => $packingLines->id,
+                 'product' => $product,
+                 'sku' => $sku,
+                 'dimension' => $dimension,
+                 'displayLine' => $displayLine,
+                 'packages' => $array_of_package
+             ));
+        
+            return json_encode($array_of_box);
+
+        }
+        }
+
     /**
      * Checks if ref_number and supplier combination already exists.
      *

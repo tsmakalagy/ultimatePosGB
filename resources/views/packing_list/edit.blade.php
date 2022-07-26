@@ -9,14 +9,18 @@
         <h1>@lang('lang_v1.edit_packing_list')
         </h1>
         <!-- <ol class="breadcrumb">
-                                    <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
-                                    <li class="active">Here</li>
-                                </ol> -->
+                                                            <li><a href="#"><i class="fa fa-dashboard"></i> Level</a></li>
+                                                            <li class="active">Here</li>
+                                                        </ol> -->
     </section>
 
     <!-- Main content -->
     <section class="content">
-        {!! Form::open(['action' => ['packingListController@update', $package->id], 'files' => true, 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open([
+            'action' => ['packingListController@update', $package->id],
+            'files' => true,
+            'enctype' => 'multipart/form-data',
+        ]) !!}
         @component('components.widget', ['class' => 'box-solid'])
             <div class="container-fluid">
 
@@ -26,7 +30,12 @@
                     <div class="col-md-6 ">
                         <div class="form-group">
                             {!! Form::label('mode_transport', __('lang_v1.mode_transport') . ':') !!}
-                            {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, ['class' => 'form-control select2', 'id' => 'product_locations', 'placeholder' => __('messages.please_select'), 'required']) !!}
+                            {!! Form::select('mode_transport', [0 => 'bateau', 1 => 'avion'], $package->mode_transport, [
+                                'class' => 'form-control select2',
+                                'id' => 'product_locations',
+                                'placeholder' => __('messages.please_select'),
+                                'required',
+                            ]) !!}
                             {{-- {!! Form::select('packages[]', $package,null,['class' => 'form-control select2', 'multiple', 'id' => 'product_locations','required']); !!} --}}
 
                         </div>
@@ -49,7 +58,11 @@
                 <div class="row">
                     <div class="col-sm-10 col-sm-offset-1">
                         <div class="form-group">
-                            {!! Form::text('my_search_product', null, ['class' => 'form-control mousetrap', 'id' => 'my_search_product', 'placeholder' => __('lang_v1.search_product_placeholder')]) !!}
+                            {!! Form::text('my_search_product', null, [
+                                'class' => 'form-control mousetrap',
+                                'id' => 'my_search_product',
+                                'placeholder' => __('lang_v1.search_product_placeholder'),
+                            ]) !!}
                         </div>
                     </div>
                 </div>
@@ -143,14 +156,68 @@
             //     $.ajax({
             //         type: 'GET',
             //         cache: false,
-            //         url: '/packing-list/list-the-package',
+            //         url: '/packing-list/edit-list-the-package',
             //         data: {
             //             id: item
             //         },
             //         success: function(response) {
+            //             // console.log(response);
+            //             // var resp = response[0].pack;
             //             console.log(response);
+            //             // var id = resp.id;
+            //             // var barcode = resp.bar_code;
+            //             // var mode_transport = resp.mode_transport;
+            //             // var customer_tel = resp.customer_tel;
+            //             // var customer_name = resp.customer_name;
+            //             // var commission_agent = resp.commission_agent;
+            //             // var product = resp.product;
+            //             // var price = response[0].price;
+
+            //             // var lengt = resp.longueur;
+            //             // var length = Number(lengt).toFixed(0)
+            //             // var widt = resp.largeur;
+            //             // var width = Number(widt).toFixed(0);
+            //             // var heigh = resp.hauteur;
+            //             // var height = Number(heigh).toFixed(0);
+
+            //             // var dimension = "";
+            //             // if (length > 0 && width > 0 && height > 0) {
+
+            //             //     var dimension = '(' + length + 'x' + width + 'x' + height + 'cm)';
+
+            //             // }
+
+            //             // var p_product = '';
+            //             // var p_c_name = '';
+
+            //             // var item = ui.item;
+            //             var id = resp.id;
+            //             var sku = resp.sku;
+            //             var product = resp.product;
+            //             var dimension = resp.dimension;
+            //             var p_product = '';
+            //             var p_c_name = '';
+
+            //             if (resp.packages.length !== 0) {
+            //                 var package = resp.packages[0];
+            //                 p_product = package.p;
+            //                 p_c_name = package.c_name;
+            //             }
+            //             if (product == null && p_product != null) {
+            //                 product = p_product;
+            //             }
             //             // $('#my_modal .close').click();
-            //             $('#the_package_add_parcel_form_part tbody').append(response);
+            //             var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + sku +
+            //                 '</td><td>' + dimension + '<td>' + product + '</td><td>' + p_c_name +
+            //                 '</td>';
+            //             tr += '<td ><input type="text" name="packages[' + id +
+            //                 '][qte]" required style="width:50px;" /> </td>';
+            //             tr +=
+            //                 '<td><button type="button" class="btn btn-danger btn-xs move_packages_row">-</button>';
+            //             tr += '<input type="hidden" name="packages[' + id +
+            //                 '][id]" class="package_row_index" value="' + id + '"></td></tr>';
+
+            //             $('#the_package_add_parcel_form_part tbody').append(tr);
             //         }
             //     });
             // }

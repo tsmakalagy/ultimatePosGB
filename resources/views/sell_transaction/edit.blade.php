@@ -307,21 +307,22 @@ if ($sale_type == 'sales_order') {
                         term: item
                     },
                     success: function(response) {
+                        var resp = response[0].pack;
+                        console.log(response[0].pack);
+                        var id = resp.id;
+                        var barcode = resp.bar_code;
+                        var mode_transport = resp.mode_transport;
+                        var customer_tel = resp.customer_tel;
+                        var customer_name = resp.customer_name;
+                        var commission_agent = resp.commission_agent;
+                        var product = resp.product;
+                        var price = response[0].price;
 
-                        var id = response.id;
-                        var barcode = response.bar_code;
-                        var mode_transport = response.mode_transport;
-                        var customer_tel = response.customer_tel;
-                        var customer_name = response.customer_name;
-                        var commission_agent = response.commission_agent;
-                        var product = response.product;
-                        var price = response.price;
-
-                        var lengt = response.longueur;
+                        var lengt = resp.longueur;
                         var length = Number(lengt).toFixed(0)
-                        var widt = response.largeur;
+                        var widt = resp.largeur;
                         var width = Number(widt).toFixed(0);
-                        var heigh = response.hauteur;
+                        var heigh = resp.hauteur;
                         var height = Number(heigh).toFixed(0);
 
                         var dimension = "";
@@ -517,7 +518,7 @@ if ($sale_type == 'sales_order') {
                             var tr = '<tr class="package_row"  data-id="' + id + '"><td>' + barcode +
                                 '</td><td>' + dimension + '<td>' + product + '</td>';
                             tr += '<td ><input type="text" class="price_readonly" value="' + price +
-                                '"> name="packages[' +
+                                '"  name="packages[' +
                                 id +
                                 '][price]" required style="width:50px;" /> </td>';
                             // tr += '<td ><input type="text" class="qte" name="packages[' + id +
@@ -538,7 +539,6 @@ if ($sale_type == 'sales_order') {
 
                             $('#the_package_add_parcel_form_part tbody').append(tr);
                             calculate_total_payable();
-
 
                         },
                     })

@@ -276,6 +276,8 @@ class PackageController extends Controller
     public function indexApi()
     {
         $package = Package::all();
+        // dd($package->toArray());
+        // dd($package);
         return response()->json($package->toArray());
     }
 

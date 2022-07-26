@@ -35,6 +35,8 @@ use App\Shipper;
 use App\CustomerGroup;
 use App\InvoiceScheme;
 
+use App\Http\Resources\Product as ResourcesProduct;
+
 use App\Transaction;
 use App\TransactionSellLine;
 use App\TypesOfService;
@@ -2940,5 +2942,16 @@ class ProductController extends Controller
         }
 
         return $output;
+    }
+
+    public function indexApi()
+    {
+        $product = Product::all();
+        // dd($package->toArray());
+        // dd($package);
+        // {# return $product; #}
+        // return response()->json($package->toArray());
+        // return $package->toJson();
+        return new ResourcesProduct($product);
     }
 }

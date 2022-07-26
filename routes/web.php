@@ -18,7 +18,7 @@ Route::middleware(['setData'])->group(function () {
         return view('welcome');
     });
 
-    Auth::routes();
+     Auth::routes();
 
     Route::get('/business/register', 'BusinessController@getRegister')->name('business.getRegister');
     Route::post('/business/register', 'BusinessController@postRegister')->name('business.postRegister');
@@ -477,6 +477,7 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
       Route::get('packing-list/print/{id}', 'packingListController@printInvoice')->name('packingList.printInvoice');
       Route::get('/packing-list/export/excel/{id}', 'packingListController@exportToExcel')->name('packingListexport_excel');
       Route::get('packing-list/list-the-package', 'PackingListController@listThePackage')->name('packingList.list_the_package');
+     Route::get('packing-list/edit-list-the-package', 'PackingListController@editListThePackage')->name('PackingList.edit_list_the_package');
   
     //route for shipping_fee
     Route::get('shipping-fee', 'ShippingFeeController@index')->name('Shipping_fee.index');

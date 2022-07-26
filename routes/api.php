@@ -16,7 +16,13 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('my-package', 'PackageController@indexApi')->name('Package.indexApi');
+// Route::get('my-package', 'PackageController@indexApi')->name('Package.indexApi');
+// Route::get('product', 'ProductController@indexApi')->name('Product.indexApi');
+
+Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 'AdminSidebarMenu', 'CheckUserLogin'])->group(function () {
+    Route::get('my-package', 'PackageController@indexApi')->name('Package.indexApi');
+    Route::get('product', 'ProductController@indexApi')->name('Product.indexApi');
+});
 
 //Route::middleware(['EcomApi'])->prefix('api/ecom')->group(function () {
 //    Route::get('products/{id?}', 'ProductController@getProductsApi');

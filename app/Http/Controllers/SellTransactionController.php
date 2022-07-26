@@ -760,10 +760,12 @@ class SellTransactionController extends Controller
           $id_tp=$package->package_transaction_line;
         $arr=array();
         foreach($id_tp as $id_tps){
-            $result=$id_tps->package->id;
+            $pack_id=$id_tps->package->id;
+            $pack_price=$id_tps->price;
+            $result=$pack_id.'|'.$pack_price;
             array_push($arr,$result);
         }
-        // dd($arr);
+        //  dd($arr);
         $impl=implode(',', $arr);
         // dd($impl);
         $sale_type = request()->get('sale_type', '');
@@ -1047,13 +1049,17 @@ class SellTransactionController extends Controller
         //requete ajax
         if (request()->ajax()) {
 
-            $array_of_box = array();
-            $id = $request->get('term', false);
+            $my_arr = array();
+            $term = $request->get('term', false);
             // $customer = $request()->input('customer', '');
-            
-            $packingLines = Package::findOrFail($id);
+            $val = explode("|", $term);
+             $packingLines = Package::findOrFail($val[0]);
+            array_push($my_arr, array(
+                'price' => $val[1],
+                'pack' =>$packingLines
+            ));
         
-            return $packingLines;
+            return $my_arr;
 
         }
         }

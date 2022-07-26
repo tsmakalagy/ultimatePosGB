@@ -122,7 +122,7 @@
                                     <td>{{ $pack_line->package->volume }}</td>
 
                                     <td><span class="display_currency pull-right"
-                                            data-currency_symbol="true">{{ $pack_line->package->price }}</span></td>
+                                            data-currency_symbol="true">{{ $pack_line->price }}</span></td>
 
                                 </tr>
                             @endforeach

@@ -35,7 +35,7 @@
                     {!! Form::text(
                         "payment[$row_index][paid_on]",
                         isset($payment_line['paid_on']) ? @format_datetime($payment_line['paid_on']) : @format_datetime('now'),
-                        ['class' => 'form-control paid_on', 'readonly', 'required'],
+                        ['class' => 'form-control paid_on', 'readonly', 'required']
                     ) !!}
                 </div>
             </div>
@@ -56,14 +56,14 @@
                     'required',
                     'id' => !$readonly ? "method_$row_index" : "method_advance_$row_index",
                     'style' => 'width:100%;',
-                    'disabled' => $readonly,
+                    'disabled' => $readonly
                 ]) !!}
 
                 @if ($readonly)
                     {!! Form::hidden("payment[$row_index][method]", $payment_line['method'], [
                         'class' => 'payment_types_dropdown',
                         'required',
-                        'id' => "method_$row_index",
+                        'id' => "method_$row_index"
                     ]) !!}
                 @endif
             </div>
@@ -85,8 +85,8 @@
                             'class' => 'form-control select2 account-dropdown',
                             'id' => !$readonly ? "account_$row_index" : "account_advance_$row_index",
                             'style' => 'width:100%;',
-                            'disabled' => $readonly,
-                        ],
+                            'disabled' => $readonly
+                        ]
                     ) !!}
                 </div>
             </div>
@@ -100,8 +100,8 @@
             {!! Form::textarea("payment[$row_index][note]", $payment_line['note'], [
                 'class' => 'form-control',
                 'rows' => 3,
-                'id' => "note_$row_index",
-            ]) !!}
+                'id' => "note_$row_index"
+        ]) !!}
         </div>
     </div>
 </div>

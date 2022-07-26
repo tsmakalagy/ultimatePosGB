@@ -694,7 +694,7 @@ else{
         ->addColumn('date_paid_on',
         function ($row) {
             $transaction_payments =TransactionPayment::where('transaction_id',$row->id)->select( DB::raw("DATE_FORMAT(paid_on, '%Y/%m/%d') as paid_on"))->get();
-          //  $date_format=date_format($transaction_payments'Y-m-d',);
+          //  $date_format=date_format($transaction_payments'Y-m-d');
             
           $test='';
             foreach($transaction_payments as $transaction_payment){

@@ -85,8 +85,8 @@
                             'class' => 'form-control select2 account-dropdown',
                             'id' => !$readonly ? "account_$row_index" : "account_advance_$row_index",
                             'style' => 'width:100%;',
-                            'disabled' => $readonly,
-                        ],
+                            'disabled' => $readonly
+                        ]
                     ) !!}
                 </div>
             </div>

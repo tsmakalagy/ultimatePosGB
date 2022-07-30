@@ -22,6 +22,7 @@
         "laravel/passport": "^7.5",
         "laravel/tinker": "^1.0",
         "laravelcollective/html": "5.8.*",
+        "lcobucci/jwt": "3.3.3",
         "maatwebsite/excel": "^3.1.8",
         "milon/barcode": "^6.0",
         "mpdf/mpdf": "^8.0",

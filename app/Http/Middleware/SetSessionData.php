@@ -19,7 +19,15 @@ class SetSessionData
      */
     public function handle($request, Closure $next)
     {
+        //         Session::put('user', 'kijdg');
+        // if(Session::has('user')){
+        //return response()->json(['message'=>Session::get('user')],401);
+
+        // }
+
         if (!$request->session()->has('user')) {
+            // dd('session');
+            // dd(request()->session()->all());
             $business_util = new BusinessUtil;
 
             $user = Auth::user();

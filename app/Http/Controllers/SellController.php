@@ -23,6 +23,7 @@ use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Warranty;
 use DB;
+use illuminate\support\Facades\Auth;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 use App\Product;
@@ -99,7 +100,7 @@ class SellController extends Controller
            
              $use=User::where('id',$id)->first();
 
-            //if commission_agent connected
+            // if commission_agent connected
             if($use->is_cmmsn_agnt ==1){
             $sells = $this->transactionUtil->getListSellsCmmsnAgnt($business_id, $sale_type);
             }
@@ -1806,6 +1807,21 @@ class SellController extends Controller
             $medias = $query->get();
 
             return view('sell.view_media')->with(compact('medias', 'title'));
+        }
+    }
+
+    //function return state of shipment on the API
+    public function shipmentStatus(Request $request){
+        $business_id = Auth::user()->business_id;
+    try{
+        $resp= Transaction::where('invoice_no',$request->num_facture)
+        ->where('business_id', $business_id)
+        ->first();
+        $shipp_state=$resp->shipping_status;
+    return response()->json(['data'=> $shipp_state],200);
+        }
+        catch(\Exception $e){
+        return response()->json(['message'=> $e->getMessage()],400);
         }
     }
 }

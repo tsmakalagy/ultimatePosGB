@@ -110,6 +110,7 @@ class ProductController extends Controller
         if (!auth()->user()->can('product.view') && !auth()->user()->can('product.create')) {
             abort(403, 'Unauthorized action.');
         }
+      
         $business_id = request()->session()->get('user.business_id');
         $selling_price_group_count = SellingPriceGroup::countSellingPriceGroups($business_id);
         $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
@@ -2945,13 +2946,23 @@ class ProductController extends Controller
     }
 
     public function indexApi()
-    {
-        $product = Product::all();
+    { 
+         if (auth()->user()->can('product.view') || auth()->user()->can('product.create') ){
+
+        $product = Product::join('variations as v', 'v.product_id', '=', 'products.id')
+        ->leftJoin('variation_location_details as vld', 'vld.variation_id', '=', 'v.id')
+        ->where('vld.qty_available','>', 0)
+        ->get();
+        return response()->json(['data'=>$product],200);
+         }
+         return response()->json(['message'=>'unauthorized permission.'],403);
+
+        // $product=Product::All();
         // dd($package->toArray());
         // dd($package);
-        // {# return $product; #}
+        
         // return response()->json($package->toArray());
         // return $package->toJson();
-        return new ResourcesProduct($product);
+        // return new ResourcesProduct($product); 
     }
 }

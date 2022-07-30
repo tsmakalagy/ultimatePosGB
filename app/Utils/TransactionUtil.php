@@ -2949,6 +2949,15 @@ class TransactionUtil extends Util
     public function updatePaymentStatus($transaction_id, $final_amount = null)
     {
         $status = $this->calculatePaymentStatus($transaction_id, $final_amount);
+        Transaction::where('id', $transaction_id)
+            ->update(['payment_status' => $status]);
+
+        return $status;
+    }
+
+    public function updatePaymentStatus2($transaction_id, $final_amount = null)
+    {
+        $status = $this->calculatePaymentStatus($transaction_id, $final_amount);
         PackageTransaction::where('id', $transaction_id)
             ->update(['payment_status' => $status]);
 

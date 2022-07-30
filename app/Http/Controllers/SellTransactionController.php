@@ -632,7 +632,7 @@ class SellTransactionController extends Controller
         // dd($package);
         $this->transactionUtil->createOrUpdatePaymentLines2($package, $request->input('payment'));
       //Update payment status
-    //   $payment_status = $this->transactionUtil->updatePaymentStatus($package->id, $package->final_total);
+    //   $payment_status = $this->transactionUtil->updatePaymentStatus2($package->id, $package->final_total);
 
     //   $package->payment_status = $payment_status;
 
@@ -908,7 +908,7 @@ class SellTransactionController extends Controller
             $package->update(['transaction_date' => $trans_date,'final_total' => $final_total,'status' => $status, 'created_by' => $commission_agent,'customer_id' => $customer]);
             $this->transactionUtil->createOrUpdatePaymentLines2($package, $request->input('payment'));
           //Update payment status
-        //   $payment_status = $this->transactionUtil->updatePaymentStatus($package->id, $package->final_total);
+        //   $payment_status = $this->transactionUtil->updatePaymentStatus2($package->id, $package->final_total);
     
         //   $package->payment_status = $payment_status;
     

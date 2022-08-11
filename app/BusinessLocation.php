@@ -90,6 +90,73 @@ class BusinessLocation extends Model
         }
     }
 
+    /**
+     * Return list of locations for a business
+     *
+     * @param int $business_id
+     * @param boolean $show_all = false
+     * @param array $receipt_printer_type_attribute =
+     *
+     * @return array
+     */
+    public static function forDropdownNoHQ($business_id, $show_all = false, $receipt_printer_type_attribute = false, $append_id = true, $check_permission = true)
+    {
+        $query = BusinessLocation::where('business_id', $business_id)
+                ->whereNull('custom_field1')
+                ->Active();
+
+        if ($check_permission) {
+            $permitted_locations = auth()->user()->permitted_locations();
+            if ($permitted_locations != 'all') {
+                $query->whereIn('id', $permitted_locations);
+            }
+        }
+//        var_dump($query->toSql());die();
+
+
+        if ($append_id) {
+            $query->select(
+                DB::raw("IF(location_id IS NULL OR location_id='', name, CONCAT(name, ' (', location_id, ')')) AS name"),
+                'id',
+                'receipt_printer_type',
+                'selling_price_group_id',
+                'default_payment_accounts',
+                'invoice_scheme_id'
+            );
+        }
+
+        $result = $query->get();
+
+        $locations = $result->pluck('name', 'id');
+
+        $price_groups = SellingPriceGroup::forDropdown($business_id);
+
+        if ($show_all) {
+            $locations->prepend(__('report.all_locations'), '');
+        }
+
+        if ($receipt_printer_type_attribute) {
+            $attributes = collect($result)->mapWithKeys(function ($item) use ($price_groups) {
+                $default_payment_accounts = json_decode($item->default_payment_accounts, true);
+                $default_payment_accounts['advance'] = [
+                    'is_enabled' => 1,
+                    'account' => null
+                ];
+                return [$item->id => [
+                    'data-receipt_printer_type' => $item->receipt_printer_type,
+                    'data-default_price_group' => !empty($item->selling_price_group_id) && array_key_exists($item->selling_price_group_id, $price_groups) ? $item->selling_price_group_id : null,
+                    'data-default_payment_accounts' => json_encode($default_payment_accounts),
+                    'data-default_invoice_scheme_id' => $item->invoice_scheme_id
+                ]
+                ];
+            })->all();
+
+            return ['locations' => $locations, 'attributes' => $attributes];
+        } else {
+            return $locations;
+        }
+    }
+
     public function price_group()
     {
         return $this->belongsTo(\App\SellingPriceGroup::class, 'selling_price_group_id');

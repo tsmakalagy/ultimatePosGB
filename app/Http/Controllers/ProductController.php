@@ -431,6 +431,25 @@ class ProductController extends Controller
             ));
     }
 
+
+    public function indexApi($sku)
+    {
+        $business_id = request()->session()->get('user.business_id');
+
+            $query = Product::with(['media'])
+                ->where('products.sku', 'like', "%{$sku}%");
+
+            $products = $query->select(
+                'products.id',
+                'products.name as product',
+                'products.sku',
+                'products.image'
+            );
+            $products->groupBy('products.id');
+
+        return response()->json($products->get()->toArray());
+    }
+
  /**
      * Display a listing of Sales from a product.
      *

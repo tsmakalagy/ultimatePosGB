@@ -450,6 +450,21 @@ class ProductController extends Controller
         return response()->json($products->get()->toArray());
     }
 
+    public function allProductsApi()
+    {
+        $business_id = request()->session()->get('user.business_id');
+
+        $query = Product::with(['media']);
+
+        $products = $query->select(
+            'products.sku',
+            'products.image'
+        );
+        $products->groupBy('products.id');
+
+        return response()->json($products->get()->toArray());
+    }
+
  /**
      * Display a listing of Sales from a product.
      *

@@ -23,6 +23,7 @@ use Illuminate\Http\Request;
 
 Route::group(['middleware' => ['web']], function(){
     Route::get('my-products/{sku}', 'ProductController@indexApi')->name('Product.indexApi');
+    Route::get('all-products/', 'ProductController@allProductsApi')->name('Product.allProductsApi');
 });
 
 

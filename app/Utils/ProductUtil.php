@@ -776,7 +776,9 @@ class ProductUtil extends Util
             'products.id as product_id',
             'products.name as product_name',
             'v.id as variation_id',
-            'v.name as variation_name'
+            'v.name as variation_name',
+            'v.sell_price_inc_tax as sell_price_inc_tax',
+            'products.sku as sku'
         )
                     ->get();
 

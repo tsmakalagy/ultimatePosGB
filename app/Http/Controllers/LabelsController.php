@@ -178,8 +178,25 @@ class LabelsController extends Controller
                     $is_last = true;
                 }
 
+                $style = array(
+                    'position' => '',
+                    'align' => 'C',
+                    'stretch' => false,
+                    'fitwidth' => true,
+                    'cellfitalign' => '',
+                    'border' => true,
+                    'hpadding' => 'auto',
+                    'vpadding' => 'auto',
+                    'fgcolor' => array(0,0,0),
+                    'bgcolor' => false, //array(255,255,255),
+                    'text' => true,
+                    'font' => 'helvetica',
+                    'fontsize' => 8,
+                    'stretchtext' => 4
+                );
+
                 $output = view('labels.partials.preview_2')
-                            ->with(compact('print', 'page_products', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor'))->render();
+                            ->with(compact('print', 'page_products', 'business_name', 'barcode_details', 'margin_top', 'margin_left', 'paper_width', 'paper_height', 'is_first', 'is_last', 'factor', 'style'))->render();
                 print_r($output);
                 //$mpdf->WriteHTML($output);
 

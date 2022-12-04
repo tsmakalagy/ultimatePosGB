@@ -51,6 +51,12 @@
 						@endif
 					</span>
 					@endif
+					{{-- SKU --}}
+					<br/>
+					<span style="font-size: {{16*$factor}}px">
+						<b>SKU:</b>
+							{{$page_product->sub_sku}}
+					</span>
 					@if(!empty($print['exp_date']) && !empty($page_product->exp_date))
 						<br>
 						<span style="font-size: {{14*$factor}}px">
@@ -71,7 +77,8 @@
 					<br>
 
 					{{-- Barcode --}}
-					<img style="max-width:90% !important;height: {{$barcode_details->height*0.24}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, $page_product->barcode_type, 3,30,array(39, 48, 54), true)}}">
+{{--					<img style="max-width:90% !important;height: {{$barcode_details->height*0.24}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, $page_product->barcode_type, 3,30,array(39, 48, 54), true)}}">--}}
+					<img style="max-width:100% !important;height: {{$barcode_details->height*0.24}}in !important;" src="data:image/png;base64,{{DNS1D::getBarcodePNG($page_product->sub_sku, 'EAN8', 3,30,array(1, 1, 1), false)}}">
 				</div>
 			</div>
 		

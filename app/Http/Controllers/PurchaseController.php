@@ -289,7 +289,8 @@ class PurchaseController extends Controller
                         ->ExcludeForTaxGroup()
                         ->get();
         $orderStatuses = $this->productUtil->orderStatuses();
-        $business_locations = BusinessLocation::forDropdownOnlyHQ($business_id, false, true);
+        $business_locations = BusinessLocation::forDropdownNoHQ($business_id, false, true);
+//        $business_locations = BusinessLocation::forDropdownOnlyHQ($business_id, false, true);
         $bl_attributes = $business_locations['attributes'];
         $business_locations = $business_locations['locations'];
 

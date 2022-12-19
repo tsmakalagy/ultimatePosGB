@@ -114,6 +114,7 @@ class ProductController extends Controller
 
         $products2 = Product::join('variations as v', 'v.product_id', '=', 'products.id')
         ->where('products.business_id', $business_id)
+            ->orderBy('products.id', 'DESC')
         ->select( DB::raw('MAX(v.sell_price_inc_tax) as max_price'),
                   DB::raw('MIN(v.sell_price_inc_tax) as min_price')
         )->first();
@@ -254,6 +255,7 @@ class ProductController extends Controller
             if (!empty(request()->get('repair_model_id'))) {
                 $products->where('products.repair_model_id', request()->get('repair_model_id'));
             }
+            $products->orderBy('id', 'DESC');
 
             return Datatables::of($products)
                 ->addColumn(

@@ -37,7 +37,7 @@ class BusinessLocation extends Model
      */
     public static function forDropdown($business_id, $show_all = false, $receipt_printer_type_attribute = false, $append_id = true, $check_permission = true)
     {
-        $query = BusinessLocation::where('business_id', $business_id)->Active();
+        $query = BusinessLocation::where('business_id', $business_id)->orderBy('id', 'DESC')->Active();
 
         if ($check_permission) {
             $permitted_locations = auth()->user()->permitted_locations();
@@ -103,6 +103,7 @@ class BusinessLocation extends Model
     {
         $query = BusinessLocation::where('business_id', $business_id)
                 ->whereNull('custom_field1')
+                ->orderBy('id', 'DESC')
                 ->Active();
 
         if ($check_permission) {

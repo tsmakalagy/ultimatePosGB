@@ -290,7 +290,8 @@ class PurchaseController extends Controller
                         ->get();
         $orderStatuses = $this->productUtil->orderStatuses();
 //        $business_locations = BusinessLocation::forDropdownNoHQ($business_id, false, true);
-        $business_locations = BusinessLocation::forDropdownOnlyHQ($business_id, false, true);
+//        $business_locations = BusinessLocation::forDropdownOnlyHQ($business_id, false, true);
+        $business_locations = BusinessLocation::forDropdown($business_id, false, true);
 
 
         $bl_attributes = $business_locations['attributes'];

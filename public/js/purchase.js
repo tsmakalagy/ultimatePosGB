@@ -746,7 +746,7 @@ function append_purchase_lines(data, row_count) {
         .each(function() {
             row = $(this).closest('tr');
 
-            $('#purchase_entry_table tbody').append(
+            $('#purchase_entry_table tbody').prepend(
                 update_purchase_entry_row_values(row)
             );
             update_row_price_for_exchange_rate(row);
@@ -968,11 +968,20 @@ $(document).on('change', 'input.payment-amount', function() {
 
 function update_table_sr_number() {
     var sr_number = 1;
-    $('table#purchase_entry_table tbody')
+    var sr_tttt = $('table#purchase_entry_table tbody')
+        .find('.sr_number').length;
+   /* $('table#purchase_entry_table tbody')
         .find('.sr_number')
         .each(function() {
             $(this).text(sr_number);
             sr_number++;
+        });*/
+
+    $('table#purchase_entry_table tbody')
+        .find('.sr_number')
+        .each(function() {
+            $(this).text(sr_tttt);
+            sr_tttt--;
         });
 }
 

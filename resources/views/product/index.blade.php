@@ -463,6 +463,20 @@ $('#price_min, #price_max').keyup(function () {
                 }    
             })
 
+            $(document).on('click', '#export-selected', function(e){
+                e.preventDefault();
+                var selected_rows = getSelectedRows();
+
+                if(selected_rows.length > 0){
+                    $('input#selected_products_for_export').val(selected_rows);
+                    $('form#export_form').submit();
+                } else{
+                    $('input#selected_products_for_export').val('');
+                    swal('@lang("lang_v1.no_row_selected")');
+                }
+
+            })
+
             $('table#product_table tbody').on('click', 'a.activate-product', function(e){
                 e.preventDefault();
                 var href = $(this).attr('href');

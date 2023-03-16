@@ -439,7 +439,9 @@ class ProductController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
             $query = Product::with(['media'])
-                ->where('products.sku', 'like', "%{$sku}%");
+                ->leftJoin('variations as v', 'v.product_id', '=', 'products.id')
+                ->where('products.sku', 'like', "%{$sku}%")
+            ->orWhere('v.sub_sku', 'like', "%{$sku}%");
 
             $products = $query->select(
                 'products.id',

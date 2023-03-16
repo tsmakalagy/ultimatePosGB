@@ -250,6 +250,9 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     Route::get('/import-products', 'ImportProductsController@index');
     Route::post('/import-products/store', 'ImportProductsController@store');
 
+    //Export products
+    Route::post('/export-products', 'ImportProductsController@exportToCSV');
+
     //Sales Commission Agent
     Route::resource('sales-commission-agents', 'SalesCommissionAgentController');
 

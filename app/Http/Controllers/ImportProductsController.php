@@ -71,7 +71,7 @@ class ImportProductsController extends Controller
     }
 
     /**
-     * Imports the uploaded file to database.
+     * Imports the uploaded CSV file to database.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -87,7 +87,7 @@ class ImportProductsController extends Controller
             if (!empty($notAllowed)) {
                 return $notAllowed;
             }
-            
+
             //Set maximum php execution time
             ini_set('max_execution_time', 0);
             ini_set('memory_limit', -1);
@@ -133,7 +133,7 @@ class ImportProductsController extends Controller
                     $product_array = [];
                     $product_array['business_id'] = $business_id;
                     $product_array['created_by'] = $user_id;
-                    
+
                     //Add name
                     $product_name = trim($value[0]);
                     if (!empty($product_name)) {
@@ -143,7 +143,7 @@ class ImportProductsController extends Controller
                         $error_msg = "Product name is required in row no. $row_no";
                         break;
                     }
-                    
+
                     //image name
                     $image_name = trim($value[28]);
                     if (!empty($image_name)) {
@@ -203,10 +203,10 @@ class ImportProductsController extends Controller
                     $unit_name = trim($value[2]);
                     if (!empty($unit_name)) {
                         $unit = Unit::where('business_id', $business_id)
-                                    ->where(function ($query) use ($unit_name) {
-                                        $query->where('short_name', $unit_name)
-                                              ->orWhere('actual_name', $unit_name);
-                                    })->first();
+                            ->where(function ($query) use ($unit_name) {
+                                $query->where('short_name', $unit_name)
+                                    ->orWhere('actual_name', $unit_name);
+                            })->first();
                         if (!empty($unit)) {
                             $product_array['unit_id'] = $unit->id;
                         } else {
@@ -237,8 +237,8 @@ class ImportProductsController extends Controller
                     $tax_amount = 0;
                     if (!empty($tax_name)) {
                         $tax = TaxRate::where('business_id', $business_id)
-                                        ->where('name', $tax_name)
-                                        ->first();
+                            ->where('name', $tax_name)
+                            ->first();
                         if (!empty($tax)) {
                             $product_array['tax'] = $tax->id;
                             $tax_amount = $tax->amount;
@@ -263,7 +263,7 @@ class ImportProductsController extends Controller
                     if ($product_array['enable_stock'] == 1) {
                         $product_array['alert_quantity'] = trim($value[8]);
                     }
-                    
+
 
                     //Add brand
                     //Check if brand exists else create new
@@ -303,8 +303,8 @@ class ImportProductsController extends Controller
                         $product_array['sku'] = $sku;
                         //Check if product with same SKU already exist
                         $is_exist = Product::where('sku', $product_array['sku'])
-                                        ->where('business_id', $business_id)
-                                        ->exists();
+                            ->where('business_id', $business_id)
+                            ->exists();
                         if ($is_exist) {
                             $is_valid = false;
                             $error_msg = "$sku SKU already exist in row no. $row_no";
@@ -380,7 +380,7 @@ class ImportProductsController extends Controller
                         $product_array['variation']['dpp_exc_tax'] = $product_prices['dpp_exc_tax'];
                         $product_array['variation']['dsp_inc_tax'] = $product_prices['dsp_inc_tax'];
                         $product_array['variation']['dsp_exc_tax'] = $product_prices['dsp_exc_tax'];
-                        
+
                         //Opening stock
                         if (!empty($value[20]) && $enable_stock == 1) {
                             $product_array['opening_stock_details']['quantity'] = trim($value[20]);
@@ -388,8 +388,8 @@ class ImportProductsController extends Controller
                             if (!empty(trim($value[21]))) {
                                 $location_name = trim($value[21]);
                                 $location = BusinessLocation::where('name', $location_name)
-                                                            ->where('business_id', $business_id)
-                                                            ->first();
+                                    ->where('business_id', $business_id)
+                                    ->first();
                                 if (!empty($location)) {
                                     $product_array['opening_stock_details']['location_id'] = $location->id;
                                 } else {
@@ -454,7 +454,7 @@ class ImportProductsController extends Controller
                                 $dpp_inc_tax[$k] = 0;
                             }
                         }
-                        
+
                         $dpp_exc_tax = [];
                         if (!empty($dpp_exc_tax_string)) {
                             $dpp_exc_tax = array_map('trim', explode(
@@ -473,7 +473,7 @@ class ImportProductsController extends Controller
                             $selling_price = array_map('trim', explode(
                                 '|',
                                 $selling_price_string
-                                ));
+                            ));
                         } else {
                             foreach ($variation_values as $k => $v) {
                                 $selling_price[$k] = 0;
@@ -486,7 +486,7 @@ class ImportProductsController extends Controller
                             $profit_margin = array_map('trim', explode(
                                 '|',
                                 $profit_margin_string
-                                ));
+                            ));
                         } else {
                             foreach ($variation_values as $k => $v) {
                                 $profit_margin[$k] = $default_profit_percent;
@@ -518,11 +518,11 @@ class ImportProductsController extends Controller
 
                             if (empty($variation_value)) {
                                 $variation_value = VariationValueTemplate::create([
-                                  'name' => $v,
-                                  'variation_template_id' => $variation->id
+                                    'name' => $v,
+                                    'variation_template_id' => $variation->id
                                 ]);
                             }
-                            
+
                             //Assign Values
                             $product_array['variation']['variations'][] = [
                                 'value' => $v,
@@ -551,8 +551,8 @@ class ImportProductsController extends Controller
                             if (!empty(trim($value[21]))) {
                                 $location_name = trim($value[21]);
                                 $location = BusinessLocation::where('name', $location_name)
-                                                            ->where('business_id', $business_id)
-                                                            ->first();
+                                    ->where('business_id', $business_id)
+                                    ->first();
                                 if (empty($location)) {
                                     $is_valid = false;
                                     $error_msg = "No location with name '$location_name' found in row no. $row_no";
@@ -566,7 +566,7 @@ class ImportProductsController extends Controller
                             foreach ($variation_os as $k => $v) {
                                 $product_array['variation']['variations'][$k]['opening_stock'] = $v;
                                 $product_array['variation']['variations'][$k]['opening_stock_exp_date'] = null;
-                                
+
                                 if (!empty($value[22])) {
                                     $product_array['variation']['variations'][$k]['opening_stock_exp_date'] = \Carbon::createFromFormat('m-d-Y', trim($value[22]))->format('Y-m-d');
                                 } else {
@@ -622,7 +622,7 @@ class ImportProductsController extends Controller
                             foreach ($locations_array as $business_location) {
                                 foreach ($business_locations as $loc) {
                                     if (strtolower($loc->name) == strtolower(trim($business_location))) {
-                                       $location_ids[] = $loc->id;
+                                        $location_ids[] = $loc->id;
                                     }
                                 }
                             }
@@ -660,10 +660,10 @@ class ImportProductsController extends Controller
                     }
                 }
             }
-            
+
             $output = ['success' => 1,
-                            'msg' => __('product.file_imported_successfully')
-                        ];
+                'msg' => __('product.file_imported_successfully')
+            ];
 
             DB::commit();
         } catch (\Exception $e) {
@@ -671,12 +671,143 @@ class ImportProductsController extends Controller
             \Log::emergency("File:" . $e->getFile(). "Line:" . $e->getLine(). "Message:" . $e->getMessage());
 
             $output = ['success' => 0,
-                            'msg' => $e->getMessage()
-                        ];
+                'msg' => $e->getMessage()
+            ];
             return redirect('import-products')->with('notification', $output);
         }
 
         return redirect('import-products')->with('status', $output);
+    }
+
+    /**
+     * Exports selected products to CSV.
+     * Fields are: NAME, BRAND, UNIT, CATEGORY, SUB-CATEGORY, SKU (Leave blank to auto generate sku), BARCODE TYPE, MANAGE STOCK (1=yes 0=No), ALERT QUANTITY, EXPIRES IN, EXPIRY PERIOD UNIT (months/days), APPLICABLE TAX, Selling Price Tax Type (inclusive or exclusive), PRODUCT TYPE (single or variable), VARIATION NAME (Keep blank if product type is single)	,VARIATION VALUES (| separated values & blank if product type is single), PURCHASE PRICE (Including tax), PURCHASE PRICE (Excluding tax), PROFIT MARGIN, SELLING PRICE, OPENING STOCK, LOCATION, EXPIRY DATE, ENABLE IMEI OR SERIAL NUMBER(1=yes 0=No), WEIGHT, RACK, ROW, POSITION, IMAGE, PRODUCT DESCRIPTION, CUSTOM FIELD 1, CUSTOM FIELD 2, CUSTOM FIELD 3, CUSTOM FIELD 4, NOT FOR SELLING(1=yes 0=No), PRODUCT LOCATIONS
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\StreamedResponse
+     */
+    public function exportToCSV(Request $request)
+    {
+        $selected_products = $request->input('selected_products');
+
+        $product_ids = explode(',', $selected_products);
+
+        $products = Product::whereIn('id', $product_ids)
+            ->get();
+
+        $array_of_products = [];
+        foreach ($products as $product) {
+            $product_array = [];
+            $product_array['name'] = $product->name;
+            $product_array['brand'] = isset($product->brand) ? $product->brand->name : '';
+            $product_array['unit'] = isset($product->unit) ? $product->unit->actual_name : '';
+            $product_array['category'] = isset($product->category) ? $product->category->name : '';
+            $product_array['sub_category'] = isset($product->sub_category) ? $product->sub_category->name : '';
+            $product_array['sku'] = $product->sku;
+            $product_array['barcode_type'] = $product->barcode_type;
+            $product_array['manage_stock'] = $product->enable_stock;
+            $product_array['alert_quantity'] = $product->alert_quantity;
+            $product_array['expires_in'] = $product->expiry_period;
+            $product_array['expiry_period_unit'] = $product->expiry_period_type;
+            $product_array['applicable_tax'] = isset($product->tax) ? $product->tax->name : '';
+            $product_array['selling_price_tax_type'] = $product->tax_type;
+            $product_array['product_type'] = $product->type;
+            $product_array['variation_name'] = '';
+            $product_array['variation_values'] = '';
+            $product_array['purchase_price_inc_tax'] = '';
+            $product_array['purchase_price_exc_tax'] = '';
+            $product_array['profit_margin'] = '';
+            $product_array['selling_price'] = '';
+            $product_array['opening_stock'] = '';
+            $product_array['location'] = '';
+            $product_array['expiry_date'] = '';
+            $product_array['enable_sr_no'] = '';
+            $product_array['weight'] = '';
+            $product_array['rack'] = '';
+            $product_array['row'] = '';
+            $product_array['position'] = '';
+            $product_array['image'] = $product->image;
+            $product_array['product_description'] = $product->product_description;
+            $product_array['custom_field_1'] = $product->custom_field_1;
+            $product_array['custom_field_2'] = $product->custom_field_2;
+            $product_array['custom_field_3'] = $product->custom_field_3;
+            $product_array['custom_field_4'] = $product->custom_field_4;
+            $product_array['not_for_selling'] = '';
+            $product_array['product_locations'] = '';
+
+            if ($product->type == 'variable') {
+                $array_of_variations = [];
+                $variations = $product->variations;
+                foreach ($variations as $variation) {
+                    if ($variation->name != "DUMMY") {
+                        $array_of_variations['variation_name'][] = isset($variation->product_variation) ? $variation->product_variation->name : '';
+                        $array_of_variations['variation_values'][] = $variation->name;
+                        $array_of_variations['purchase_price_inc_tax'][] = $variation->dpp_inc_tax;
+                        $array_of_variations['purchase_price_exc_tax'][] = $variation->dpp_exc_tax;
+                        $array_of_variations['profit_margin'][] = $variation->profit_percent;
+                        $array_of_variations['selling_price'][] = $variation->default_sell_price;
+                        $array_of_variations['opening_stock'][] = 0;
+                    }
+
+                }
+                $product_array['variation_name'] = isset($array_of_variations['variation_name']) ? $array_of_variations['variation_name'][0] : '';
+                $product_array['variation_values'] = isset($array_of_variations['variation_values']) ? implode('|', $array_of_variations['variation_values']) : '';
+                $product_array['purchase_price_inc_tax'] = isset($array_of_variations['purchase_price_inc_tax']) ? implode('|', $array_of_variations['purchase_price_inc_tax']) : '';
+                $product_array['purchase_price_exc_tax'] = isset($array_of_variations['purchase_price_exc_tax']) ? implode('|', $array_of_variations['purchase_price_exc_tax']) : '';
+                $product_array['profit_margin'] = isset($array_of_variations['profit_margin']) ? implode('|', $array_of_variations['profit_margin']) : '';
+                $product_array['selling_price'] = isset($array_of_variations['selling_price']) ? implode('|', $array_of_variations['selling_price']) : '';
+                $product_array['opening_stock'] = isset($array_of_variations['opening_stock']) ? implode('|', $array_of_variations['opening_stock']) : '';
+
+                $array_of_products[] = $product_array;
+
+            } else if ($product->type == 'single') {
+                $variations = $product->variations;
+                $array_of_variations = [];
+                foreach ($variations as $variation) {
+                    $array_of_variations['purchase_price_inc_tax'][] = $variation->dpp_inc_tax;
+                    $array_of_variations['purchase_price_exc_tax'][] = $variation->dpp_exc_tax;
+                    $array_of_variations['profit_margin'][] = $variation->profit_percent;
+                    $array_of_variations['selling_price'][] = $variation->default_sell_price;
+                    $array_of_variations['opening_stock'][] = 0;
+
+                }
+                $product_array['variation_name'] = '';
+                $product_array['variation_values'] = '';
+                $product_array['purchase_price_inc_tax'] = isset($array_of_variations['purchase_price_inc_tax']) ? $array_of_variations['purchase_price_inc_tax'][0] : '';
+                $product_array['purchase_price_exc_tax'] = isset($array_of_variations['purchase_price_exc_tax']) ? $array_of_variations['purchase_price_exc_tax'][0] : '';
+                $product_array['profit_margin'] = isset($array_of_variations['profit_margin']) ? $array_of_variations['profit_margin'][0] : '';
+                $product_array['selling_price'] = isset($array_of_variations['selling_price']) ? $array_of_variations['selling_price'][0] : '';
+                $product_array['opening_stock'] = isset($array_of_variations['opening_stock']) ? $array_of_variations['opening_stock'][0] : '';
+
+                $array_of_products[] = $product_array;
+
+            }
+
+        }
+        $filename = 'products.csv';
+        $headers = array(
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        );
+
+        $columns = array_keys($array_of_products[0]);
+
+
+        $callback = function () use ($array_of_products, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($array_of_products as $product) {
+                fputcsv($file, $product);
+            }
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+
+
     }
 
     private function calculateVariationPrices($dpp_exc_tax, $dpp_inc_tax, $selling_price, $tax_amount, $tax_type, $margin)

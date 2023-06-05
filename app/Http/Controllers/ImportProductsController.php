@@ -94,10 +94,11 @@ class ImportProductsController extends Controller
 
             if ($request->hasFile('products_csv')) {
                 $file = $request->file('products_csv');
-		$originalExtension = $file->getClientOriginalExtension();
+                $originalExtension = $file->getClientOriginalExtension();
                 $tempFilePath = $file->getPathname() . '.' . $originalExtension;
                 copy($file->getPathname(), $tempFilePath);
-		$parsed_array = Excel::toArray([], $tempFilePath);
+
+                $parsed_array = Excel::toArray([], $tempFilePath);
 
                 //Remove header row
                 $imported_data = array_splice($parsed_array[0], 1);

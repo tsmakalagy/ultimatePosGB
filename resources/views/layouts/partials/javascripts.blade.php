@@ -7,6 +7,9 @@
     APP.INVOICE_SCHEME_SEPARATOR = '{{config('constants.invoice_scheme_separator')}}';
     //variable from app service provider
     APP.PUSHER_ENABLED = '{{$__is_pusher_enabled}}';
+
+    MIN_WHOLESALE_QTY = `{{ env('MIN_WHOLESALE_QTY') }}`;
+
     @auth
         @php
             $user = Auth::user();

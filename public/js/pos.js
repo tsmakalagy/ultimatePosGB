@@ -270,7 +270,8 @@ $(document).ready(function() {
         var floats = price_groups.map(function(element) {
             return parseFloat(element);
         });
-        if (entered_qty > 2) {
+
+        if (entered_qty >= MIN_WHOLESALE_QTY) {
             var wholesalePrice = Math.min(...floats);
             __write_number(tr.find('input.pos_unit_price_inc_tax'), wholesalePrice);
             __write_number(tr.find('input.pos_unit_price'), wholesalePrice);

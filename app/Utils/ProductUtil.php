@@ -1562,15 +1562,24 @@ class ProductUtil extends Util
             $query->where('products.not_for_selling', $not_for_selling);
         }
 
-        if (!empty($price_group_id)) {
-            $query->leftjoin(
-                'variation_group_prices AS VGP',
-                function ($join) use ($price_group_id) {
-                    $join->on('variations.id', '=', 'VGP.variation_id')
-                        ->where('VGP.price_group_id', '=', $price_group_id);
-                }
-            );
-        }
+//        if (!empty($price_group_id)) {
+//            $query->leftjoin(
+//                'variation_group_prices AS VGP',
+//                function ($join) use ($price_group_id) {
+//                    $join->on('variations.id', '=', 'VGP.variation_id')
+//                        ->where('VGP.price_group_id', '=', $price_group_id);
+//                }
+//            );
+//        }
+
+        $query->leftjoin(
+            'variation_group_prices AS VGP',
+            function ($join) {
+                $join->on('variations.id', '=', 'VGP.variation_id')
+                    ->join('selling_price_groups AS SPG', 'VGP.price_group_id', '=', 'SPG.id')
+                    ->where('SPG.name', '=', 'Gros');
+            }
+        );
 
         $query->where('products.business_id', $business_id)
                 ->where('products.type', '!=', 'modifier');
@@ -1667,17 +1676,29 @@ class ProductUtil extends Util
                 'U.short_name as unit'
             );
 
-        if (!empty($price_group_id)) {
-            $query->addSelect('VGP.price_inc_tax as variation_group_price');
-        }
+//        if (!empty($price_group_id)) {
+//            $query->addSelect('VGP.price_inc_tax as variation_group_price');
+//        }
+
+        $query->addSelect('VGP.price_inc_tax as variation_group_price');
 
         if (in_array('lot', $search_fields)) {
             $query->addSelect('pl.id as purchase_line_id', 'pl.lot_number');
         }
 
         $query->groupBy('variations.id');
-        return $query->orderBy('VLD.qty_available', 'desc')
+        $results = $query->orderBy('VLD.qty_available', 'desc')
                         ->get();
+
+        foreach ($results as $key => $value) {
+            if (!empty($value->variation_group_price)) {
+                $value->price_groups = array($value->variation_group_price, $value->selling_price);
+            } else {
+                $value->price_groups = array($value->selling_price);
+            }
+        }
+
+        return $results;
     }
 
     public function getProductStockDetails($business_id, $filters, $for)

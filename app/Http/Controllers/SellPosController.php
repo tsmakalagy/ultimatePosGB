@@ -796,6 +796,15 @@ class SellPosController extends Controller
                             '=',
                             'pv.id'
                         )
+            // PRICE GROUPS
+            ->leftjoin(
+                'variation_group_prices AS VGP',
+                function ($join) {
+                    $join->on('variations.id', '=', 'VGP.variation_id')
+                        ->join('selling_price_groups AS SPG', 'VGP.price_group_id', '=', 'SPG.id')
+                        ->where('SPG.name', '=', 'Gros');
+                }
+            )
                         ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
                             $join->on('variations.id', '=', 'vld.variation_id')
                                 ->where('vld.location_id', '=', $location_id);
@@ -816,6 +825,8 @@ class SellPosController extends Controller
                             'p.barcode_type',
                             'p.enable_sr_no',
                             'variations.id as variation_id',
+                            'variations.sell_price_inc_tax as default_selling_price',
+                            'VGP.price_inc_tax as variation_group_price',
                             'units.short_name as unit',
                             'units.allow_decimal as unit_allow_decimal',
                             'transaction_sell_lines.tax_id as tax_id',
@@ -924,6 +935,13 @@ class SellPosController extends Controller
                         
                         $sell_details[$key]->formatted_qty_available = $this->productUtil->num_f($sell_details[$key]->qty_available, false, null, true);
                     }
+                }
+
+                // SELL PRICE GROUPS
+                if (!empty($value->variation_group_price)) {
+                    $value->price_groups = array($value->variation_group_price, $value->default_selling_price);
+                } else {
+                    $value->price_groups = array($value->default_selling_price);
                 }
             }
         }
@@ -1465,6 +1483,98 @@ class SellPosController extends Controller
         return $output;
     }
 
+    // SELL PRICE GROUPS
+    private function myGetSellLineRow($price_groups, $variation_id, $location_id, $quantity, $row_count, $is_direct_sell, $so_line = null)
+    {
+        $business_id = request()->session()->get('user.business_id');
+        $business_details = $this->businessUtil->getDetails($business_id);
+        //Check for weighing scale barcode
+        $weighing_barcode = request()->get('weighing_scale_barcode');
+
+        $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
+
+        $check_qty = !empty($pos_settings['allow_overselling']) ? false : true;
+        $product = $this->productUtil->getDetailsFromVariation($variation_id, $business_id, $location_id, $check_qty);
+
+        if (!isset($product->quantity_ordered)) {
+            $product->quantity_ordered = $quantity;
+        }
+
+        $product->formatted_qty_available = $this->productUtil->num_f($product->qty_available, false, null, true);
+
+        $sub_units = $this->productUtil->getSubUnits($business_id, $product->unit_id, false, $product->product_id);
+
+        //Get customer group and change the price accordingly
+        $customer_id = request()->get('customer_id', null);
+        $cg = $this->contactUtil->getCustomerGroup($business_id, $customer_id);
+        $percent = (empty($cg) || empty($cg->amount) || $cg->price_calculation_type != 'percentage') ? 0 : $cg->amount;
+        $product->default_sell_price = $product->default_sell_price + ($percent * $product->default_sell_price / 100);
+        $product->sell_price_inc_tax = $product->sell_price_inc_tax + ($percent * $product->sell_price_inc_tax / 100);
+
+        $tax_dropdown = TaxRate::forBusinessDropdown($business_id, true, true);
+
+        $enabled_modules = $this->transactionUtil->allModulesEnabled();
+
+        //Get lot number dropdown if enabled
+        $lot_numbers = [];
+        if (request()->session()->get('business.enable_lot_number') == 1 || request()->session()->get('business.enable_product_expiry') == 1) {
+            $lot_number_obj = $this->transactionUtil->getLotNumbersFromVariation($variation_id, $business_id, $location_id, true);
+            foreach ($lot_number_obj as $lot_number) {
+                $lot_number->qty_formated = $this->productUtil->num_f($lot_number->qty_available);
+                $lot_numbers[] = $lot_number;
+            }
+        }
+        $product->lot_numbers = $lot_numbers;
+
+        $purchase_line_id = request()->get('purchase_line_id');
+
+        $price_group = request()->input('price_group');
+        if (!empty($price_group)) {
+            $variation_group_prices = $this->productUtil->getVariationGroupPrice($variation_id, $price_group, $product->tax_id);
+
+            if (!empty($variation_group_prices['price_inc_tax'])) {
+                $product->sell_price_inc_tax = $variation_group_prices['price_inc_tax'];
+                $product->default_sell_price = $variation_group_prices['price_exc_tax'];
+            }
+        }
+
+        $warranties = $this->__getwarranties();
+
+        $output['success'] = true;
+        $output['enable_sr_no'] = $product->enable_sr_no;
+
+        $waiters = [];
+        if ($this->productUtil->isModuleEnabled('service_staff') && !empty($pos_settings['inline_service_staff'])) {
+            $waiters_enabled = true;
+            $waiters = $this->productUtil->serviceStaffDropdown($business_id, $location_id);
+        }
+
+        if (request()->get('type') == 'sell-return') {
+            $output['html_content'] =  view('sell_return.partials.product_row')
+                ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'sub_units'))
+                ->render();
+        } else {
+            $is_cg = !empty($cg->id) ? true : false;
+
+            $discount = $this->productUtil->getProductDiscount($product, $business_id, $location_id, $is_cg, $price_group, $variation_id);
+
+            if ($is_direct_sell) {
+                $edit_discount = auth()->user()->can('edit_product_discount_from_sale_screen');
+                $edit_price = auth()->user()->can('edit_product_price_from_sale_screen');
+            } else {
+                $edit_discount = auth()->user()->can('edit_product_discount_from_pos_screen');
+                $edit_price = auth()->user()->can('edit_product_price_from_pos_screen');
+            }
+
+            $is_sales_order = request()->has('is_sales_order') && request()->input('is_sales_order') == 'true' ? true : false;
+            $output['html_content'] =  view('sale_pos.product_row')
+                ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'price_groups'))
+                ->render();
+        }
+
+        return $output;
+    }
+
     /**
      * Returns the HTML row for a product in POS
      *
@@ -1481,6 +1591,9 @@ class SellPosController extends Controller
             $row_count = $row_count + 1;
             $quantity = request()->get('quantity', 1);
             $weighing_barcode = request()->get('weighing_scale_barcode', null);
+
+            // Get price_groups
+            $price_groups = request()->input('price_groups', null);
 
             $is_direct_sell = false;
             if (request()->get('is_direct_sell') == 'true') {
@@ -1499,7 +1612,7 @@ class SellPosController extends Controller
                 }
             }
 
-            $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
+            $output = $this->myGetSellLineRow($price_groups, $variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
 
             if ($this->transactionUtil->isModuleEnabled('modifiers')  && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);

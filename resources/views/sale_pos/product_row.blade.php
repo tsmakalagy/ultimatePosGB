@@ -306,6 +306,8 @@
 		@endphp
 		<td @if(!auth()->user()->can('edit_product_price_from_sale_screen')) hide @endif">
 			<input type="text"  name="products[{{$row_count}}][unit_price]" class="form-control pos_unit_price input_number mousetrap" value="{{@num_format($pos_unit_price)}}" @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$pos_unit_price}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($pos_unit_price)])}}" @endif>
+			<!-- ADDED price_groups -->
+			<input type="hidden"  name="products[{{$row_count}}][price_groups]" value="{{implode(',', $price_groups)}}" class="pos_price_groups"/>
 		</td>
 		<td @if(!$edit_discount) hide @endif>
 			{!! Form::text("products[$row_count][line_discount_amount]", @num_format($discount_amount), ['class' => 'form-control input_number row_discount_amount']); !!}<br>
@@ -337,6 +339,8 @@
 	@endif
 	<td class="{{$hide_tax}}">
 		<input type="text" name="products[{{$row_count}}][unit_price_inc_tax]" class="form-control pos_unit_price_inc_tax input_number" value="{{@num_format($unit_price_inc_tax)}}" @if(!$edit_price) readonly @endif @if(!empty($pos_settings['enable_msp'])) data-rule-min-value="{{$unit_price_inc_tax}}" data-msg-min-value="{{__('lang_v1.minimum_selling_price_error_msg', ['price' => @num_format($unit_price_inc_tax)])}}" @endif>
+		<!-- ADDED price_groups -->
+		<input type="hidden"  name="products[{{$row_count}}][price_groups]" value="{{implode(',', $price_groups)}}" class="pos_price_groups"/>
 	</td>
 	@if(!empty($common_settings['enable_product_warranty']) && !empty($is_direct_sell))
 		<td>

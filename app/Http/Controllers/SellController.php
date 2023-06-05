@@ -1065,6 +1065,15 @@ class SellController extends Controller
                 '=',
                 'pv.id'
             )
+            // PRICE GROUPS
+            ->leftjoin(
+                'variation_group_prices AS VGP',
+                function ($join) {
+                    $join->on('variations.id', '=', 'VGP.variation_id')
+                        ->join('selling_price_groups AS SPG', 'VGP.price_group_id', '=', 'SPG.id')
+                        ->where('SPG.name', '=', 'Gros');
+                }
+            )
             ->leftjoin('variation_location_details AS vld', function ($join) use ($location_id) {
                 $join->on('variations.id', '=', 'vld.variation_id')
                     ->where('vld.location_id', '=', $location_id);
@@ -1082,9 +1091,11 @@ class SellController extends Controller
                 'pv.is_dummy as is_dummy',
                 'variations.name as variation_name',
                 'variations.sub_sku',
+                'VGP.price_inc_tax as variation_group_price',
                 'p.barcode_type',
                 'p.enable_sr_no',
                 'variations.id as variation_id',
+                'variations.sell_price_inc_tax as default_selling_price',
                 'units.short_name as unit',
                 'units.allow_decimal as unit_allow_decimal',
                 'transaction_sell_lines.tax_id as tax_id',
@@ -1190,6 +1201,12 @@ class SellController extends Controller
 
                         $sell_details[$key]->formatted_qty_available = $this->productUtil->num_f($sell_details[$key]->qty_available, false, null, true);
                     }
+                }
+                // SELL PRICE GROUPS
+                if (!empty($value->variation_group_price)) {
+                    $value->price_groups = array($value->variation_group_price, $value->default_selling_price);
+                } else {
+                    $value->price_groups = array($value->default_selling_price);
                 }
             }
         }

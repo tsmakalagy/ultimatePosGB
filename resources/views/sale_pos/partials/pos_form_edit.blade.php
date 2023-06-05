@@ -203,6 +203,7 @@
 					'row_count' => $loop->index, 
 					'tax_dropdown' => $taxes, 
 					'sub_units' => !empty($sell_line->unit_details) ? $sell_line->unit_details : [],
+                    'price_groups' => $sell_line->price_groups,
 					'action' => 'edit'
 				])
 			@endforeach
